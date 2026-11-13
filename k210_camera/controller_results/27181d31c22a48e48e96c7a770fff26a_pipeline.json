@@ -1,0 +1,107 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794405801.0192716,
+      "returncode": 0,
+      "completed_at": 1794405813.0864842
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794405813.093633,
+      "returncode": 0,
+      "completed_at": 1794405813.5172677
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1794405813.5179281,
+      "returncode": 0,
+      "completed_at": 1794405829.3341048
+    },
+    {
+      "script": "guarded_visual_approach.py",
+      "started_at": 1794405829.3401747,
+      "returncode": 1,
+      "error": "RuntimeError: 动作未确认到位：{'task_id': 'df9d342e8f40437e8b34a1793a201f2b', 'request_id': 'guarded_step_28d8f73c901441afb15d02b34607d63e', 'type': 'coordinate', 'status': 'outcome_unknown', 'created_at': '2026-11-11T14:03:51.270+00:00', 'updated_at': '2026-11-11T14:03:56.768+00:00', 'targets': {'3': 159, '4': 324, '5': 615, '6': 495}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '已达到修正次数上限，执行结果未达标', 'coordinate_plan': {'backend': 'host_ik', 'frame': 'base_link', 'estimated': True, 'pitch_policy': 'keep_current', 'start_pose': {'x_cm': 22.19459839641058, 'y_cm': -0.3719088687630064, 'z_cm': -0.3911643432268921, 'pitch_deg': -61.67999999999999, 'frame': 'base_link', 'estimated': True}, 'requested_pose': {'x_cm': 21.59459839641058, 'y_cm': -0.4719088687630064, 'z_cm': -0.3911643432268921, 'pitch_deg': -61.67999999999999, 'frame': 'base_link', 'estimated': True}, 'predicted_pose': {'x_cm': 21.578976102984104, 'y_cm': -0.4520151125854285, 'z_cm': -0.38109372240970707, 'pitch_deg': -61.67999999999998, 'frame': 'base_link', 'estimated': True}, 'delta_cm': [-0.6, -0.1, 0.0], 'predicted_delta_cm': [-0.6156222934264761, -0.0801062438224221, 0.010070620817185016], 'targets': {'3': 159, '4': 324, '5': 615, '6': 495}, 'joint_deltas': {'3': 13, '4': -34, '5': -21, '6': -1}, 'rounding_error_cm': 0.02722563112949478, 'max_joint_delta': 34, 'position_tolerance': 10, 'min_joint_delta': 6, 'feedback_detectable': True, 'start_positions': {'3': 146, '4': 358, '5': 636, '6': 496}, 'acceptance': {'configured_position_tolerance_cm': 0.2, 'effective_position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_position_tolerance': 10, 'required_samples': 2, 'predicted_within_tolerance': True}}, 'backend': 'host_ik', 'completion_basis': 'joint_positions_and_model', 'cartesian_feedback': False, 'coordinate_feedback': {'estimated': True, 'frame': 'base_link', 'observed_pose': {'x_cm': 21.568400798179844, 'y_cm': -0.36141584536062, 'z_cm': -0.18032737148415912, 'pitch_deg': -61.19999999999998, 'frame': 'base_link', 'estimated': True}, 'joint_positions': {'1': 380, '2': 497, '3': 159, '4': 323, '5': 612, '6': 496}, 'joint_errors': {'3': 0, '4': -1, '5': -3, '6': 1}, 'joint_within_tolerance': True, 'position_error_cm': 0.23947286073228685, 'position_error_vector_cm': [-0.026197598230734087, 0.11049302340238643, 0.21083697174273297], 'pitch_error_deg': 0.4800000000000111, 'model_within_tolerance': False, 'within_tolerance': False, 'position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_tolerance': 10, 'observed_at': '2026-11-11T14:03:56.768+00:00', 'score': 1.197364303661434}, 'command_targets': {'3': 165, '4': 324, '5': 606, '6': 493}, 'joint_feedback_confirmed': True, 'model_feedback_confirmed': False, 'joint_consecutive_samples': 4, 'model_consecutive_samples': 0, 'correction': {'enabled': True, 'max_attempts': 3, 'max_step': 5, 'max_offset': 10, 'deadband': 1, 'settle_s': 0.8, 'stable_samples': 3, 'stability_tolerance': 2, 'min_progress': 0.1, 'attempts': 3, 'history': [{'attempt': 1, 'issued_at': '2026-11-11T14:03:52.795+00:00', 'command_targets': {'3': 163, '4': 324, '5': 610, '6': 495}, 'score_before': 4.263161368191815, 'feedback_before': {'estimated': True, 'frame': 'base_link', 'observed_pose': {'x_cm': 21.171223397399856, 'y_cm': -0.35476045132356426, 'z_cm': -1.121925352417879, 'pitch_deg': -64.32, 'frame': 'base_link', 'estimated': True}, 'joint_positions': {'3': 155, '4': 323, '5': 621, '6': 496}, 'joint_errors': {'3': -4, '4': -1, '5': 6, '6': 1}, 'joint_within_tolerance': True, 'position_error_cm': 0.852632273638363, 'position_error_vector_cm': [-0.42337499901072206, 0.11714841743944215, -0.7307610091909869], 'pitch_error_deg': -2.6400000000000006, 'model_within_tolerance': False, 'within_tolerance': False, 'position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_tolerance': 10, 'observed_at': '2026-11-11T14:03:52.794+00:00', 'score': 4.263161368191815}}, {'attempt': 2, 'issued_at': '2026-11-11T14:03:54.237+00:00', 'command_targets': {'3': 165, '4': 324, '5': 608, '6': 493}, 'score_before': 2.1642111291355723, 'feedback_before': {'estimated': True, 'frame': 'base_link', 'observed_pose': {'x_cm': 21.369014956949936, 'y_cm': -0.2685450974089685, 'z_cm': -0.6995596752290805, 'pitch_deg': -62.87999999999999, 'frame': 'base_link', 'estimated': True}, 'joint_positions': {'3': 157, '4': 323, '5': 617, '6': 497}, 'joint_errors': {'3': -2, '4': -1, '5': 2, '6': 2}, 'joint_within_tolerance': True, 'position_error_cm': 0.43284222582711446, 'position_error_vector_cm': [-0.2255834394606424, 0.20336377135403794, -0.3083953320021884], 'pitch_error_deg': -1.1999999999999957, 'model_within_tolerance': False, 'within_tolerance': False, 'position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_tolerance': 10, 'observed_at': '2026-11-11T14:03:54.237+00:00', 'score': 2.1642111291355723}}, {'attempt': 3, 'issued_at': '2026-11-11T14:03:55.326+00:00', 'command_targets': {'3': 165, '4': 324, '5': 606, '6': 493}, 'score_before': 1.407579295193666, 'feedback_before': {'estimated': True, 'frame': 'base_link', 'observed_pose': {'x_cm': 21.49937943191501, 'y_cm': -0.36025927303659977, 'z_cm': -0.6314119144213528, 'pitch_deg': -62.399999999999984, 'frame': 'base_link', 'estimated': True}, 'joint_positions': {'3': 159, '4': 323, '5': 617, '6': 496}, 'joint_errors': {'3': 0, '4': -1, '5': 2, '6': 1}, 'joint_within_tolerance': True, 'position_error_cm': 0.2815158590387332, 'position_error_vector_cm': [-0.09521896449556877, 0.11164959572640665, -0.24024757119446072], 'pitch_error_deg': -0.7199999999999918, 'model_within_tolerance': False, 'within_tolerance': False, 'position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_tolerance': 10, 'observed_at': '2026-11-11T14:03:55.326+00:00', 'score': 1.407579295193666}}], 'state': 'stopped', 'reason': 'correction_attempts_exhausted', 'stable_feedback': {'estimated': True, 'frame': 'base_link', 'observed_pose': {'x_cm': 21.568400798179844, 'y_cm': -0.36141584536062, 'z_cm': -0.18032737148415912, 'pitch_deg': -61.19999999999998, 'frame': 'base_link', 'estimated': True}, 'joint_positions': {'3': 159, '4': 323, '5': 612, '6': 496}, 'joint_errors': {'3': 0, '4': -1, '5': -3, '6': 1}, 'joint_within_tolerance': True, 'position_error_cm': 0.23947286073228685, 'position_error_vector_cm': [-0.026197598230734087, 0.11049302340238643, 0.21083697174273297], 'pitch_error_deg': 0.4800000000000111, 'model_within_tolerance': False, 'within_tolerance': False, 'position_tolerance_cm': 0.2, 'pitch_tolerance_deg': 1.0, 'joint_tolerance': 10, 'observed_at': '2026-11-11T14:03:56.768+00:00', 'score': 1.197364303661434}}}",
+      "completed_at": 1794405836.7293682
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM13",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -60
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 18,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 3.0,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Opt-in adaptive same-box trial with higher initial hover and a broad nominal pitch search. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "5d7ce4671adeb5c57f7b815dabcffc3d20a7824cf1813502330d4efc504514b3",
+      "guarded_visual_approach.py": "81c0da79540483b50cd3d41d16c36df16e69f47041265b188bd0cda52a3e6f8d",
+      "verify_same_box_grasp.py": "f676539b851f69941b48042ace5fb80f876efdf1fa7af073ff3007c1d929713f",
+      "run_current_box_trial.py": "e3bf986d788519f73a56e5be797d89c2696f95030421994e4e1d69c4e645968e",
+      "grasp_controller.py": "cccffa26fa9c127624fc7a66a68b2c75b5fcfcff4f2b300a8146f15e68b1902a",
+      "register_current_scene.py": "85e9c3555fb0012e46a784f12190d409c7489c4b6346ad3515c208ee1fe43b22",
+      "board_marker_pose.py": "887034a93f591b727a41dd1c5fbb1782dee9712e0a485b9b636ee6de735a9007",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "fcc4f99236fb1d72f2675cd5728a8827b66b0f8a850ab848680f48b57aaf2905",
+      "grasp_approach_policy.py": "a1810597e4e2249676de1f86c6d355bc39fc1f006d6fb1ca8e4430bc9996c265"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_140328_494427_seq87_17369e0b_9cbf7fed_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_140328_494427_seq87_17369e0b_9cbf7fed_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      21.52561758561739,
+      -1.5853961115863402,
+      -3.152302757968758
+    ],
+    "support_at_box_center_base_cm": [
+      21.608442563687543,
+      -1.6351236197812118,
+      -5.650435500225744
+    ],
+    "support_down_normal_base": [
+      0.03312999122806121,
+      -0.019891003277948648,
+      -0.9992530969027945
+    ]
+  },
+  "board_pose_rmse_px": 0.4772479443525994,
+  "box_alignment_deg": 3.6272854140497746
+}

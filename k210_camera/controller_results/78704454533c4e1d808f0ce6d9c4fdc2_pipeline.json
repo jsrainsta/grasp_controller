@@ -1,0 +1,113 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794398952.2458045,
+      "returncode": 0,
+      "completed_at": 1794398964.2323904
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794398964.23878,
+      "returncode": 0,
+      "completed_at": 1794398964.7198913
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1794398964.7210186,
+      "returncode": 0,
+      "completed_at": 1794398980.704132
+    },
+    {
+      "script": "guarded_visual_approach.py",
+      "started_at": 1794398980.711177,
+      "returncode": 0,
+      "completed_at": 1794399018.521596
+    },
+    {
+      "script": "verify_same_box_grasp.py",
+      "started_at": 1794399018.5323904,
+      "returncode": 1,
+      "error": "ValueError: 两次验收图均未通过观测：盒面真实匹配点未形成可靠位姿：[{\"rmse_px\": 3.204763245499677, \"height_cm\": 5.539248185140938, \"tilt_deg\": 18.441007716721327, \"inliers\": 213, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_121015_520373_seq27_b67bc118.jpg\"}, {\"rmse_px\": 5.358223684234527, \"height_cm\": 4.1501393473448935, \"tilt_deg\": 32.71369644646999, \"inliers\": 213, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_121015_520373_seq27_b67bc118.jpg\"}, {\"rmse_px\": 2.7019113083714648, \"height_cm\": 5.571950374646604, \"tilt_deg\": 17.600095158972092, \"inliers\": 186, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_121003_121818_seq26_a70be357.jpg\"}, {\"rmse_px\": 4.920091240820455, \"height_cm\": 3.938837031503615, \"tilt_deg\": 34.18567432024757, \"inliers\": 186, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_121003_121818_seq26_a70be357.jpg\"}, {\"rmse_px\": 2.8100234826341755, \"height_cm\": 5.538376155338817, \"tilt_deg\": 17.94764320042951, \"inliers\": 198, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_120951_763030_seq25_d03ede88.jpg\"}, {\"rmse_px\": 5.134157112033543, \"height_cm\": 3.9857270351522303, \"tilt_deg\": 33.64930808331361, \"inliers\": 198, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_120951_763030_seq25_d03ede88.jpg\"}, {\"rmse_px\": 2.7110108919557785, \"height_cm\": 5.558787031365384, \"tilt_deg\": 17.949940610457475, \"inliers\": 157, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_120938_923548_seq24_a31b31ab.jpg\"}, {\"rmse_px\": 4.869415366895369, \"height_cm\": 3.9381083765768534, \"tilt_deg\": 33.72407116375161, \"inliers\": 157, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261111\\\\photo_20261111_120938_923548_seq24_a31b31ab.jpg\"}]",
+      "completed_at": 1794399046.5662014
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM13",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -60
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 18,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 3.0,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Opt-in adaptive same-box trial with higher initial hover and a broad nominal pitch search. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "4ae511420931ab8ac009b1bdf399f55a60247a9cfdd640cf148e2f2f9abcddc6",
+      "guarded_visual_approach.py": "ddc96a484c82afd9deb90bb64926e14e64c945dd20f3b558cc1bf0aed52e0fd9",
+      "verify_same_box_grasp.py": "f676539b851f69941b48042ace5fb80f876efdf1fa7af073ff3007c1d929713f",
+      "run_current_box_trial.py": "e3bf986d788519f73a56e5be797d89c2696f95030421994e4e1d69c4e645968e",
+      "grasp_controller.py": "cccffa26fa9c127624fc7a66a68b2c75b5fcfcff4f2b300a8146f15e68b1902a",
+      "register_current_scene.py": "85e9c3555fb0012e46a784f12190d409c7489c4b6346ad3515c208ee1fe43b22",
+      "board_marker_pose.py": "887034a93f591b727a41dd1c5fbb1782dee9712e0a485b9b636ee6de735a9007",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "fcc4f99236fb1d72f2675cd5728a8827b66b0f8a850ab848680f48b57aaf2905",
+      "grasp_approach_policy.py": "632677bb68c4e136f29db0b0b4ddf8f91128862d0dc0e6860ddaaac33dbcc0c6"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_120920_367507_seq23_ac5e3b8c_b78dd7ef_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_120920_367507_seq23_ac5e3b8c_b78dd7ef_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      19.279153750846838,
+      -1.4826657519566109,
+      -3.236356978609837
+    ],
+    "support_at_box_center_base_cm": [
+      19.334747760929915,
+      -1.5363011412422884,
+      -5.735163203801991
+    ],
+    "support_down_normal_base": [
+      0.022237604033230322,
+      -0.021454155714270985,
+      -0.9995224900768618
+    ]
+  },
+  "board_pose_rmse_px": 0.4398348749083144,
+  "box_alignment_deg": 3.7061457106338227
+}

@@ -1,0 +1,89 @@
+已打开 COM13，波特率 230400。
+保持串口连接，启动时先等待 5 秒，再确认相机状态。
+已发送 PING，测试编号： 5deeb7bf32164887
+发送内容： @K210:{"type":"ping","version":1,"request_id":"5deeb7bf32164887"}
+发送字节数：66（含末尾换行）
+K210 程序版本： command_photo_230400_gap5_1
+相机指令已就绪，等待软件拍照请求。
+保存目录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110
+已发送 PING，测试编号： 0c18231ea7f44f24
+发送内容： @K210:{"type":"ping","version":1,"request_id":"0c18231ea7f44f24"}
+发送字节数：66（含末尾换行）
+已发送一次拍照指令，请求编号： 69394e6467534dfd
+等待 K210 确认并发送对应照片；无需按 K1。
+K210 已接受本次拍照请求，照片序号： 26
+开始接收照片 26：640×480，57757 字节，151 块。
+已接收 10/151 块。
+已接收 20/151 块。
+已接收 30/151 块。
+已接收 40/151 块。
+已接收 50/151 块。
+已接收 60/151 块。
+已接收 70/151 块。
+已接收 80/151 块。
+已接收 90/151 块。
+已接收 100/151 块。
+已接收 110/151 块。
+已接收 120/151 块。
+已接收 130/151 块。
+已接收 140/151 块。
+已接收 150/151 块。
+本次请求照片接收成功：57757 字节，校验通过。
+已保存： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_092211_164535_seq26_77d5136d.jpg
+本次分段耗时（不含启动等待、PING 握手和 OCR）：
+  拍照及回传准备：1.72 秒
+  传图与校验：4.33 秒
+  保存照片：0.00 秒
+  发出拍照指令到保存完成：6.06 秒
+图片： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_092211_164535_seq26_77d5136d.jpg
+尺寸：640×480
+正在首次加载中文 OCR 模型并识别……
+原方向尚未确认药名，补充检查旋转方向（复用同一张照片）。
+1. F  （置信度 0.99）
+2. 脑斗学肚  （置信度 0.97）
+3. 阿昔洛韦乳膏  （置信度 0.98）
+4. 元业  （置信度 0.78）
+5. 脑斗学肚  （置信度 0.91）
+6. G  （置信度 0.58）
+7. 脑斗学  （置信度 0.95）
+8. 日  （置信度 0.94）
+9. H  （置信度 0.56）
+10. 4  （置信度 1.00）
+11. 日  （置信度 0.97）
+12. 脑斗学肚  （置信度 0.95）
+13. 日  （置信度 0.70）
+模型准备耗时：0.85 秒。
+OCR 推理耗时：2.76 秒（首张识别）。
+名称匹配：阿昔洛韦乳膏（演示编号 med_003）
+目标筛选：目标药名匹配「阿昔洛韦乳膏」。
+文字结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261110_092211_164535_seq26_77d5136d_ocr.txt
+结构化结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261110_092211_164535_seq26_77d5136d_ocr.json
+观察记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261110_092211_164535_seq26_77d5136d_9af6a652_commissioning.json
+定位候选： null
+原图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_092211_164535_seq26_77d5136d.jpg
+标记数量： 10 角点： 16 / 24
+ChArUco插值检查： 角点几何通过，仍需独立求板位姿
+记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261110_092211_164535_seq26_77d5136d_93cc4490_charuco.json
+检测图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261110_092211_164535_seq26_77d5136d_93cc4490_charuco.png
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 98, in run
+    registered=register(Path(args[0]),motion=motion)
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\register_current_scene.py", line 89, in register
+    raise ValueError('新场景中药盒边界拟合失败，'+detail)
+ValueError: 新场景中药盒边界拟合失败，边缘中位误差 2.02px，P90 6.82px，蓝色覆盖 80.2%
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 164, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 62, in main
+    run_trial(a,camera)
+    ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 145, in run_trial
+    run('register_current_scene.py',observation)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 110, in run
+    raise RuntimeError('本轮结束于'+script+'；原因：'+reason+'；保留现场状态，不自动恢复') from error
+RuntimeError: 本轮结束于register_current_scene.py；原因：ValueError: 新场景中药盒边界拟合失败，边缘中位误差 2.02px，P90 6.82px，蓝色覆盖 80.2%；保留现场状态，不自动恢复

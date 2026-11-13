@@ -1,0 +1,203 @@
+{
+  "type": "ocr_result",
+  "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261112\\photo_20261112_085956_971372_seq33_58bc416b.jpg",
+  "image_width": 640,
+  "image_height": 480,
+  "created_at": "2026-11-12T09:00:01.835806+00:00",
+  "engine": "RapidOCR / ONNX Runtime CPU",
+  "versions": {
+    "rapidocr": "3.10.0",
+    "onnxruntime": "1.31.0"
+  },
+  "status": "text_found",
+  "elapsed_s": 2.526626400067471,
+  "model_prepare_s": 0.8280895999632776,
+  "lines": [
+    {
+      "text": "阿昔洛韦乳",
+      "confidence": 0.99867,
+      "polygon": [
+        [
+          331.0,
+          149.0
+        ],
+        [
+          331.0,
+          70.0
+        ],
+        [
+          360.0,
+          70.0
+        ],
+        [
+          360.0,
+          149.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 270
+    },
+    {
+      "text": "M",
+      "confidence": 0.65945,
+      "polygon": [
+        [
+          429.0,
+          106.0
+        ],
+        [
+          429.0,
+          129.0
+        ],
+        [
+          406.0,
+          129.0
+        ],
+        [
+          406.0,
+          106.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "阿昔洛韦乳膏",
+      "confidence": 0.99918,
+      "polygon": [
+        [
+          359.0,
+          71.0
+        ],
+        [
+          359.0,
+          171.0
+        ],
+        [
+          331.0,
+          171.0
+        ],
+        [
+          331.0,
+          71.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "G",
+      "confidence": 0.95443,
+      "polygon": [
+        [
+          224.0,
+          175.0
+        ],
+        [
+          221.0,
+          200.0
+        ],
+        [
+          194.0,
+          196.0
+        ],
+        [
+          197.0,
+          171.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "5",
+      "confidence": 0.53656,
+      "polygon": [
+        [
+          433.0,
+          129.0
+        ],
+        [
+          404.0,
+          129.0
+        ],
+        [
+          404.0,
+          105.0
+        ],
+        [
+          433.0,
+          105.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 180
+    }
+  ],
+  "orientation_attempts": [
+    {
+      "rotation_ccw_deg": 0,
+      "line_count": 0,
+      "match_status": "no_text",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 270,
+      "line_count": 1,
+      "match_status": "unknown",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 90,
+      "line_count": 3,
+      "match_status": "matched",
+      "medicine_id": "med_003"
+    },
+    {
+      "rotation_ccw_deg": 180,
+      "line_count": 1,
+      "match_status": "unknown",
+      "medicine_id": null
+    }
+  ],
+  "known_box_focus": null,
+  "polygon_coordinate_frame": "original_exif_transposed_image_pixels",
+  "orientation_fallback_policy": "retry_unconfirmed_names_at_right_angles_keep_all_evidence",
+  "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
+  "min_name_score": 0.8,
+  "medicine_match": {
+    "status": "matched",
+    "medicine_id": "med_003",
+    "name": "阿昔洛韦乳膏",
+    "ocr_confidence": 0.99918,
+    "source_line_index": 2,
+    "source_line_indices": [
+      2
+    ],
+    "min_score": 0.8,
+    "candidates": [
+      {
+        "medicine_id": "med_003",
+        "name": "阿昔洛韦乳膏",
+        "ocr_confidence": 0.99918,
+        "source_line_indices": [
+          2
+        ],
+        "evidence": [
+          {
+            "line_index": 2,
+            "text": "阿昔洛韦乳膏",
+            "ocr_confidence": 0.99918,
+            "meets_threshold": true
+          }
+        ],
+        "meets_threshold": true
+      }
+    ],
+    "reason": "完整药名与目录一致，OCR 置信度达到阈值。"
+  },
+  "target_selection": {
+    "status": "target_found",
+    "target_id": "med_003",
+    "target_name": "阿昔洛韦乳膏",
+    "recognized_id": "med_003",
+    "recognized_name": "阿昔洛韦乳膏",
+    "name_match_status": "matched",
+    "reason": "本张照片唯一完整匹配且达到阈值的药名与指定目标一致。"
+  }
+}

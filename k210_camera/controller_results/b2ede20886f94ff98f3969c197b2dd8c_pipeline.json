@@ -1,0 +1,107 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794404249.1010993,
+      "returncode": 0,
+      "completed_at": 1794404261.7362008
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794404261.7443662,
+      "returncode": 0,
+      "completed_at": 1794404262.3388443
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1794404262.3396814,
+      "returncode": 0,
+      "completed_at": 1794404277.7501342
+    },
+    {
+      "script": "guarded_visual_approach.py",
+      "started_at": 1794404277.7571034,
+      "returncode": 1,
+      "error": "RuntimeError: 动作未确认到位：{'task_id': '4a97e983ae554f33aac0ea8f86c4d5ec', 'request_id': 'guarded_joint_95190b83e5194bdbb8d4c7a90342073d', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-11T13:37:59.776+00:00', 'updated_at': '2026-11-11T13:38:01.110+00:00', 'targets': {'3': 170, '4': 307, '5': 609, '6': 495}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '通信失败，无法确认此前运动结果', 'acceptance': {'position_tolerance': 10, 'required_samples': 2}, 'position_feedback': {'observed_at': '2026-11-11T13:37:59.858+00:00', 'joint_positions': {'1': 380, '2': 496, '3': 158, '4': 342, '5': 631, '6': 498}, 'target_errors': {'3': -12, '4': 35, '5': 22, '6': 3}, 'within_tolerance': False, 'position_tolerance': 10, 'required_samples': 2}}",
+      "completed_at": 1794404281.031985
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM13",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -60
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 18,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 3.0,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Opt-in adaptive same-box trial with higher initial hover and a broad nominal pitch search. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "30cfaf84998746a47292ee3603c183a794564cb80647b526a38288bb6029543b",
+      "guarded_visual_approach.py": "40a172755f74362fd1a7d0810a4287406a8039c37a51900c1790a5465028c991",
+      "verify_same_box_grasp.py": "f676539b851f69941b48042ace5fb80f876efdf1fa7af073ff3007c1d929713f",
+      "run_current_box_trial.py": "e3bf986d788519f73a56e5be797d89c2696f95030421994e4e1d69c4e645968e",
+      "grasp_controller.py": "cccffa26fa9c127624fc7a66a68b2c75b5fcfcff4f2b300a8146f15e68b1902a",
+      "register_current_scene.py": "85e9c3555fb0012e46a784f12190d409c7489c4b6346ad3515c208ee1fe43b22",
+      "board_marker_pose.py": "887034a93f591b727a41dd1c5fbb1782dee9712e0a485b9b636ee6de735a9007",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "fcc4f99236fb1d72f2675cd5728a8827b66b0f8a850ab848680f48b57aaf2905",
+      "grasp_approach_policy.py": "a1810597e4e2249676de1f86c6d355bc39fc1f006d6fb1ca8e4430bc9996c265"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_133736_434239_seq63_74a4e8e0_8acf4f98_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_133736_434239_seq63_74a4e8e0_8acf4f98_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      21.46196669447061,
+      -1.4780641761503424,
+      -3.1007652112642012
+    ],
+    "support_at_box_center_base_cm": [
+      21.553877692922523,
+      -1.5055564643075756,
+      -5.598923841626863
+    ],
+    "support_down_normal_base": [
+      0.03676439938076525,
+      -0.010996915262893278,
+      -0.9992634521450648
+    ]
+  },
+  "board_pose_rmse_px": 0.5031232133796156,
+  "box_alignment_deg": 3.4485811967893447
+}

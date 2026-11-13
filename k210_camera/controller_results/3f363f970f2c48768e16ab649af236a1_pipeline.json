@@ -1,0 +1,101 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794404048.21755,
+      "returncode": 0,
+      "completed_at": 1794404060.937582
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794404060.9453773,
+      "returncode": 0,
+      "completed_at": 1794404061.5074198
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1794404061.5082633,
+      "returncode": 1,
+      "error": "ValueError: 盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0, 6.25, 5.75, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5] cm 均无完整路径。悬停点没有可用逆解；盒内偏移抓点：0.4 cm: 悬停高度候选 [6.0, 5.5, 6.5, 7.0, 6.25, 5.75, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5] cm 均无完整路径。悬停点没有可用逆解；0.8 cm: 悬停高度候选 [6.0, 5.5, 6.5, 7.0, 6.25, 5.75, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5] cm 均无完整路径。悬停点没有可用逆解；1.2 cm: 悬停高度候选 [6.0, 5.5, 6.5, 7.0, 6.25, 5.75, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5] cm 均无完整路径。悬停点没有可用逆解",
+      "completed_at": 1794404062.742628
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "preview",
+    "camera_port": "COM13",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -60
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 18,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 3.0,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Opt-in adaptive same-box trial with higher initial hover and a broad nominal pitch search. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "30cfaf84998746a47292ee3603c183a794564cb80647b526a38288bb6029543b",
+      "guarded_visual_approach.py": "40a172755f74362fd1a7d0810a4287406a8039c37a51900c1790a5465028c991",
+      "verify_same_box_grasp.py": "f676539b851f69941b48042ace5fb80f876efdf1fa7af073ff3007c1d929713f",
+      "run_current_box_trial.py": "e3bf986d788519f73a56e5be797d89c2696f95030421994e4e1d69c4e645968e",
+      "grasp_controller.py": "cccffa26fa9c127624fc7a66a68b2c75b5fcfcff4f2b300a8146f15e68b1902a",
+      "register_current_scene.py": "85e9c3555fb0012e46a784f12190d409c7489c4b6346ad3515c208ee1fe43b22",
+      "board_marker_pose.py": "887034a93f591b727a41dd1c5fbb1782dee9712e0a485b9b636ee6de735a9007",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "fcc4f99236fb1d72f2675cd5728a8827b66b0f8a850ab848680f48b57aaf2905",
+      "grasp_approach_policy.py": "a1810597e4e2249676de1f86c6d355bc39fc1f006d6fb1ca8e4430bc9996c265"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_133415_662451_seq60_d683c832_2ecdd994_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261111_133415_662451_seq60_d683c832_2ecdd994_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      23.027864895370556,
+      -1.549208511934527,
+      -3.128512863307673
+    ],
+    "support_at_box_center_base_cm": [
+      23.096256129552316,
+      -1.61668587361665,
+      -5.6266660701281666
+    ],
+    "support_down_normal_base": [
+      0.027356493672703746,
+      -0.026990944672849286,
+      -0.9992612827281975
+    ]
+  },
+  "board_pose_rmse_px": 0.40720660201462494,
+  "box_alignment_deg": 2.4962709605587903
+}

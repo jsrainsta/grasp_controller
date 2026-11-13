@@ -1,0 +1,107 @@
+已打开 COM13，波特率 230400。
+保持串口连接，启动时先等待 5 秒，再确认相机状态。
+已发送 PING，测试编号： cca833805f4d4e27
+发送内容： @K210:{"type":"ping","version":1,"request_id":"cca833805f4d4e27"}
+发送字节数：66（含末尾换行）
+K210 程序版本： command_photo_230400_gap5_1
+相机指令已就绪，等待软件拍照请求。
+保存目录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110
+已发送 PING，测试编号： 7f9009a7477c4063
+发送内容： @K210:{"type":"ping","version":1,"request_id":"7f9009a7477c4063"}
+发送字节数：66（含末尾换行）
+已发送一次拍照指令，请求编号： 89bec6324a0c40cb
+等待 K210 确认并发送对应照片；无需按 K1。
+K210 已接受本次拍照请求，照片序号： 47
+开始接收照片 47：640×480，55823 字节，146 块。
+已接收 10/146 块。
+已接收 20/146 块。
+已接收 30/146 块。
+已接收 40/146 块。
+已接收 50/146 块。
+已接收 60/146 块。
+已接收 70/146 块。
+已接收 80/146 块。
+已接收 90/146 块。
+已接收 100/146 块。
+已接收 110/146 块。
+已接收 120/146 块。
+已接收 130/146 块。
+已接收 140/146 块。
+本次请求照片接收成功：55823 字节，校验通过。
+已保存： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_095915_375387_seq47_2689f02c.jpg
+本次分段耗时（不含启动等待、PING 握手和 OCR）：
+  拍照及回传准备：1.67 秒
+  传图与校验：4.19 秒
+  保存照片：0.01 秒
+  发出拍照指令到保存完成：5.86 秒
+图片： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_095915_375387_seq47_2689f02c.jpg
+尺寸：640×480
+正在首次加载中文 OCR 模型并识别……
+原方向尚未确认药名，补充检查旋转方向（复用同一张照片）。
+1. F  （置信度 0.59）
+2. 脑科学肚  （置信度 0.73）
+3. E  （置信度 0.56）
+4. 阿昔洛韦乳膏  （置信度 1.00）
+5. 脑科学进  （置信度 0.84）
+6. G  （置信度 0.98）
+7. 脑科学  （置信度 0.85）
+8. 阿昔洛韦乳  （置信度 1.00）
+9. 脑科学进  （置信度 0.84）
+10. 洛韦乳  （置信度 0.98）
+模型准备耗时：0.75 秒。
+OCR 推理耗时：2.54 秒（首张识别）。
+名称匹配：阿昔洛韦乳膏（演示编号 med_003）
+目标筛选：目标药名匹配「阿昔洛韦乳膏」。
+文字结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261110_095915_375387_seq47_2689f02c_ocr.txt
+结构化结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261110_095915_375387_seq47_2689f02c_ocr.json
+观察记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261110_095915_375387_seq47_2689f02c_6bab199b_commissioning.json
+定位候选： null
+原图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261110\photo_20261110_095915_375387_seq47_2689f02c.jpg
+标记数量： 7 角点： 12 / 24
+ChArUco插值检查： 角点几何通过，仍需独立求板位姿
+记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261110_095915_375387_seq47_2689f02c_187ca22c_charuco.json
+检测图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261110_095915_375387_seq47_2689f02c_187ca22c_charuco.png
+新场景注册： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261110_095915_375387_seq47_2689f02c_6bab199b_commissioning_registered.json 板误差px： 0.08394980084603976 目标中心cm： [20.44646089687714, 4.612353696249926, -3.492851778518546]
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 149, in plan_box_pregrasp
+    planned=build_pregrasp_plan(model,start,center,up,limits,tcp_offset,motion)
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 138, in build_pregrasp_plan
+    raise ValueError(f'悬停高度候选 {heights} cm 及适用的中间高度均无完整路径。{reasons or "悬停点没有可用逆解"}')
+ValueError: 悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 162, in plan_box_pregrasp
+    planned=build_pregrasp_plan(model,start,center+offset,up,limits,tcp_offset,motion)
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 138, in build_pregrasp_plan
+    raise ValueError(f'悬停高度候选 {heights} cm 及适用的中间高度均无完整路径。{reasons or "悬停点没有可用逆解"}')
+ValueError: 悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 110, in run
+    camera_stages[script](list(map(str,args)),camera)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 239, in main
+    planned=plan_box_pregrasp(model,start,center,up,limits,tcp_offset,motion,target['length_axis_base'])
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 164, in plan_box_pregrasp
+    raise ValueError(f'盒心路径无解：{center_error}；盒内偏移抓点亦无解：{offset_error}') from offset_error
+ValueError: 盒心路径无解：悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 177, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 66, in main
+    run_trial(a,camera)
+    ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 156, in run_trial
+    run('approach_grasp_candidate.py',registered,*common,'--tcp-profile',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',*motion_args,*execute_args,*probe_args)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 115, in run
+    raise RuntimeError('本轮结束于'+script+'；原因：'+reason+'；保留现场状态，不自动恢复') from error
+RuntimeError: 本轮结束于approach_grasp_candidate.py；原因：ValueError: 盒心路径无解：悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：悬停高度候选 [7.5, 7.0, 8.0, 8.5] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；保留现场状态，不自动恢复

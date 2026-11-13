@@ -1,0 +1,20 @@
+{
+  "version": "quality-review-v1",
+  "enabled_for_execution": false,
+  "commissioning_only": true,
+  "object_id": "med_003",
+  "known_box_height_cm": 2.5,
+  "desired_contact_height_above_support_cm": 1.25,
+  "candidate_open_pad_center_height_cm": 1.8,
+  "preferred_nominal_pitch_deg": -85,
+  "candidate_nominal_pitch_range_deg": [-90, -80],
+  "strict_vertical_nominal_pitch_deg": -90,
+  "pregrasp_pad_center_height_cm": 6.0,
+  "normal_path": ["overview_and_identity", "coarse_pregrasp", "near_quality_check", "one_joint_pose_adjustment_if_needed", "close", "lift_and_hold_verification"],
+  "maximum_near_pose_corrections": 2,
+  "gripper_target": 520,
+  "force_measured": false,
+  "closed_pad_center_calibrated": false,
+  "physical_finger_vertical_axis_calibrated": false,
+  "note": "Offline design requirements, not enabled robot commands. The open-pad TCP candidate does not establish the closed-pad contact height; physical grasp quality requires validation before promotion."
+}

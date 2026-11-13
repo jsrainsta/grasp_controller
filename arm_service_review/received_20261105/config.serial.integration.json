@@ -1,0 +1,67 @@
+{
+  "mode": "serial",
+  "host": "127.0.0.1",
+  "port": 8000,
+  "serial_port": "/dev/serial/by-path/platform-xhci-hcd.0-usb-0:1:1.0-port0",
+  "baudrate": 9600,
+  "startup_delay_s": 5.0,
+  "allow_hardware_writes": true,
+  "enabled_features": [
+    "coordinate"
+  ],
+  "servo_limits": {
+    "1": [
+      178,
+      700
+    ],
+    "2": [
+      125,
+      875
+    ],
+    "3": [
+      125,
+      875
+    ],
+    "4": [
+      125,
+      875
+    ],
+    "5": [
+      125,
+      875
+    ],
+    "6": [
+      125,
+      875
+    ]
+  },
+  "coordinate_max_step_cm": 5.0,
+  "coordinate_max_joint_step": 100,
+  "coordinate_max_rounding_error_cm": 0.1,
+  "kinematics": {
+    "base_height_cm": 2.89,
+    "upper_arm_cm": 10.43,
+    "forearm_cm": 8.9,
+    "tool_length_cm": 17.7,
+    "units_per_degree": 4.166666666666667,
+    "zero_positions": {
+      "3": 500,
+      "4": 500,
+      "5": 500,
+      "6": 500
+    }
+  },
+  "coordinate_position_tolerance_cm": 0.2,
+  "coordinate_pitch_tolerance_deg": 1.0,
+  "coordinate_correction_enabled": true,
+  "coordinate_correction_max_attempts": 3,
+  "coordinate_correction_max_step": 5,
+  "coordinate_correction_max_offset": 10,
+  "coordinate_correction_deadband": 1,
+  "coordinate_correction_settle_s": 0.8,
+  "coordinate_correction_stable_samples": 3,
+  "coordinate_correction_stability_tolerance": 2,
+  "coordinate_correction_min_progress": 0.1,
+  "position_tolerance": 10,
+  "coordinate_min_joint_delta": 6
+}

@@ -1,0 +1,122 @@
+{
+  "type": "camera_intrinsics_candidate",
+  "version": 1,
+  "image_size_px": [
+    640,
+    480
+  ],
+  "model": "brown_conrady_5_coefficients_k3_fixed_zero",
+  "camera_matrix_px": [
+    [
+      546.4168530538647,
+      0.0,
+      318.40499353139916
+    ],
+    [
+      0.0,
+      546.523015662268,
+      259.8823515584811
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "distortion_coefficients": [
+    -0.08824032856138551,
+    0.12887767704001832,
+    0.0010851522382964072,
+    -0.000748848706445577,
+    0.0
+  ],
+  "distortion_order": [
+    "k1",
+    "k2",
+    "p1",
+    "p2",
+    "k3"
+  ],
+  "fit_completed": true,
+  "validation_status": "single_coarse_distance_check_consistent_not_grasp_validated",
+  "for_motion": false,
+  "validated_for_metric_grasp": false,
+  "hand_eye_calibrated": false,
+  "source_images": [
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_090442_480640_seq1_44713fc2.jpg",
+      "sha256": "91719ce5c9b539158a30ed080e41dff804d5efcca04cf4b5ea6707482958c47c"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_091538_412090_seq3_7bb8e39d.jpg",
+      "sha256": "431d2845bb494f6cbd9edba6e9af088779bfcec0be523a6c3a5a61be45cc1399"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_091600_328054_seq4_315bfa3b.jpg",
+      "sha256": "bd14afc7a14bed6c05892e40a7e4a302a4a692d02e8267bf364489e73a9a4e34"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_091620_650422_seq5_47f4b3a2.jpg",
+      "sha256": "a785dd5f5c142e63d5d788441f5f0999dafae83117b380845b2f96f2acea7662"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_091648_211557_seq6_17937ba1.jpg",
+      "sha256": "0404ce4341035178600217f8084e9b1bf8aa4338052b25a67de58e86c8102981"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_091703_778429_seq7_0bed8a15.jpg",
+      "sha256": "2a642b5caafad68f0ddee0a6e114616972b854e172b14e338699b877006348ec"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_092540_220568_seq8_de6f47e1.jpg",
+      "sha256": "a9b146e10b83eb4cfc0d754ecad41051c5727e317eac5c46403a11dccecc49a0"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_092601_945403_seq9_550372ae.jpg",
+      "sha256": "ac49921d66fbcbb063aa98ba13cd746dfb0c5316f314198260e1eec5e9edf8f7"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_092620_836226_seq10_95ef8b07.jpg",
+      "sha256": "3450e601f99d741c4f24b4ea529cfa661c57541ee987057667f5eb01da6653ef"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_092647_245067_seq11_e35068a7.jpg",
+      "sha256": "b6eb4032f7c016c26df31af899843dae0306d3ee5d57925f0eac7c689fe29cc0"
+    },
+    {
+      "image": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\calibration_images\\photo_20261026_092708_997396_seq12_7b9a91fd.jpg",
+      "sha256": "ae9b7e42b5f1290ff372a14c92092718bef15dd2c15a4860c87afb393701b121"
+    }
+  ],
+  "fit": {
+    "views": 11,
+    "reprojection_rms_px": 0.13437407377555394,
+    "leave_one_view_out_fx_range_px": [
+      546.0000945779685,
+      548.4581543701892
+    ],
+    "leave_one_view_out_fy_range_px": [
+      546.0734200256835,
+      548.6189781106624
+    ],
+    "heldout_half_corner_error_mean_px": 0.15469765053554016,
+    "heldout_half_corner_error_max_px": 0.25053316354751587
+  },
+  "metric_board_reference": {
+    "five_squares_width_cm": 5.2,
+    "five_squares_height_cm": 5.2,
+    "square_size_mm": 10.4,
+    "source": "user ruler measurement on screen",
+    "measurement_is_approximate": true,
+    "uncertainty_mm": null
+  },
+  "selection_reason": "Five-coefficient fit RMS 0.133438 px and fixed-k3 RMS 0.134374 px; keep the simpler candidate for independent validation, not automatic runtime deployment.",
+  "notes": "K/D were fitted with a unit-square grid. Absolute scale is applied only for later pose estimation. No camera-to-base transform or grasp point has been calculated.",
+  "independent_distance_check": {
+    "record": "C:\\Users\\24601\\Desktop\\摄像头与树莓派\\k210_camera\\camera_calibration_results\\board_distance_checks\\independent_distance_reference_20261026_seq13.json",
+    "reference_cm": 16.0,
+    "user_estimated_error_plus_minus_cm": 1.0,
+    "estimated_cm": 15.831541516978543,
+    "scope": "single_pose_coarse_consistency_only"
+  }
+}

@@ -1,0 +1,579 @@
+{
+  "type": "commissioning_pregrasp_clearance",
+  "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261112_094614_768906_seq78_d5a15c50_38752c07_commissioning_registered.json",
+  "nominal_hover_cm": [
+    22.84632743796172,
+    -1.6792558693336626,
+    -0.33637614993878184
+  ],
+  "nominal_minimum_margin_cm": 3.0155458162263105,
+  "waypoints": [
+    {
+      "3": 171,
+      "4": 182,
+      "5": 463,
+      "6": 496
+    },
+    {
+      "3": 170,
+      "4": 235,
+      "5": 514,
+      "6": 495
+    },
+    {
+      "3": 170,
+      "4": 287,
+      "5": 564,
+      "6": 495
+    },
+    {
+      "3": 169,
+      "4": 340,
+      "5": 615,
+      "6": 494
+    },
+    {
+      "3": 171,
+      "4": 347,
+      "5": 628,
+      "6": 496
+    },
+    {
+      "3": 169,
+      "4": 393,
+      "5": 666,
+      "6": 493
+    }
+  ],
+  "commands": [
+    {
+      "request": {
+        "request_id": "hover_7b32e5485e3543bda460cbfe06fb5885",
+        "targets": [
+          {
+            "id": 3,
+            "position": 171
+          },
+          {
+            "id": 4,
+            "position": 182
+          },
+          {
+            "id": 5,
+            "position": 463
+          },
+          {
+            "id": 6,
+            "position": 496
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "0c1b7b212a58444aa46d9607c7eadf1e",
+          "request_id": "hover_7b32e5485e3543bda460cbfe06fb5885",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-12T09:46:21.283+00:00",
+          "updated_at": "2026-11-12T09:46:21.283+00:00",
+          "targets": {
+            "3": 171,
+            "4": 182,
+            "5": 463,
+            "6": 496
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_7b32e5485e3543bda460cbfe06fb5885",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "0c1b7b212a58444aa46d9607c7eadf1e",
+        "request_id": "hover_7b32e5485e3543bda460cbfe06fb5885",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-12T09:46:21.283+00:00",
+        "updated_at": "2026-11-12T09:46:22.305+00:00",
+        "targets": {
+          "3": 171,
+          "4": 182,
+          "5": 463,
+          "6": 496
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-12T09:46:22.305+00:00",
+          "joint_positions": {
+            "1": 381,
+            "2": 497,
+            "3": 172,
+            "4": 175,
+            "5": 466,
+            "6": 497
+          },
+          "target_errors": {
+            "3": 1,
+            "4": -7,
+            "5": 3,
+            "6": 1
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "request": {
+        "request_id": "hover_076c75c602b848489e3ac9b6ca389679",
+        "targets": [
+          {
+            "id": 3,
+            "position": 170
+          },
+          {
+            "id": 4,
+            "position": 235
+          },
+          {
+            "id": 5,
+            "position": 514
+          },
+          {
+            "id": 6,
+            "position": 495
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "f89d3d44d72f49f595ec2fadf5d03ecf",
+          "request_id": "hover_076c75c602b848489e3ac9b6ca389679",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-12T09:46:22.738+00:00",
+          "updated_at": "2026-11-12T09:46:22.738+00:00",
+          "targets": {
+            "3": 170,
+            "4": 235,
+            "5": 514,
+            "6": 495
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_076c75c602b848489e3ac9b6ca389679",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "f89d3d44d72f49f595ec2fadf5d03ecf",
+        "request_id": "hover_076c75c602b848489e3ac9b6ca389679",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-12T09:46:22.738+00:00",
+        "updated_at": "2026-11-12T09:46:23.562+00:00",
+        "targets": {
+          "3": 170,
+          "4": 235,
+          "5": 514,
+          "6": 495
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-12T09:46:23.562+00:00",
+          "joint_positions": {
+            "1": 381,
+            "2": 497,
+            "3": 172,
+            "4": 229,
+            "5": 520,
+            "6": 497
+          },
+          "target_errors": {
+            "3": 2,
+            "4": -6,
+            "5": 6,
+            "6": 2
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "request": {
+        "request_id": "hover_ca1e3ed0ee234a2f8882fe7321312534",
+        "targets": [
+          {
+            "id": 3,
+            "position": 170
+          },
+          {
+            "id": 4,
+            "position": 287
+          },
+          {
+            "id": 5,
+            "position": 564
+          },
+          {
+            "id": 6,
+            "position": 495
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "ba9f86ff374c40deaca80f20f073a053",
+          "request_id": "hover_ca1e3ed0ee234a2f8882fe7321312534",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-12T09:46:23.923+00:00",
+          "updated_at": "2026-11-12T09:46:23.923+00:00",
+          "targets": {
+            "3": 170,
+            "4": 287,
+            "5": 564,
+            "6": 495
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_ca1e3ed0ee234a2f8882fe7321312534",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "ba9f86ff374c40deaca80f20f073a053",
+        "request_id": "hover_ca1e3ed0ee234a2f8882fe7321312534",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-12T09:46:23.923+00:00",
+        "updated_at": "2026-11-12T09:46:24.920+00:00",
+        "targets": {
+          "3": 170,
+          "4": 287,
+          "5": 564,
+          "6": 495
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-12T09:46:24.920+00:00",
+          "joint_positions": {
+            "1": 381,
+            "2": 497,
+            "3": 172,
+            "4": 280,
+            "5": 570,
+            "6": 497
+          },
+          "target_errors": {
+            "3": 2,
+            "4": -7,
+            "5": 6,
+            "6": 2
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "request": {
+        "request_id": "hover_4307e1cdb79d4a2195d634d48184c034",
+        "targets": [
+          {
+            "id": 3,
+            "position": 169
+          },
+          {
+            "id": 4,
+            "position": 340
+          },
+          {
+            "id": 5,
+            "position": 615
+          },
+          {
+            "id": 6,
+            "position": 494
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "9432988762254e418020fbf7ae8f1c5d",
+          "request_id": "hover_4307e1cdb79d4a2195d634d48184c034",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-12T09:46:25.422+00:00",
+          "updated_at": "2026-11-12T09:46:25.422+00:00",
+          "targets": {
+            "3": 169,
+            "4": 340,
+            "5": 615,
+            "6": 494
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_4307e1cdb79d4a2195d634d48184c034",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "9432988762254e418020fbf7ae8f1c5d",
+        "request_id": "hover_4307e1cdb79d4a2195d634d48184c034",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-12T09:46:25.422+00:00",
+        "updated_at": "2026-11-12T09:46:26.479+00:00",
+        "targets": {
+          "3": 169,
+          "4": 340,
+          "5": 615,
+          "6": 494
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-12T09:46:26.479+00:00",
+          "joint_positions": {
+            "1": 381,
+            "2": 497,
+            "3": 172,
+            "4": 334,
+            "5": 618,
+            "6": 497
+          },
+          "target_errors": {
+            "3": 3,
+            "4": -6,
+            "5": 3,
+            "6": 3
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "request": {
+        "request_id": "hover_ddbe75b7ef554e75ba8bdcce97d72a33",
+        "targets": [
+          {
+            "id": 3,
+            "position": 171
+          },
+          {
+            "id": 4,
+            "position": 347
+          },
+          {
+            "id": 5,
+            "position": 628
+          },
+          {
+            "id": 6,
+            "position": 496
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "1bd1a7a3df824e0694b161e63521a29e",
+          "request_id": "hover_ddbe75b7ef554e75ba8bdcce97d72a33",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-12T09:46:27.180+00:00",
+          "updated_at": "2026-11-12T09:46:27.180+00:00",
+          "targets": {
+            "3": 171,
+            "4": 347,
+            "5": 628,
+            "6": 496
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_ddbe75b7ef554e75ba8bdcce97d72a33",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "1bd1a7a3df824e0694b161e63521a29e",
+        "request_id": "hover_ddbe75b7ef554e75ba8bdcce97d72a33",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-12T09:46:27.180+00:00",
+        "updated_at": "2026-11-12T09:46:28.153+00:00",
+        "targets": {
+          "3": 171,
+          "4": 347,
+          "5": 628,
+          "6": 496
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-12T09:46:28.152+00:00",
+          "joint_positions": {
+            "1": 381,
+            "2": 497,
+            "3": 171,
+            "4": 340,
+            "5": 631,
+            "6": 497
+          },
+          "target_errors": {
+            "3": 0,
+            "4": -7,
+            "5": 3,
+            "6": 1
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    }
+  ],
+  "completed": false,
+  "physical_grasp_tcp_validated": false,
+  "contact_motion_allowed": false,
+  "tcp_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\calibration_boards\\grasp_tcp_hover_candidate_20261105.json",
+  "nominal_tcp_height_above_support_cm": 5.5,
+  "split_descent_precheck": true,
+  "grasp_offset_base_cm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "wrist_alignment_preview": {
+    "for_motion": false,
+    "requires_wrist_calibration": true,
+    "status": "nominal_roll_preview",
+    "relative_roll_deg": -0.3172465958616339,
+    "closing_axis_slope_to_support_deg": 0.6927790365013019
+  },
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_far_placement_trial.json",
+  "motion_profile_selection": {
+    "mode": "fallback",
+    "primary_error": "盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：0.8 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；0.4 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；1.2 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解"
+  },
+  "feedback_segment_split": {
+    "before_segment": 5,
+    "joints": {
+      "1": 381,
+      "2": 497,
+      "3": 171,
+      "4": 336,
+      "5": 619,
+      "6": 497
+    },
+    "midpoint": {
+      "3": 171,
+      "4": 347,
+      "5": 628,
+      "6": 496
+    },
+    "reason": "预接近路径名义余量不足（3.000 cm，要求 3.000 cm）"
+  },
+  "feedback_replan": {
+    "before_segment": 6,
+    "joints": {
+      "1": 381,
+      "2": 497,
+      "3": 172,
+      "4": 342,
+      "5": 631,
+      "6": 497
+    },
+    "reason": "预接近路径名义余量不足（2.885 cm，要求 3.000 cm）"
+  },
+  "error": "盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。预接近路径名义余量不足（13）；盒内偏移抓点亦无解：0.8 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。预接近路径名义余量不足（32）；0.4 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。预接近路径名义余量不足（23）；1.2 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。预接近路径名义余量不足（43）"
+}

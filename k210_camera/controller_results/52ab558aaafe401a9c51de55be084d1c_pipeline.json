@@ -1,0 +1,121 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794475344.9757335,
+      "returncode": 0,
+      "completed_at": 1794475356.9753933
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794475356.990058,
+      "returncode": 0,
+      "completed_at": 1794475357.9053383
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1794475357.9061534,
+      "returncode": 0,
+      "completed_at": 1794475374.5726855
+    },
+    {
+      "script": "guarded_visual_approach.py",
+      "started_at": 1794475374.5828009,
+      "returncode": 0,
+      "completed_at": 1794475399.8614357
+    },
+    {
+      "script": "verify_same_box_grasp.py",
+      "started_at": 1794475399.8764703,
+      "returncode": 0,
+      "completed_at": 1794475423.1860194
+    }
+  ],
+  "grasp_confirmed": true,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM10",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -55
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 18,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 3.0,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Far placement commissioning trial. Extends nominal pitch search to -55 degrees. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "684a66d15ca83ad2ef3c0f6844d1c6edfb83390078ef2dae5076d40978d3f361",
+      "guarded_visual_approach.py": "f3c6264c55a2d69418706acf2e542e2044d5fc2c455c9a21276c3748425c1b05",
+      "verify_same_box_grasp.py": "2fcaa46b6b050884a27fd1f12935b820728b53716dfdec5387aee3b2a2dda8ca",
+      "run_current_box_trial.py": "8880fd38177fea06e92b252cb7ec8fc7a816eb9041757516dec612f5e81a9a19",
+      "grasp_controller.py": "0cd59e7cc04437f21841d61519a047f12257bf0a1faff6244d40741e81ece88a",
+      "register_current_scene.py": "24e9abb34d82206c1833404327edb98f97aa942e233b0fae39588af251164956",
+      "board_marker_pose.py": "c5af6908c72aa98672c22e9a6c146f9301dc8ba50ee549811875743acdf605ac",
+      "detect_box_outline.py": "4b44cfc0a101428978c7722d84567a6a1997f8e74e3ac466b641a2cb8c52074c",
+      "fit_known_box_outline.py": "6155d5c06252d5236d29b3872805ce2fb0d1a5547d63fdbbdf9620b778d8ac12",
+      "fit_grasp_handeye.py": "011dc9df1f0298c5e462d6956bb400f92f54c8bbd298bed27b359063bbb8fbbb",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "5907c967d8e00fed31326e19d1d20ec0847a6ad9abd14d9fbe5b69d6d7e590af",
+      "grasp_approach_policy.py": "df5b06afbde35671a5f010e6c60ead6f26fb915edd4096b220921f077f6ff59b"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261112_092232_090093_seq51_57fe3381_a9f11ce2_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261112_092232_090093_seq51_57fe3381_a9f11ce2_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      23.069583205821324,
+      -1.508593478748405,
+      -3.47404227618051
+    ],
+    "support_at_box_center_base_cm": [
+      22.942035145466285,
+      -1.5650893716420256,
+      -5.970147183107665
+    ],
+    "support_down_normal_base": [
+      -0.05101922414201552,
+      -0.02259835715744827,
+      -0.998441962770862
+    ]
+  },
+  "board_pose_rmse_px": 0.40684475287272603,
+  "box_alignment_deg": 2.227245794774102,
+  "selected_motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_far_placement_trial.json",
+  "motion_profile_selection": {
+    "mode": "fallback",
+    "primary_error": "盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：0.8 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；0.4 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；1.2 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解"
+  },
+  "verification": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\grasp_trial_20261112_172320_e86684.json"
+}

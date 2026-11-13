@@ -1,0 +1,79 @@
+已打开 COM13，波特率 230400。
+保持串口连接，启动时先等待 5 秒，再确认相机状态。
+已发送 PING，测试编号： 89f6dad41a994f66
+发送内容： @K210:{"type":"ping","version":1,"request_id":"89f6dad41a994f66"}
+发送字节数：66（含末尾换行）
+K210 程序版本： command_photo_230400_gap5_1
+相机指令已就绪，等待软件拍照请求。
+保存目录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111
+已发送 PING，测试编号： 186449e97389480c
+发送内容： @K210:{"type":"ping","version":1,"request_id":"186449e97389480c"}
+发送字节数：66（含末尾换行）
+已发送一次拍照指令，请求编号： 3fc09f4a64764524
+等待 K210 确认并发送对应照片；无需按 K1。
+K210 已接受本次拍照请求，照片序号： 58
+开始接收照片 58：640×480，56039 字节，146 块。
+已接收 10/146 块。
+已接收 20/146 块。
+已接收 30/146 块。
+已接收 40/146 块。
+已接收 50/146 块。
+已接收 60/146 块。
+已接收 70/146 块。
+已接收 80/146 块。
+已接收 90/146 块。
+已接收 100/146 块。
+已接收 110/146 块。
+已接收 120/146 块。
+已接收 130/146 块。
+已接收 140/146 块。
+本次请求照片接收成功：56039 字节，校验通过。
+已保存： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_131646_634935_seq58_3259f0ac.jpg
+本次分段耗时（不含启动等待、PING 握手和 OCR）：
+  拍照及回传准备：1.67 秒
+  传图与校验：4.20 秒
+  保存照片：0.07 秒
+  发出拍照指令到保存完成：5.94 秒
+图片： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_131646_634935_seq58_3259f0ac.jpg
+尺寸：640×480
+正在首次加载中文 OCR 模型并识别……
+1. FF  （置信度 0.56）
+2. 阿昔洛韦乳膏  （置信度 1.00）
+3. 7  （置信度 0.54）
+4. OTC  （置信度 0.76）
+模型准备耗时：0.76 秒。
+OCR 推理耗时：1.33 秒（首张识别）。
+名称匹配：阿昔洛韦乳膏（演示编号 med_003）
+目标筛选：目标药名匹配「阿昔洛韦乳膏」。
+文字结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261111_131646_634935_seq58_3259f0ac_ocr.txt
+结构化结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261111_131646_634935_seq58_3259f0ac_ocr.json
+观察记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261111_131646_634935_seq58_3259f0ac_e8d4b6c5_commissioning.json
+定位候选： null
+原图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_131646_634935_seq58_3259f0ac.jpg
+标记数量： 9 角点： 15 / 24
+ChArUco插值检查： 角点几何通过，仍需独立求板位姿
+记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261111_131646_634935_seq58_3259f0ac_0a565226_charuco.json
+检测图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261111_131646_634935_seq58_3259f0ac_0a565226_charuco.png
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 74, in run
+    registered=register(Path(args[0]),motion=motion)
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\register_current_scene.py", line 82, in register
+    if o['geometry']['selected'] is None:raise ValueError('新场景中药盒边界拟合失败')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: 新场景中药盒边界拟合失败
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 143, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 40, in main
+    run_trial(a,camera)
+    ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 124, in run_trial
+    run('register_current_scene.py',observation)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 86, in run
+    raise RuntimeError('本轮结束于'+script+'；原因：'+reason+'；保留现场状态，不自动恢复') from error
+RuntimeError: 本轮结束于register_current_scene.py；原因：ValueError: 新场景中药盒边界拟合失败；保留现场状态，不自动恢复

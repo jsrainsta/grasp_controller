@@ -1,0 +1,162 @@
+{
+  "type": "ocr_result",
+  "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261111\\photo_20261111_130545_496805_seq55_6fb24937.jpg",
+  "image_width": 640,
+  "image_height": 480,
+  "created_at": "2026-11-11T13:05:48.923621+00:00",
+  "engine": "RapidOCR / ONNX Runtime CPU",
+  "versions": {
+    "rapidocr": "3.10.0",
+    "onnxruntime": "1.31.0"
+  },
+  "status": "text_found",
+  "elapsed_s": 1.1932667000219226,
+  "model_prepare_s": 0.7369511000579223,
+  "lines": [
+    {
+      "text": "阿昔洛韦乳膏",
+      "confidence": 0.99879,
+      "polygon": [
+        [
+          277.0,
+          109.0
+        ],
+        [
+          310.0,
+          105.0
+        ],
+        [
+          322.0,
+          227.0
+        ],
+        [
+          289.0,
+          230.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 0
+    },
+    {
+      "text": "5",
+      "confidence": 0.70726,
+      "polygon": [
+        [
+          161.0,
+          235.0
+        ],
+        [
+          185.0,
+          235.0
+        ],
+        [
+          185.0,
+          260.0
+        ],
+        [
+          161.0,
+          260.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 0
+    },
+    {
+      "text": "OTC",
+      "confidence": 0.79739,
+      "polygon": [
+        [
+          325.0,
+          293.0
+        ],
+        [
+          344.0,
+          293.0
+        ],
+        [
+          344.0,
+          323.0
+        ],
+        [
+          325.0,
+          323.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 0
+    },
+    {
+      "text": "A科学讲义",
+      "confidence": 0.75845,
+      "polygon": [
+        [
+          202.0,
+          440.0
+        ],
+        [
+          449.0,
+          438.0
+        ],
+        [
+          449.0,
+          479.0
+        ],
+        [
+          202.0,
+          479.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 0
+    }
+  ],
+  "orientation_attempts": [
+    {
+      "rotation_ccw_deg": 0,
+      "line_count": 4,
+      "match_status": "matched",
+      "medicine_id": "med_003"
+    }
+  ],
+  "known_box_focus": null,
+  "polygon_coordinate_frame": "original_exif_transposed_image_pixels",
+  "orientation_fallback_policy": "retry_unconfirmed_names_at_right_angles_keep_all_evidence",
+  "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
+  "min_name_score": 0.8,
+  "medicine_match": {
+    "status": "matched",
+    "medicine_id": "med_003",
+    "name": "阿昔洛韦乳膏",
+    "ocr_confidence": 0.99879,
+    "source_line_index": 0,
+    "source_line_indices": [
+      0
+    ],
+    "min_score": 0.8,
+    "candidates": [
+      {
+        "medicine_id": "med_003",
+        "name": "阿昔洛韦乳膏",
+        "ocr_confidence": 0.99879,
+        "source_line_indices": [
+          0
+        ],
+        "evidence": [
+          {
+            "line_index": 0,
+            "text": "阿昔洛韦乳膏",
+            "ocr_confidence": 0.99879,
+            "meets_threshold": true
+          }
+        ],
+        "meets_threshold": true
+      }
+    ],
+    "reason": "完整药名与目录一致，OCR 置信度达到阈值。"
+  },
+  "target_selection": {
+    "status": "target_found",
+    "target_id": "med_003",
+    "target_name": "阿昔洛韦乳膏",
+    "recognized_id": "med_003",
+    "recognized_name": "阿昔洛韦乳膏",
+    "name_match_status": "matched",
+    "reason": "本张照片唯一完整匹配且达到阈值的药名与指定目标一致。"
+  }
+}

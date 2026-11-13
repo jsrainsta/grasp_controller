@@ -1,0 +1,91 @@
+已打开 COM13，波特率 230400。
+保持串口连接，启动时先等待 5 秒，再确认相机状态。
+已发送 PING，测试编号： 0a44ffd1fefa431c
+发送内容： @K210:{"type":"ping","version":1,"request_id":"0a44ffd1fefa431c"}
+发送字节数：66（含末尾换行）
+K210 程序版本： command_photo_230400_gap5_1
+相机指令已就绪，等待软件拍照请求。
+保存目录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111
+已发送 PING，测试编号： edc9fab98f6f4f90
+发送内容： @K210:{"type":"ping","version":1,"request_id":"edc9fab98f6f4f90"}
+发送字节数：66（含末尾换行）
+已发送一次拍照指令，请求编号： bbaa916969b14789
+等待 K210 确认并发送对应照片；无需按 K1。
+K210 已接受本次拍照请求，照片序号： 66
+开始接收照片 66：640×480，57225 字节，150 块。
+已接收 10/150 块。
+已接收 20/150 块。
+已接收 30/150 块。
+已接收 40/150 块。
+已接收 50/150 块。
+已接收 60/150 块。
+已接收 70/150 块。
+已接收 80/150 块。
+已接收 90/150 块。
+已接收 100/150 块。
+已接收 110/150 块。
+已接收 120/150 块。
+已接收 130/150 块。
+已接收 140/150 块。
+已接收 150/150 块。
+本次请求照片接收成功：57225 字节，校验通过。
+已保存： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_134003_641617_seq66_e4bc6bcc.jpg
+本次分段耗时（不含启动等待、PING 握手和 OCR）：
+  拍照及回传准备：1.67 秒
+  传图与校验：4.29 秒
+  保存照片：0.00 秒
+  发出拍照指令到保存完成：5.96 秒
+图片： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_134003_641617_seq66_e4bc6bcc.jpg
+尺寸：640×480
+正在首次加载中文 OCR 模型并识别……
+1. 阿昔洛韦乳膏  （置信度 1.00）
+2. 园  （置信度 0.52）
+3. OTO  （置信度 0.74）
+4. 脑科学进  （置信度 0.86）
+模型准备耗时：0.70 秒。
+OCR 推理耗时：1.27 秒（首张识别）。
+名称匹配：阿昔洛韦乳膏（演示编号 med_003）
+目标筛选：目标药名匹配「阿昔洛韦乳膏」。
+文字结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261111_134003_641617_seq66_e4bc6bcc_ocr.txt
+结构化结果： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\ocr_results\photo_20261111_134003_641617_seq66_e4bc6bcc_ocr.json
+观察记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261111_134003_641617_seq66_e4bc6bcc_14068da2_commissioning.json
+定位候选： null
+原图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_images\20261111\photo_20261111_134003_641617_seq66_e4bc6bcc.jpg
+标记数量： 10 角点： 16 / 24
+ChArUco插值检查： 角点几何通过，仍需独立求板位姿
+记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261111_134003_641617_seq66_e4bc6bcc_1c0ae3b2_charuco.json
+检测图： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\calibration_checks\photo_20261111_134003_641617_seq66_e4bc6bcc_1c0ae3b2_charuco.png
+新场景注册： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\photo_20261111_134003_641617_seq66_e4bc6bcc_14068da2_commissioning_registered.json 板误差px： 0.40218091782807547 目标中心cm： [21.567714410823715, -1.5769755081915424, -3.129374688818977]
+盒内抓点偏移（基座坐标 cm）： [-1.199, 0.012, -0.034]
+预接近方案： [{'3': 167, '4': 184, '5': 466, '6': 497}, {'3': 162, '4': 241, '5': 521, '6': 496}, {'3': 156, '4': 298, '5': 576, '6': 496}, {'3': 151, '4': 354, '5': 630, '6': 495}] 模型最小余量cm： 3.0 悬停距支撑面cm： 5.5
+低位抓点通过两段名义下降检查，实机仍按视觉反馈逐步接近。
+预接近 1 / 4 已到位
+预接近 2 / 4 已到位
+预接近 3 / 4 已到位
+预接近记录： C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\vision_grasp_results\hover_20261111_214009_d3a6cc.json
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 81, in run
+    camera_stages[script](list(map(str,args)),camera)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 254, in main
+    path_margin(before['joint_median'],{**before['joint_median'],**waypoint},model,center,up,limits,tcp_offset,motion['pregrasp_min_top_clearance_cm'])
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\approach_grasp_candidate.py", line 54, in path_margin
+    raise ValueError('预接近路径名义余量不足')
+ValueError: 预接近路径名义余量不足
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 143, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 40, in main
+    run_trial(a,camera)
+    ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 127, in run_trial
+    run('approach_grasp_candidate.py',registered,*common,'--tcp-profile',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',*motion_args,*execute_args)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\10766\Desktop\grasp_controller_handoff_20261109\k210_camera\run_current_box_trial.py", line 86, in run
+    raise RuntimeError('本轮结束于'+script+'；原因：'+reason+'；保留现场状态，不自动恢复') from error
+RuntimeError: 本轮结束于approach_grasp_candidate.py；原因：ValueError: 预接近路径名义余量不足；保留现场状态，不自动恢复

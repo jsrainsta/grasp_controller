@@ -1,0 +1,45 @@
+电脑上的anaconda上运行的命令：
+建立SSH隧道：
+ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 127.0.0.1:18000:127.0.0.1:8000 pi@192.168.1.107
+进入到代码所在文件夹：
+cd C:\Users\10766\Desktop\grasp_controller_handoff_20261109
+张开夹爪：
+curl.exe -sS --fail-with-body --max-time 10 -H "Content-Type: application/json" -d "{\"request_id\":\"release_20261108_test10_01\",\"targets\":[{\"id\":1,\"position\":385}],\"duration_ms\":20}" "http://127.0.0.1:18000/v1/arm/move"
+
+tigervnc上启用机械臂服务
+cd /home/pi/competition/mechanical-arm
+.venv/bin/python -B -m arm_service --config config.serial.integration.json
+
+启动测试代码：
+单次测试：
+默认：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --execute
+
+更多：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --wrist-probe --confirm-empty --execute
+
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_far_placement_trial.json --once far_1112_%RANDOM%_%RANDOM% --execute
+
+预览（看是否成功规划路径）：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --preview
+  期望：path_preview_passed
+
+
+
+测试前反馈是否空爪：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --prepare-empty --confirm-empty --execute
+
+
+监听模式测试：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --listen --execute
+
+查询机械臂状态：
+curl.exe -sS --fail-with-body --max-time 5 http://127.0.0.1:18000/v1/arm/status    
+期望：connected、`active_task_id` 为 null
+
+排查命令：
+只读当前关节和姿态：
+curl.exe -sS --fail-with-body --max-time 10 "http://127.0.0.1:18000/v1/arm/pose?refresh=true"
+单独拍照并检查 JPEG，机械臂保持静止：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\receive_photo.py --capture --baudrate 230400 --verify-jpeg
+

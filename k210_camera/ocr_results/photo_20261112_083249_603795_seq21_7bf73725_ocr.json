@@ -1,0 +1,272 @@
+{
+  "type": "ocr_result",
+  "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261112\\photo_20261112_083249_603795_seq21_7bf73725.jpg",
+  "image_width": 640,
+  "image_height": 480,
+  "created_at": "2026-11-12T08:32:54.431573+00:00",
+  "engine": "RapidOCR / ONNX Runtime CPU",
+  "versions": {
+    "rapidocr": "3.10.0",
+    "onnxruntime": "1.31.0"
+  },
+  "status": "text_found",
+  "elapsed_s": 2.499524199985899,
+  "model_prepare_s": 0.8671677999664098,
+  "lines": [
+    {
+      "text": "5",
+      "confidence": 0.56716,
+      "polygon": [
+        [
+          405.0,
+          100.0
+        ],
+        [
+          430.0,
+          100.0
+        ],
+        [
+          430.0,
+          122.0
+        ],
+        [
+          405.0,
+          122.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 0
+    },
+    {
+      "text": "日",
+      "confidence": 0.62389,
+      "polygon": [
+        [
+          186.0,
+          179.0
+        ],
+        [
+          186.0,
+          154.0
+        ],
+        [
+          214.0,
+          154.0
+        ],
+        [
+          214.0,
+          179.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 270
+    },
+    {
+      "text": "H",
+      "confidence": 0.90914,
+      "polygon": [
+        [
+          226.0,
+          152.0
+        ],
+        [
+          226.0,
+          126.0
+        ],
+        [
+          254.0,
+          126.0
+        ],
+        [
+          254.0,
+          152.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 270
+    },
+    {
+      "text": "阿昔洛韦乳",
+      "confidence": 0.98522,
+      "polygon": [
+        [
+          326.0,
+          141.0
+        ],
+        [
+          326.0,
+          60.0
+        ],
+        [
+          355.0,
+          60.0
+        ],
+        [
+          355.0,
+          141.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 270
+    },
+    {
+      "text": "阿昔洛韦乳膏",
+      "confidence": 0.9974,
+      "polygon": [
+        [
+          355.0,
+          57.0
+        ],
+        [
+          355.0,
+          159.0
+        ],
+        [
+          326.0,
+          159.0
+        ],
+        [
+          326.0,
+          57.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "G",
+      "confidence": 0.98092,
+      "polygon": [
+        [
+          215.0,
+          155.0
+        ],
+        [
+          215.0,
+          182.0
+        ],
+        [
+          185.0,
+          182.0
+        ],
+        [
+          185.0,
+          155.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "5",
+      "confidence": 0.58525,
+      "polygon": [
+        [
+          431.0,
+          123.0
+        ],
+        [
+          402.0,
+          123.0
+        ],
+        [
+          402.0,
+          97.0
+        ],
+        [
+          431.0,
+          97.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 180
+    },
+    {
+      "text": "F",
+      "confidence": 0.70442,
+      "polygon": [
+        [
+          394.0,
+          96.0
+        ],
+        [
+          375.0,
+          96.0
+        ],
+        [
+          375.0,
+          75.0
+        ],
+        [
+          394.0,
+          75.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 180
+    }
+  ],
+  "orientation_attempts": [
+    {
+      "rotation_ccw_deg": 0,
+      "line_count": 1,
+      "match_status": "unknown",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 270,
+      "line_count": 3,
+      "match_status": "unknown",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 90,
+      "line_count": 2,
+      "match_status": "matched",
+      "medicine_id": "med_003"
+    },
+    {
+      "rotation_ccw_deg": 180,
+      "line_count": 2,
+      "match_status": "unknown",
+      "medicine_id": null
+    }
+  ],
+  "known_box_focus": null,
+  "polygon_coordinate_frame": "original_exif_transposed_image_pixels",
+  "orientation_fallback_policy": "retry_unconfirmed_names_at_right_angles_keep_all_evidence",
+  "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
+  "min_name_score": 0.8,
+  "medicine_match": {
+    "status": "matched",
+    "medicine_id": "med_003",
+    "name": "阿昔洛韦乳膏",
+    "ocr_confidence": 0.9974,
+    "source_line_index": 4,
+    "source_line_indices": [
+      4
+    ],
+    "min_score": 0.8,
+    "candidates": [
+      {
+        "medicine_id": "med_003",
+        "name": "阿昔洛韦乳膏",
+        "ocr_confidence": 0.9974,
+        "source_line_indices": [
+          4
+        ],
+        "evidence": [
+          {
+            "line_index": 4,
+            "text": "阿昔洛韦乳膏",
+            "ocr_confidence": 0.9974,
+            "meets_threshold": true
+          }
+        ],
+        "meets_threshold": true
+      }
+    ],
+    "reason": "完整药名与目录一致，OCR 置信度达到阈值。"
+  },
+  "target_selection": {
+    "status": "target_found",
+    "target_id": "med_003",
+    "target_name": "阿昔洛韦乳膏",
+    "recognized_id": "med_003",
+    "recognized_name": "阿昔洛韦乳膏",
+    "name_match_status": "matched",
+    "reason": "本张照片唯一完整匹配且达到阈值的药名与指定目标一致。"
+  }
+}

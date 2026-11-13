@@ -1,0 +1,229 @@
+{
+  "type": "ocr_result",
+  "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261112\\photo_20261112_095150_959761_seq88_08a5aa0e.jpg",
+  "image_width": 640,
+  "image_height": 480,
+  "created_at": "2026-11-12T09:51:54.559512+00:00",
+  "engine": "RapidOCR / ONNX Runtime CPU",
+  "versions": {
+    "rapidocr": "3.10.0",
+    "onnxruntime": "1.31.0"
+  },
+  "status": "text_found",
+  "elapsed_s": 1.661716900067404,
+  "model_prepare_s": 0.5595173998735845,
+  "lines": [
+    {
+      "text": "H",
+      "confidence": 0.53133,
+      "polygon": [
+        [
+          234.0,
+          150.0
+        ],
+        [
+          234.0,
+          127.0
+        ],
+        [
+          261.0,
+          127.0
+        ],
+        [
+          261.0,
+          150.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 270
+    },
+    {
+      "text": "5",
+      "confidence": 0.66284,
+      "polygon": [
+        [
+          429.0,
+          90.0
+        ],
+        [
+          431.0,
+          113.0
+        ],
+        [
+          409.0,
+          115.0
+        ],
+        [
+          406.0,
+          92.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "F",
+      "confidence": 0.68407,
+      "polygon": [
+        [
+          403.0,
+          119.0
+        ],
+        [
+          403.0,
+          143.0
+        ],
+        [
+          375.0,
+          143.0
+        ],
+        [
+          375.0,
+          119.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "同昔洛韦乳膏",
+      "confidence": 0.95904,
+      "polygon": [
+        [
+          355.0,
+          42.0
+        ],
+        [
+          355.0,
+          140.0
+        ],
+        [
+          327.0,
+          140.0
+        ],
+        [
+          327.0,
+          42.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "7",
+      "confidence": 0.96099,
+      "polygon": [
+        [
+          258.0,
+          75.0
+        ],
+        [
+          258.0,
+          95.0
+        ],
+        [
+          235.0,
+          95.0
+        ],
+        [
+          235.0,
+          75.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "H",
+      "confidence": 0.68187,
+      "polygon": [
+        [
+          260.0,
+          127.0
+        ],
+        [
+          260.0,
+          153.0
+        ],
+        [
+          232.0,
+          153.0
+        ],
+        [
+          232.0,
+          127.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    },
+    {
+      "text": "G",
+      "confidence": 0.88493,
+      "polygon": [
+        [
+          222.0,
+          157.0
+        ],
+        [
+          222.0,
+          181.0
+        ],
+        [
+          195.0,
+          181.0
+        ],
+        [
+          195.0,
+          157.0
+        ]
+      ],
+      "ocr_rotation_ccw_deg": 90
+    }
+  ],
+  "orientation_attempts": [
+    {
+      "rotation_ccw_deg": 0,
+      "line_count": 0,
+      "match_status": "no_text",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 270,
+      "line_count": 1,
+      "match_status": "unknown",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 90,
+      "line_count": 6,
+      "match_status": "unknown",
+      "medicine_id": null
+    },
+    {
+      "rotation_ccw_deg": 180,
+      "line_count": 0,
+      "match_status": "no_text",
+      "medicine_id": null
+    }
+  ],
+  "known_box_focus": null,
+  "polygon_coordinate_frame": "original_exif_transposed_image_pixels",
+  "orientation_fallback_policy": "retry_unconfirmed_names_at_right_angles_keep_all_evidence",
+  "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
+  "min_name_score": 0.8,
+  "medicine_match": {
+    "status": "unknown",
+    "medicine_id": null,
+    "name": null,
+    "ocr_confidence": null,
+    "source_line_index": null,
+    "source_line_indices": [],
+    "min_score": 0.8,
+    "candidates": [],
+    "reason": "识别出了文字，但没有与目录完整药名一致且达到阈值的结果。"
+  },
+  "target_selection": {
+    "status": "unconfirmed",
+    "target_id": "med_003",
+    "target_name": "阿昔洛韦乳膏",
+    "recognized_id": null,
+    "recognized_name": null,
+    "name_match_status": "unknown",
+    "reason": "本张照片尚无唯一且达到阈值的完整药名匹配，暂未确认目标。"
+  }
+}

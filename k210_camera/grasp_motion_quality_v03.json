@@ -1,0 +1,26 @@
+{
+  "version": "same-box-quality-v03",
+  "commissioning_only": true,
+  "object_id": "med_003",
+  "enabled_for_execution": true,
+  "grasp_region": {
+    "version": "same-box-lower-contact-v03",
+    "along_length_cm": 1.5,
+    "across_width_cm": 0.45,
+    "tcp_height_range_cm": [1.5, 2.1],
+    "tcp_height_target_cm": 1.8,
+    "basis": "Trial open-pad center proxy for the current 2.5cm box. Closed contact center remains uncalibrated; no quality certification."
+  },
+  "preferred_nominal_pitch_deg": -80,
+  "nominal_pitch_range_deg": [-90, -78],
+  "pregrasp_height_cm": 4.5,
+  "pregrasp_min_top_clearance_cm": 1.7,
+  "minimum_nominal_pad_height_cm": 1.3,
+  "maximum_near_corrections": 2,
+  "maximum_coarse_joint_delta": 100,
+  "whole_path_precheck": true,
+  "maximum_near_step_cm": 3.2,
+  "reuse_fresh_stationary_frame_s": 30,
+  "grasp_quality_validated": false,
+  "note": "Explicitly authorized current-box commissioning trial. Prefers a more downward nominal pose; physical pad verticality and closed-pad TCP are not independently calibrated."
+}

@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "fast_uart_3114_32198",
+  "run_id": "c242b1a342aa4f05a1825ca76f784577",
+  "target_id": "med_003",
+  "started_at": "2026-11-10T09:22:43.376749+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于guarded_visual_approach.py；原因：ValueError: 两次近图均未通过观测：盒面真实匹配点未形成可靠位姿：[{\"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261110\\\\photo_20261110_092257_693432_seq27_44b7e6fd.jpg\", \"tracking_reason\": \"tracking_quality_rejected\", \"match_count\": 17, \"inlier_count\": 13, \"visible_coverage\": 0.08050467942472013}] | 近图JPEG校验失败：{'valid': False, 'reason': 'decoder_reported_error_or_warning', 'diagnostic': 'Corrupt JPEG data: premature end of data segment', 'returncode': 0}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\c242b1a342aa4f05a1825ca76f784577.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-10T09:23:37.712508+00:00"
+}
