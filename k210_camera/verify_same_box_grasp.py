@@ -212,12 +212,9 @@ def main(argv=None, camera_session=None):
             if not reused:visual,state=observe(False)
             old=journal['observations'][-1]['after']['joint_median'];now=state['joint_median']
             if any(abs(now[j]-old[j])>5 for j in now):raise ValueError('当前姿态已偏离接近终点')
-            tcp=np.array(visual['tcp_board_cm']);obj=np.array(visual['T_board_object'])
+            tcp=np.array(visual['tcp_board_cm']);obj=np.array(visual['T_board_object']);e=obj[:3,:3].T@(obj[:3,3]-tcp)
             result['grasp_region']=motion['grasp_region'];result['motion_profile']=journal.get('motion_profile')
-            grasp_offset_board=journal.get('grasp_offset_board_cm')
-            result['grasp_offset_board_cm']=grasp_offset_board
-            if not in_grasp_region(tcp,obj,motion['grasp_region'],grasp_offset_board=grasp_offset_board):
-                raise ValueError('新图不满足本轮抓点的接触区域')
+            if not in_grasp_region(tcp,obj,motion['grasp_region'],grasp_offset_board=journal.get('grasp_offset_board_cm')):raise ValueError('新图不满足本盒接触区域')
             model=nominal_model()
             pitch=model.forward({int(j):v for j,v in now.items()})['pitch_deg']
             if not pitch_in_profile(pitch,motion):raise ValueError('闭爪前俯仰不满足本次姿态范围')

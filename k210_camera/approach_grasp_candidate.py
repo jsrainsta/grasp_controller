@@ -195,10 +195,11 @@ def plan_box_pregrasp(model,start,center,up,limits,tcp_offset,motion,length_axis
 def plan_clearance_recovery(model,start,center,up,limits,tcp_offset,motion,length_axis):
     minimum=motion['pregrasp_min_top_clearance_cm']
     gap=path_margin(start,start,model,center,up,limits,tcp_offset,0.)
-    if not minimum-.25<=gap<minimum:
+    if not minimum-.30<=gap<minimum:
         return None
     pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
-    for rise in (.5,.7):
+    feasible=[]
+    for rise in (.5,.7,.9):
         try:
             step=plan_step(model,start,rise*up,pitch,tcp_offset,limits,gap,up,gap)
             targets=step['targets']
@@ -206,11 +207,11 @@ def plan_clearance_recovery(model,start,center,up,limits,tcp_offset,motion,lengt
             path_margin(start,end,model,center,up,limits,tcp_offset,gap)
             if path_margin(end,end,model,center,up,limits,tcp_offset,minimum)<minimum+.25:
                 continue
-            plan_box_pregrasp(model,end,center,up,limits,tcp_offset,motion,length_axis)
+            remaining=plan_box_pregrasp(model,end,center,up,limits,tcp_offset,motion,length_axis)
         except ValueError:
             continue
-        return targets
-    return None
+        feasible.append((remaining['margin'],targets))
+    return max(feasible,key=lambda item:item[0])[1] if feasible else None
 
 
 def split_pregrasp_segment(start,waypoint,model,center,up,limits,tcp_offset,minimum):

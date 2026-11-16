@@ -21,7 +21,7 @@ from vision_task import VisionTaskSession
 from tcp_pose_planner import choose_step
 from sample_grasp_handeye import nominal_model
 from grasp_start_state import require_start_state
-from grasp_approach_policy import approach_decision,grasp_point_board,GRASP_REGION
+from grasp_approach_policy import approach_decision,GRASP_REGION
 from grasp_motion_profile import load_motion_profile,pitch_in_profile
 
 
@@ -154,18 +154,9 @@ def main(argv=None, camera_session=None):
                 else:visual,state=observe()
                 tcp=np.array(visual['tcp_board_cm'])
                 obj=np.array(visual['T_board_object'])
-                goal=grasp_point_board(obj,grasp_offset_board)
-                goal[2]=-motion['grasp_region']['tcp_height_target_cm']
+                goal=obj[:3,3].copy();goal[2]=-motion['grasp_region']['tcp_height_target_cm']
                 error=goal-tcp
                 height=-tcp[2]
-                last_command=report['commands'][-1] if report['commands'] else resumed_last_move
-                if last_command and 'planned_rise_cm' in last_command:
-                    actual_rise=height-last_command['start_tcp_height_cm']
-                    report['last_rise_check']={'planned_cm':last_command['planned_rise_cm'],
-                                               'observed_cm':float(actual_rise)}
-                    save()
-                    if actual_rise<=0:
-                        raise RuntimeError(f"抬高后近图高度未增加：计划上升 {last_command['planned_rise_cm']:.2f} cm，实测变化 {actual_rise:+.2f} cm")
                 if motion.get('adaptive_pitch_search'):
                     shift=float(np.linalg.norm(obj[:2,3]-initial_center))
                     report['box_center_shift_from_initial_cm']=shift;save()
@@ -173,6 +164,7 @@ def main(argv=None, camera_session=None):
                         raise RuntimeError(f'本轮盒心与初图相差 {shift:.2f} cm，请核对现场后重新从观察位拍照')
                     if iteration==0 and not a.seed_approach and height<4.2:
                         raise RuntimeError(f'首次近景实测留空不足，胶垫代理高度 {height:.2f} cm')
+                object_error=obj[:3,:3].T@error
                 decision=approach_decision(tcp,obj,motion,grasp_offset_board=grasp_offset_board)
                 pitch=nominal_model().forward({int(j):v for j,v in state['joint_median'].items()})['pitch_deg']
                 pose_ready=pitch_in_profile(pitch,motion)
@@ -181,9 +173,17 @@ def main(argv=None, camera_session=None):
                 if decision['ready'] and pose_ready:
                     report.update(completed=True,phase='ready_for_separate_closure_check',final_observation=visual)
                     break
-                if iteration==a.max_steps:raise RuntimeError(f'达到{a.max_steps}步预算，未满足接近门槛')
                 report['approach_decision']=decision;save()
                 delta=observer.Y[:3,:3]@np.array(decision['delta_board_cm'])
+                up=-observer.Y[:3,2]
+                requested_rise=float(delta@up)
+                if requested_rise>1e-6:
+                    raise RuntimeError('当前高度或对齐误差已需要回抬，结束本轮细接近')
+                if iteration==a.max_steps:
+                    raise RuntimeError(f'达到{a.max_steps}步接近预算，未满足接近门槛')
+                if motion.get('adaptive_pitch_search') and requested_rise<0 and height<=3.5:
+                    # Leave room for the measured downward overshoot near contact.
+                    delta+=up*max(0.,-.5-requested_rise)
                 delta=np.round(delta,1)
                 if np.linalg.norm(delta)>motion['maximum_near_step_cm']+.05 or (np.linalg.norm(delta)<.15 and pose_ready):
                     raise RuntimeError('本步不满足有限位移门槛')
@@ -231,6 +231,7 @@ def main(argv=None, camera_session=None):
                 if not plan.get('feedback_detectable') or plan['max_joint_delta']>100:
                     raise RuntimeError('预览不满足反馈分辨率/关节步幅')
                 predicted=np.array(plan['predicted_delta_cm'])
+                planned_rise=float(predicted@up)
                 if np.linalg.norm(predicted-delta)>.15:raise RuntimeError('预览取整误差过大')
                 if not a.execute:
                     report['phase']='preview_only';break
@@ -246,12 +247,8 @@ def main(argv=None, camera_session=None):
                 else:
                     request={'request_id':'guarded_step_'+uuid.uuid4().hex,**body};endpoint='coordinate/increment'
                 command={'request':request,'endpoint':endpoint,'preview':preview,
+                    'start_tcp_height_cm':height,'planned_vertical_change_cm':planned_rise,
                     'acceptance_note':'Joint feedback only; subsequent external visual observation decides actual approach progress.'}
-                if decision['delta_board_cm'][2]<0:
-                    planned_rise=float(predicted@(-observer.Y[:3,2]))
-                    if planned_rise<=0:
-                        raise RuntimeError('抬高请求未生成向上的预览动作')
-                    command.update(planned_rise_cm=planned_rise,start_tcp_height_cm=float(height))
                 if a.motion_backend=='tcp_pose_ik':
                     command['start_joint_positions']=positions.copy()
                 report['commands'].append(command);save()

@@ -44,35 +44,45 @@ def robust_board_pose_candidates(board,K,D):
               'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True}
     return sorted(solutions,key=lambda row:row[1]),metadata
 
-def register(path,output_dir=None,*,motion=None):
+def register(path,output_dir=None,*,motion=None,saved_plane=False):
     o=json.loads(path.read_text(encoding='utf-8'))
-    b=inspect(Path(o['image']),ROOT/'calibration_boards/charuco_7x5_print96_v1.json')
-    k=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
-    K,D=np.array(k['camera_matrix_px']),np.array(k['distortion_coefficients'])
-    image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
-    dictionary=cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-    board=cv2.aruco.CharucoBoard((7,5),1.44,.96,dictionary)
-    parameters=cv2.aruco.DetectorParameters();parameters.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
-    solutions,pose_validation=marker_plane_candidates_with_contrast(
-        cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),K,D,board,cv2.aruco.ArucoDetector(dictionary,parameters),
-        allow_isolated_outlier=True)
-    method='decoded_marker_centers'
-    if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and b['reference_candidate']:
-        try:
-            alternate,corner_validation=robust_board_pose_candidates(b,K,D)
-            if alternate and alternate[0][1]<=.6 and (len(alternate)==1 or alternate[1][1]-alternate[0][1]>=.5):
-                solutions,pose_validation=alternate,{'method':'robust_charuco_fallback','marker_diagnostics':pose_validation,'corner_diagnostics':corner_validation}
-                method='robust_charuco_fallback'
-        except ValueError as error:pose_validation['charuco_fallback_rejection']=str(error)
-    if not solutions:raise ValueError('真实编码标记和角点均未提供可靠板位姿：'+json.dumps(pose_validation,ensure_ascii=False))
-    if solutions[0][1]>.6:raise ValueError('本帧板位姿残差不合格')
-    if len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5:raise ValueError('本帧板位姿仍存在歧义')
-    cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
-    best=next(c for c in cal['candidates'] if c['mount_hypothesis']=='pitch_tool')
-    camera=np.array(o['geometry']['T_base_camera_cm'])
-    best['T_base_board_cm']=(camera@solutions[0][0]).tolist()
-    cal['scene_registration']={'source':str(path.resolve()),'basis':'decoded_current_board_and_nominal_robot_camera_mount','measurement_method':method,'board_pnp_rmse_px':solutions[0][1],
-        'board_pose_validation':pose_validation,'physical_accuracy_verified':False}
+    if saved_plane:
+        cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
+        if cal.get('scene_registration',{}).get('basis')!='decoded_current_board_and_nominal_robot_camera_mount':
+            raise ValueError('无板预览需要带板注册生成的台面文件')
+        best=next(c for c in cal['candidates'] if c['mount_hypothesis']=='pitch_tool')
+        image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
+        camera=np.array(o['geometry']['T_base_camera_cm'])
+        cal['scene_registration']={**cal['scene_registration'],'basis':'saved_support_plane_preview',
+                                   'saved_calibration':o['calibration'],'board_pnp_rmse_px':None}
+    else:
+        b=inspect(Path(o['image']),ROOT/'calibration_boards/charuco_7x5_print96_v1.json')
+        k=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
+        K,D=np.array(k['camera_matrix_px']),np.array(k['distortion_coefficients'])
+        image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
+        dictionary=cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        board=cv2.aruco.CharucoBoard((7,5),1.44,.96,dictionary)
+        parameters=cv2.aruco.DetectorParameters();parameters.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
+        solutions,pose_validation=marker_plane_candidates_with_contrast(
+            cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),K,D,board,cv2.aruco.ArucoDetector(dictionary,parameters),
+            allow_isolated_outlier=True)
+        method='decoded_marker_centers'
+        if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and b['reference_candidate']:
+            try:
+                alternate,corner_validation=robust_board_pose_candidates(b,K,D)
+                if alternate and alternate[0][1]<=.6 and (len(alternate)==1 or alternate[1][1]-alternate[0][1]>=.5):
+                    solutions,pose_validation=alternate,{'method':'robust_charuco_fallback','marker_diagnostics':pose_validation,'corner_diagnostics':corner_validation}
+                    method='robust_charuco_fallback'
+            except ValueError as error:pose_validation['charuco_fallback_rejection']=str(error)
+        if not solutions:raise ValueError('真实编码标记和角点均未提供可靠板位姿：'+json.dumps(pose_validation,ensure_ascii=False))
+        if solutions[0][1]>.6:raise ValueError('本帧板位姿残差不合格')
+        if len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5:raise ValueError('本帧板位姿仍存在歧义')
+        cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
+        best=next(c for c in cal['candidates'] if c['mount_hypothesis']=='pitch_tool')
+        camera=np.array(o['geometry']['T_base_camera_cm'])
+        best['T_base_board_cm']=(camera@solutions[0][0]).tolist()
+        cal['scene_registration']={'source':str(path.resolve()),'basis':'decoded_current_board_and_nominal_robot_camera_mount','measurement_method':method,'board_pnp_rmse_px':solutions[0][1],
+            'board_pose_validation':pose_validation,'physical_accuracy_verified':False}
     directory=path.parent if output_dir is None else Path(output_dir)
     directory.mkdir(parents=True,exist_ok=True)
     calpath=directory/(path.stem+'_scene_calibration.json')
@@ -114,7 +124,7 @@ def register(path,output_dir=None,*,motion=None):
         raise ValueError(f'药盒长轴相对底座径向偏 {alignment:.1f}°，超过固定腕轴试验上限 {limit:g}°')
     out=directory/(path.stem+'_registered.json')
     out.write_text(json.dumps(o,ensure_ascii=False,indent=2),encoding='utf-8')
-    print('新场景注册：',out,'板误差px：',solutions[0][1],'目标中心cm：',o['geometry']['selected']['top_center_base_cm'])
+    print('新场景注册：',out,'本帧板误差px：',cal['scene_registration']['board_pnp_rmse_px'],'目标中心cm：',o['geometry']['selected']['top_center_base_cm'])
     return out
 
 def undirected_angle_deg(axis,reference):
