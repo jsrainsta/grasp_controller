@@ -6,6 +6,7 @@ LEGACY_REGION={'version':'same_box_trial_v2','along_length_cm':1.5,'across_width
     'tcp_height_range_cm':[2.2,3.0],'tcp_height_target_cm':2.6,
     'basis':'Legacy current-box holding trial, not grasp quality acceptance.'}
 DEFAULT_FIXED_WRIST_ALIGNMENT_DEG=12
+MAX_FIXED_WRIST_ALIGNMENT_DEG=20
 
 def load_motion_profile(path=None):
     if path is None:return {'version':'legacy-v02','grasp_region':copy.deepcopy(LEGACY_REGION),
@@ -22,8 +23,8 @@ def load_motion_profile(path=None):
             raise ValueError('空爪开度下限超出本盒试验范围')
     if 'maximum_fixed_wrist_alignment_deg' in data:
         limit=data['maximum_fixed_wrist_alignment_deg']
-        if type(limit) not in (int,float) or not DEFAULT_FIXED_WRIST_ALIGNMENT_DEG<=limit<=18:
-            raise ValueError('固定腕轴对齐角度超出本盒试验范围')
+        if type(limit) not in (int,float) or not DEFAULT_FIXED_WRIST_ALIGNMENT_DEG<=limit<=MAX_FIXED_WRIST_ALIGNMENT_DEG:
+            raise ValueError(f'固定腕轴对齐角度须在 {DEFAULT_FIXED_WRIST_ALIGNMENT_DEG}～{MAX_FIXED_WRIST_ALIGNMENT_DEG}°')
     r=data['grasp_region'];lo,hi=r['tcp_height_range_cm'];target=r['tcp_height_target_cm']
     if not 1.5<=lo<=target<=hi<=3.0:raise ValueError('抓点高度配置无效')
     if not 0<r['along_length_cm']<=1.5 or not 0<r['across_width_cm']<=.45:raise ValueError('抓取区域超出当前盒试验范围')

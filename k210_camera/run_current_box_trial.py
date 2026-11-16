@@ -68,7 +68,7 @@ def main():
 def run_trial(a,camera):
     from grasp_motion_profile import load_motion_profile
     from observe_grasp_target import main as observe
-    from register_current_scene import register
+    from register_current_scene import BoardPoseAmbiguous,register
     from approach_grasp_candidate import main as approach
     from guarded_visual_approach import main as correct
     from verify_same_box_grasp import main as verify
@@ -102,10 +102,14 @@ def run_trial(a,camera):
         report['motion_profile_selection']=selection
         report['trial_conditions']['motion_profile']=motion
         save()
+    def record_high_start(recovery):
+        report['high_start']=recovery
+        save()
     def run(script,*args):
         row={'script':script,'started_at':time.time()};stages.append(row)
         save()
         try:
+            outcome=None
             if script=='register_current_scene.py':
                 registered=register(Path(args[0]),motion=motion,saved_plane=getattr(a,"saved_plane",False))
                 scene=json.loads(registered.read_text(encoding='utf-8'))
@@ -114,10 +118,11 @@ def run_trial(a,camera):
                     board_pose_rmse_px=scene['scene_registration']['board_pnp_rmse_px'],
                     box_alignment_deg=scene['grasp_scope']['long_axis_to_radial_deg'])
             elif script=='approach_grasp_candidate.py':
-                approach(list(map(str,args)),camera,on_plan=select_motion)
+                outcome=approach(list(map(str,args)),camera,on_plan=select_motion,on_high_start=record_high_start)
             else:
                 camera_stages[script](list(map(str,args)),camera)
             row['returncode']=0
+            return outcome
         except Exception as error:
             reason=f'{type(error).__name__}: {error}'
             row.update(returncode=1,error=reason)
@@ -165,11 +170,39 @@ def run_trial(a,camera):
         # Register today's board before requiring a world-space box fit.
         observation=newest('*_commissioning.json',start,lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
         report['initial_observation']=str(observation)
-        run('register_current_scene.py',observation)
+        try:
+            run('register_current_scene.py',observation)
+        except RuntimeError as error:
+            if not isinstance(error.__cause__,BoardPoseAmbiguous):
+                raise
+            print('初图板位姿有歧义，原地补拍一次。',flush=True)
+            retry_start=time.time()
+            run('observe_grasp_target.py',*common,'--calibration',a.calibration)
+            observation=newest('*_commissioning.json',retry_start,lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
+            report['registration_retry_observation']=str(observation)
+            run('register_current_scene.py',observation)
         registered=observation.with_name(observation.stem+'_registered.json')
         execute_args=['--execute'] if a.execute or hover_only else []
         fallback_args=['--fallback-motion-profile',a.fallback_motion_profile] if a.fallback_motion_profile else []
-        run('approach_grasp_candidate.py',registered,*common,'--tcp-profile',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',*motion_args,*fallback_args,*execute_args)
+        approach_args=(*common,'--tcp-profile',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
+                       *motion_args,*fallback_args,*execute_args)
+        high_args=[] if a.saved_plane else ['--high-start']
+        high_start=run('approach_grasp_candidate.py',registered,*approach_args,*high_args)
+        if high_start:
+            report['high_start']=high_start
+            save()
+            if not execute_args:
+                report.update(status='high_start_preview_passed',hardware_motion_sent=False)
+                save()
+                print('高台面起步预检通过。记录：',out,flush=True)
+                return
+            reread_start=time.time()
+            run('observe_grasp_target.py',*common,'--calibration',a.calibration)
+            observation=newest('*_commissioning.json',reread_start,lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
+            report['high_start']['observation_after_lift']=str(observation)
+            run('register_current_scene.py',observation)
+            registered=observation.with_name(observation.stem+'_registered.json')
+            run('approach_grasp_candidate.py',registered,*approach_args)
         if not a.execute and not hover_only:
             report.update(status='path_preview_passed',hardware_motion_sent=False)
             save()

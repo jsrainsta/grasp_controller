@@ -44,6 +44,10 @@ def robust_board_pose_candidates(board,K,D):
               'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True}
     return sorted(solutions,key=lambda row:row[1]),metadata
 
+class BoardPoseAmbiguous(ValueError):
+    pass
+
+
 def register(path,output_dir=None,*,motion=None,saved_plane=False):
     o=json.loads(path.read_text(encoding='utf-8'))
     if saved_plane:
@@ -76,7 +80,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False):
             except ValueError as error:pose_validation['charuco_fallback_rejection']=str(error)
         if not solutions:raise ValueError('真实编码标记和角点均未提供可靠板位姿：'+json.dumps(pose_validation,ensure_ascii=False))
         if solutions[0][1]>.6:raise ValueError('本帧板位姿残差不合格')
-        if len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5:raise ValueError('本帧板位姿仍存在歧义')
+        if len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5:raise BoardPoseAmbiguous('本帧板位姿仍存在歧义')
         cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
         best=next(c for c in cal['candidates'] if c['mount_hypothesis']=='pitch_tool')
         camera=np.array(o['geometry']['T_base_camera_cm'])

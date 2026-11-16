@@ -183,7 +183,8 @@ def main(argv=None, camera_session=None):
                     raise RuntimeError(f'达到{a.max_steps}步接近预算，未满足接近门槛')
                 if motion.get('adaptive_pitch_search') and requested_rise<0 and height<=3.5:
                     # Leave room for the measured downward overshoot near contact.
-                    delta+=up*max(0.,-.5-requested_rise)
+                    downward_limit=.30 if height<=2.8 else .50
+                    delta+=up*max(0.,-downward_limit-requested_rise)
                 delta=np.round(delta,1)
                 if np.linalg.norm(delta)>motion['maximum_near_step_cm']+.05 or (np.linalg.norm(delta)<.15 and pose_ready):
                     raise RuntimeError('本步不满足有限位移门槛')
