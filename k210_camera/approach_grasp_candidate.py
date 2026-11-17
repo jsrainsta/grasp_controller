@@ -195,22 +195,26 @@ def plan_box_pregrasp(model,start,center,up,limits,tcp_offset,motion,length_axis
 def plan_clearance_recovery(model,start,center,up,limits,tcp_offset,motion,length_axis):
     minimum=motion['pregrasp_min_top_clearance_cm']
     gap=path_margin(start,start,model,center,up,limits,tcp_offset,0.)
-    if not minimum-.25<=gap<minimum:
+    if not minimum-.30<=gap<minimum:
         return None
     pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
-    for rise in (.5,.7):
+    feasible=[]
+    low,high=motion['nominal_pitch_range_deg']
+    candidates=((rise,angle) for rise in (.5,.7,.9)
+                for angle in (pitch,pitch+2,pitch-2) if low<=angle<=high)
+    for rise,angle in candidates:
         try:
-            step=plan_step(model,start,rise*up,pitch,tcp_offset,limits,gap,up,gap)
+            step=plan_step(model,start,rise*up,angle,tcp_offset,limits,gap,up,gap)
             targets=step['targets']
             end={**start,**targets}
             path_margin(start,end,model,center,up,limits,tcp_offset,gap)
             if path_margin(end,end,model,center,up,limits,tcp_offset,minimum)<minimum+.25:
                 continue
-            plan_box_pregrasp(model,end,center,up,limits,tcp_offset,motion,length_axis)
+            remaining=plan_box_pregrasp(model,end,center,up,limits,tcp_offset,motion,length_axis)
         except ValueError:
             continue
-        return targets
-    return None
+        feasible.append((remaining['margin'],targets))
+    return max(feasible,key=lambda item:item[0])[1] if feasible else None
 
 
 def split_pregrasp_segment(start,waypoint,model,center,up,limits,tcp_offset,minimum):
@@ -234,12 +238,13 @@ def split_pregrasp_segment(start,waypoint,model,center,up,limits,tcp_offset,mini
     return max(choices,key=lambda item:item[0])[1] if choices else None
 
 
-def main(argv=None, camera=None, *, on_plan=None):
+def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('observation',type=Path)
     parser.add_argument('--arm-url',default='http://127.0.0.1:18000/v1/arm')
     parser.add_argument('--port',default='COM5')
     parser.add_argument('--execute',action='store_true')
+    parser.add_argument('--high-start',action='store_true')
     parser.add_argument('--motion-profile',type=Path)
     parser.add_argument('--fallback-motion-profile',type=Path)
     parser.add_argument('--tcp-profile',type=Path,help='首次抓点候选，仅用于不接触的悬停验证')
@@ -268,6 +273,59 @@ def main(argv=None, camera=None, *, on_plan=None):
         tcp_offset=np.array(profile['offset_tool_cm'],np.float64)
         if tcp_offset.shape!=(3,) or not np.isfinite(tcp_offset).all() or np.linalg.norm(tcp_offset)>4:
             raise ValueError('抓点候选无效')
+    if args.high_start and tcp_offset is not None:
+        minimum=motion['pregrasp_min_top_clearance_cm']
+        frame=robot_frame(start,model,'pitch_tool')
+        gap=float((frame[:3,:3]@tcp_offset+frame[:3,3]-center)@up)
+        if gap<minimum:
+            recovery_floor=minimum-1.1
+            if gap<recovery_floor:
+                raise PregraspClearanceError(f'观察位净空 {gap:.3f} cm，低于起步抬升试验下限 {recovery_floor:.3f} cm')
+            pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
+            lift=plan_step(model,start,up*(minimum-gap+.45),pitch,tcp_offset,limits,gap,up,gap)
+            targets=lift['targets']; lifted={**start,**targets}
+            path_margin(start,lifted,model,center,up,limits,tcp_offset,gap)
+            recovery={'high_start_targets':targets,'starting_clearance_cm':gap,
+                      'source_observation':str(args.observation.resolve()),'precheck_profile':'primary'}
+            try:
+                plan_box_pregrasp(model,lifted,center,up,limits,tcp_offset,motion,target['length_axis_base'])
+            except PregraspPathUnavailable as primary_error:
+                if args.fallback_motion_profile is None:
+                    raise
+                fallback=load_motion_profile(args.fallback_motion_profile)
+                require_start_state(start,profile['jaw_position'],profile['roll_position'],motion=fallback)
+                try:
+                    plan_box_pregrasp(model,lifted,center,up,limits,tcp_offset,fallback,target['length_axis_base'])
+                except PregraspPathUnavailable as fallback_error:
+                    raise PregraspPathUnavailable(
+                        f'高台面抬升未下发，抬升后两套路径预检均失败。常规：{primary_error}；远端：{fallback_error}'
+                    ) from fallback_error
+                recovery['precheck_profile']='fallback'
+                print('高台面抬升后的常规规划无解，远端配置预检通过。',flush=True)
+            print(f'高台面起步：当前名义净空 {gap:.3f} cm，先抬升再重新观察。',flush=True)
+            if args.execute:
+                body={'request_id':'high_start_'+uuid.uuid4().hex,
+                      'targets':[{'id':int(j),'position':v} for j,v in targets.items()],'duration_ms':20}
+                recovery['request']=body
+                if on_high_start: on_high_start(recovery)
+                task=call(args.arm_url,'move',body)['task']
+                recovery['task']=task
+                if on_high_start: on_high_start(recovery)
+                deadline=time.monotonic()+22
+                while task['status']=='sent' and time.monotonic()<deadline:
+                    time.sleep(.3);task=call(args.arm_url,'tasks/'+task['task_id'])
+                recovery['task']=task
+                if on_high_start: on_high_start(recovery)
+                if task['status']!='reached':
+                    raise RuntimeError('高台面抬升未确认到位：'+str(task))
+                feedback=read_arm(args.arm_url)
+                measured=feedback['joint_median']
+                recovery['measured_joints']=measured
+                if on_high_start: on_high_start(recovery)
+                if any(v>6 for v in feedback['joint_span'].values()):
+                    raise RuntimeError('高台面抬升后的关节反馈尚不稳定')
+                recovery['measured_clearance_cm']=path_margin(measured,measured,model,center,up,limits,tcp_offset,minimum)
+            return recovery
     selection={'mode':'primary'}
     try:
         planned=plan_box_pregrasp(model,start,center,up,limits,tcp_offset,motion,target['length_axis_base'])

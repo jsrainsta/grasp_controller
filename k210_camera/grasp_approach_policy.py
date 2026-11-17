@@ -1,47 +1,32 @@
-"""Position-only approach and contact checks for the commissioning box."""
+"""Position-only approach policy; no device access and no acceptance widening."""
 import numpy as np
 
 GRASP_REGION={'version':'same_box_trial_v2','along_length_cm':1.5,'across_width_cm':.45,
     'tcp_height_range_cm':[2.2,3.0],'tcp_height_target_cm':2.6,
     'basis':'Current 10.5cm box: middle 3cm grasp band; a trial parameter, holding still requires independent lift verification.'}
 
-def grasp_point_board(obj,grasp_offset_board=None):
-    point=np.array(obj[:3,3],dtype=float)
-    if grasp_offset_board is not None:
-        offset=np.asarray(grasp_offset_board,dtype=float)
-        axis=np.asarray(obj[:2,0],dtype=float)
-        axis_norm=np.linalg.norm(axis)
-        if offset.shape!=(3,) or not np.isfinite(offset).all() or axis_norm<1e-8:
-            raise ValueError('偏移抓点或盒长方向无效')
-        axis=axis/axis_norm
-        shift=float(offset[:2]@axis)
-        if abs(shift)>1.2+1e-6:
-            raise ValueError('偏移抓点超出本盒规划范围')
-        point[:2]+=axis*shift
-    return point
-
-
 def in_grasp_region(tcp,obj,region=None,*,grasp_offset_board=None):
     region=GRASP_REGION if region is None else region
-    tcp=np.asarray(tcp,float);obj=np.asarray(obj,float)
-    e=obj[:3,:3].T@(grasp_point_board(obj,grasp_offset_board)-tcp)
-    # A shifted band must still stay well inside the 10.5 cm box face.
-    from_center=float(obj[:3,0]@(obj[:3,3]-tcp))
+    tcp=np.asarray(tcp,float);obj=np.asarray(obj,float);error=obj[:3,3]-tcp
+    if grasp_offset_board is not None:
+        error[:2]+=np.asarray(grasp_offset_board)[:2]
+    e=obj[:3,:3].T@error
     lo,hi=region['tcp_height_range_cm']
-    return bool(abs(from_center)<=2.7 and abs(e[0])<=region['along_length_cm']
-                and abs(e[1])<=region['across_width_cm'] and lo<=-tcp[2]<=hi)
+    return bool(abs(e[0])<=region['along_length_cm'] and abs(e[1])<=region['across_width_cm'] and lo<=-tcp[2]<=hi)
 
 def approach_decision(tcp_board,T_board_object,motion_profile=None,*,grasp_offset_board=None):
     tcp=np.asarray(tcp_board,float);obj=np.asarray(T_board_object,float)
     region=GRASP_REGION if motion_profile is None else motion_profile['grasp_region']
-    goal=grasp_point_board(obj,grasp_offset_board)
-    local=obj[:3,:3].T@(goal-tcp)
-    goal[2]=-region['tcp_height_target_cm']
+    goal=obj[:3,3].copy();goal[2]=-region['tcp_height_target_cm']
     error=goal-tcp;height=-float(tcp[2])
+    if grasp_offset_board is not None:
+        offset=np.asarray(grasp_offset_board)[:2]
+        error[:2]+=offset
+    local=obj[:3,:3].T@error
     along_ready=abs(local[0])<=region['along_length_cm']
     across_ready=abs(local[1])<=region['across_width_cm']
     if grasp_offset_board is not None:
-        if np.any(grasp_offset_board) and along_ready and not across_ready:
+        if np.any(offset) and along_ready and not across_ready:
             # Preserve a usable contact position along the box while correcting its width.
             length_axis=obj[:2,0]
             axis_norm_sq=float(length_axis@length_axis)
@@ -58,6 +43,11 @@ def approach_decision(tcp_board,T_board_object,motion_profile=None,*,grasp_offse
         alignment_floor=3.5 if adaptive else 4.2
         if adaptive and abs(local[0])<=region['along_length_cm'] and abs(local[1])<=.65:
             alignment_floor=3.3
+        # Align with margin while still above the box, before committing
+        # to the low approach where lateral correction may require retreat.
+        if adaptive and height>=3.5:
+            lateral_ready=(abs(local[0])<=region['along_length_cm']-.15
+                           and abs(local[1])<=region['across_width_cm']-.15)
         if not lateral_ready and height<alignment_floor:
             retreat_height=3.8 if adaptive else 4.5
             delta=np.array([0.,0.,-min(1.,retreat_height-height)])

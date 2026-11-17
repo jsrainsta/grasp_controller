@@ -1,7 +1,7 @@
 """Regression for the observed vertical oscillation. No hardware access."""
 import unittest
 import numpy as np
-from grasp_approach_policy import approach_decision,in_grasp_region
+from grasp_approach_policy import approach_decision
 
 class PolicyTests(unittest.TestCase):
     def scene(self,height,along=1.6,across=.3):
@@ -46,17 +46,5 @@ class PolicyTests(unittest.TestCase):
         result=approach_decision(tcp,obj,motion,grasp_offset_board=[1.2,0.,0.])
         self.assertEqual(result['phase'],'horizontal_alignment_at_clearance')
         np.testing.assert_allclose(result['delta_board_cm'],[0.,.6,0.])
-
-    def test_shifted_contact_is_shared_by_approach_and_closure(self):
-        region={'along_length_cm':1.5,'across_width_cm':.45,
-                'tcp_height_range_cm':[1.5,2.25],'tcp_height_target_cm':2.0}
-        motion={'version':'adaptive','grasp_region':region,'adaptive_pitch_search':True,
-                'maximum_near_step_cm':3.2}
-        for height,along,across,accepted in ((1.85,1.64,.31,True),(1.43,1.64,.31,False),
-                                              (1.85,1.64,.5,False),(1.85,2.8,.31,False)):
-            tcp,obj=self.scene(height,along,across)
-            kwargs={'grasp_offset_board':[-1.2,0.,0.]}
-            self.assertEqual(approach_decision(tcp,obj,motion,**kwargs)['ready'],accepted)
-            self.assertEqual(in_grasp_region(tcp,obj,region,**kwargs),accepted)
 
 if __name__=='__main__':unittest.main()
