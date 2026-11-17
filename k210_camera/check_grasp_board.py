@@ -10,8 +10,7 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
-GRASP_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_19x13_a4_v1.json'
-LEGACY_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_7x5_print96_v1.json'
+GRASP_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_7x5_print96_v1.json'
 
 
 def make_board(profile):

@@ -120,7 +120,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         parameters=cv2.aruco.DetectorParameters();parameters.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
         solutions,pose_validation=marker_plane_candidates_with_contrast(
             cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),K,D,board,cv2.aruco.ArucoDetector(board.getDictionary(),parameters),
-            allow_isolated_outlier=True,allow_wide_inlier_support=True)
+            allow_isolated_outlier=True)
         method='decoded_marker_centers'
         if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and b['reference_candidate']:
             try:
