@@ -10,6 +10,18 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
+GRASP_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_19x13_a4_v1.json'
+LEGACY_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_7x5_print96_v1.json'
+
+
+def make_board(profile):
+    dictionary=cv2.aruco.getPredefinedDictionary(getattr(cv2.aruco,profile['dictionary']))
+    size=(profile['squares_x'],profile['squares_y'])
+    ids=profile.get('marker_ids',range(size[0]*size[1]//2))
+    board=cv2.aruco.CharucoBoard(size,profile['square_length'],profile['marker_length'],
+                                dictionary,np.asarray(ids,dtype=np.int32))
+    board.setLegacyPattern(profile['legacy_pattern'])
+    return board
 
 
 def inspect(path, profile_path):
@@ -22,11 +34,7 @@ def inspect(path, profile_path):
     im = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
     if im is None or im.shape != (480, 640, 3):
         raise ValueError('需要640×480的完整K210原图')
-    dictionary = cv2.aruco.getPredefinedDictionary(getattr(cv2.aruco, profile['dictionary']))
-    board = cv2.aruco.CharucoBoard((profile['squares_x'], profile['squares_y']),
-        profile['square_length'], profile['marker_length'], dictionary,
-        np.array(profile['marker_ids'], dtype=np.int32))
-    board.setLegacyPattern(profile['legacy_pattern'])
+    board = make_board(profile)
     intrinsics_path=ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json'
     intrinsics=json.loads(intrinsics_path.read_text(encoding='utf-8'))
     candidates = []

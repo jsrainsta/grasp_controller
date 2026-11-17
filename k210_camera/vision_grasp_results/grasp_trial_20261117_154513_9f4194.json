@@ -1,0 +1,4472 @@
+{
+  "type": "same_box_commissioning_grasp_trial",
+  "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\visual_approach_20261117_154410_3d92b6.json",
+  "production_ready": false,
+  "grasp_confirmed": false,
+  "force_measured": false,
+  "grasp_quality_validated": false,
+  "jaw_target": 520,
+  "coarse_position_tolerance": 40,
+  "loaded_observation_band": [
+    480,
+    505
+  ],
+  "commands": [
+    {
+      "purpose": "single authorized empirical closure; coarse position completion is not grasp confirmation",
+      "request": {
+        "request_id": "grasp_trial_0f8a197cc2ec43ca95884cb83e5c3a18",
+        "targets": [
+          {
+            "id": 1,
+            "position": 520
+          }
+        ],
+        "duration_ms": 20,
+        "position_tolerance": 40
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "ad6c02d774844d59bde8a4a79dab101a",
+          "request_id": "grasp_trial_0f8a197cc2ec43ca95884cb83e5c3a18",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-17T07:45:16.998+00:00",
+          "updated_at": "2026-11-17T07:45:16.998+00:00",
+          "targets": {
+            "1": 520
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 40,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "grasp_trial_0f8a197cc2ec43ca95884cb83e5c3a18",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "ad6c02d774844d59bde8a4a79dab101a",
+        "request_id": "grasp_trial_0f8a197cc2ec43ca95884cb83e5c3a18",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-17T07:45:16.998+00:00",
+        "updated_at": "2026-11-17T07:45:17.985+00:00",
+        "targets": {
+          "1": 520
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 40,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-17T07:45:17.985+00:00",
+          "joint_positions": {
+            "1": 486,
+            "2": 498,
+            "3": 157,
+            "4": 287,
+            "5": 611,
+            "6": 444
+          },
+          "target_errors": {
+            "1": -34
+          },
+          "within_tolerance": true,
+          "position_tolerance": 40,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "purpose": "single 2cm lift with bounded pitch change",
+      "request": {
+        "request_id": "grasp_trial_2831cf8d938d433c9e3c6b881c78ffdb",
+        "targets": [
+          {
+            "id": 3,
+            "position": 132
+          },
+          {
+            "id": 4,
+            "position": 315
+          },
+          {
+            "id": 5,
+            "position": 594
+          },
+          {
+            "id": 6,
+            "position": 445
+          }
+        ],
+        "duration_ms": 20,
+        "position_tolerance": 10
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "a10321d3b0e14ab8b6c0af6fbc4ad21e",
+          "request_id": "grasp_trial_2831cf8d938d433c9e3c6b881c78ffdb",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-17T07:45:20.382+00:00",
+          "updated_at": "2026-11-17T07:45:20.382+00:00",
+          "targets": {
+            "3": 132,
+            "4": 315,
+            "5": 594,
+            "6": 445
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "grasp_trial_2831cf8d938d433c9e3c6b881c78ffdb",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "a10321d3b0e14ab8b6c0af6fbc4ad21e",
+        "request_id": "grasp_trial_2831cf8d938d433c9e3c6b881c78ffdb",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-17T07:45:20.382+00:00",
+        "updated_at": "2026-11-17T07:45:21.388+00:00",
+        "targets": {
+          "3": 132,
+          "4": 315,
+          "5": 594,
+          "6": 445
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-17T07:45:21.388+00:00",
+          "joint_positions": {
+            "1": 487,
+            "2": 497,
+            "3": 136,
+            "4": 310,
+            "5": 600,
+            "6": 444
+          },
+          "target_errors": {
+            "3": 4,
+            "4": -5,
+            "5": 6,
+            "6": -1
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "purpose": "试提关节反馈补偿",
+      "request": {
+        "request_id": "grasp_trial_325cd7b1936142efbe517b25fc21c32e",
+        "targets": [
+          {
+            "id": 3,
+            "position": 131
+          },
+          {
+            "id": 4,
+            "position": 315
+          },
+          {
+            "id": 5,
+            "position": 588
+          },
+          {
+            "id": 6,
+            "position": 445
+          }
+        ],
+        "duration_ms": 20,
+        "position_tolerance": 10
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "369a568ad0d84992ac035d249b961ad2",
+          "request_id": "grasp_trial_325cd7b1936142efbe517b25fc21c32e",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-17T07:45:23.739+00:00",
+          "updated_at": "2026-11-17T07:45:23.739+00:00",
+          "targets": {
+            "3": 131,
+            "4": 315,
+            "5": 588,
+            "6": 445
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "grasp_trial_325cd7b1936142efbe517b25fc21c32e",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "369a568ad0d84992ac035d249b961ad2",
+        "request_id": "grasp_trial_325cd7b1936142efbe517b25fc21c32e",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-17T07:45:23.739+00:00",
+        "updated_at": "2026-11-17T07:45:24.881+00:00",
+        "targets": {
+          "3": 131,
+          "4": 315,
+          "5": 588,
+          "6": 445
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-17T07:45:24.881+00:00",
+          "joint_positions": {
+            "1": 487,
+            "2": 498,
+            "3": 135,
+            "4": 309,
+            "5": 594,
+            "6": 444
+          },
+          "target_errors": {
+            "3": 4,
+            "4": -6,
+            "5": 6,
+            "6": -1
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    }
+  ],
+  "observations": [
+    {
+      "before": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 18.892153014433816,
+            "y_cm": -4.4311144853060265,
+            "z_cm": -2.541366478641919,
+            "pitch_deg": -70.07999999999998,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-17T07:45:04.377+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 382
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 157
+              },
+              {
+                "id": 4,
+                "position": 287
+              },
+              {
+                "id": 5,
+                "position": 611
+              },
+              {
+                "id": 6,
+                "position": 445
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.87342631948976,
+              "y_cm": -4.510210645353599,
+              "z_cm": -2.541366478641919,
+              "pitch_deg": -70.07999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:03.504+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 287
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.831858304012872,
+              "y_cm": -4.416972488651147,
+              "z_cm": -2.6029302571662924,
+              "pitch_deg": -70.32,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:03.720+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.831858304012872,
+              "y_cm": -4.416972488651147,
+              "z_cm": -2.6029302571662924,
+              "pitch_deg": -70.32,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:03.934+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.79064778174411,
+              "y_cm": -4.490428935566135,
+              "z_cm": -2.6839052624778397,
+              "pitch_deg": -70.55999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:04.162+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 612
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.892153014433816,
+              "y_cm": -4.4311144853060265,
+              "z_cm": -2.541366478641919,
+              "pitch_deg": -70.07999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:04.377+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 287
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 382,
+          "2": 498,
+          "3": 157,
+          "4": 286,
+          "5": 611,
+          "6": 445
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 1,
+          "3": 0,
+          "4": 1,
+          "5": 1,
+          "6": 1
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-17T07:45:03.637458+00:00"
+      },
+      "after": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 18.899773554118404,
+            "y_cm": -4.432901866752515,
+            "z_cm": -2.5778157086701476,
+            "pitch_deg": -70.08,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-17T07:45:12.076+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 383
+              },
+              {
+                "id": 2,
+                "position": 498
+              },
+              {
+                "id": 3,
+                "position": 158
+              },
+              {
+                "id": 4,
+                "position": 286
+              },
+              {
+                "id": 5,
+                "position": 611
+              },
+              {
+                "id": 6,
+                "position": 445
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.899773554118404,
+              "y_cm": -4.432901866752515,
+              "z_cm": -2.5778157086701476,
+              "pitch_deg": -70.08,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:11.201+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 158
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.899773554118404,
+              "y_cm": -4.432901866752515,
+              "z_cm": -2.5778157086701476,
+              "pitch_deg": -70.08,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:11.420+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 158
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.79064778174411,
+              "y_cm": -4.490428935566135,
+              "z_cm": -2.6839052624778397,
+              "pitch_deg": -70.55999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:11.639+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 612
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.813191375716265,
+              "y_cm": -4.495816211612178,
+              "z_cm": -2.6029302571662924,
+              "pitch_deg": -70.32,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:11.857+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.899773554118404,
+              "y_cm": -4.432901866752515,
+              "z_cm": -2.5778157086701476,
+              "pitch_deg": -70.08,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:12.076+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 158
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 383,
+          "2": 498,
+          "3": 158,
+          "4": 286,
+          "5": 611,
+          "6": 445
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 1,
+          "3": 1,
+          "4": 0,
+          "5": 1,
+          "6": 1
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-17T07:45:11.336836+00:00"
+      },
+      "visual": {
+        "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261117\\photo_20261117_074510_287148_seq59_348adaaa.jpg",
+        "jpeg_integrity": {
+          "valid": true,
+          "reason": "decoded_without_reported_warning",
+          "shape": [
+            480,
+            640,
+            3
+          ]
+        },
+        "board": {
+          "marker_ids": [
+            13,
+            12,
+            16,
+            10
+          ],
+          "marker_count": 4,
+          "pose_support": "decoded_marker_centers_with_outer_corner_check",
+          "layout_inlier_count": 4,
+          "layout_inlier_ratio": 1.0,
+          "layout_hull_area_cm2": 6.220800666046159,
+          "rejected_marker_ids": [],
+          "pose_initialization": "decoded_marker_outer_corners",
+          "candidate_errors": [
+            {
+              "center_rmse_px": 0.2931262447312311,
+              "outer_corner_max_px": 1.822439966371357
+            },
+            {
+              "center_rmse_px": 0.29312624328261294,
+              "outer_corner_max_px": 1.8225369440774284
+            }
+          ],
+          "decoded_pose_accepted": true,
+          "measured_points_board_cm": [
+            [
+              9.360000610351562,
+              5.0400004386901855,
+              0.0
+            ],
+            [
+              6.4800004959106445,
+              5.0400004386901855,
+              0.0
+            ],
+            [
+              7.9200005531311035,
+              6.4800004959106445,
+              0.0
+            ],
+            [
+              0.7200000286102295,
+              5.0400004386901855,
+              0.0
+            ]
+          ],
+          "measured_points_pixel": [
+            [
+              79.67335510253906,
+              394.2869567871094
+            ],
+            [
+              202.5048370361328,
+              366.74566650390625
+            ],
+            [
+              133.80030822753906,
+              321.0406188964844
+            ],
+            [
+              435.422119140625,
+              315.7974548339844
+            ]
+          ],
+          "measurement_weight": 16,
+          "weight_basis": "decoded center versus object texture uncertainty; separate residual gates retained"
+        },
+        "board_rmse_px": 0.2931262447312311,
+        "object_rmse_px": 0.5796616303068793,
+        "tracking": {
+          "status": "tracked_face_for_review",
+          "for_motion": false,
+          "robot_target": null,
+          "method": "masked_sift_planar_homography_prototype",
+          "projected_corners_are_inferred": true,
+          "physical_accuracy_verified": false,
+          "matching_scope": "independent_pose_predicted_face_roi",
+          "raw_match_count": 105,
+          "rectified_match_count": 144,
+          "matching_method": "raw_and_independently_rectified_texture_unique_original_pixel_points",
+          "match_count": 171,
+          "inlier_count": 162,
+          "inlier_ratio": 0.9473684210526315,
+          "median_inlier_error_px": 0.2923831641674042,
+          "reference_face_coverage": 0.29235055498175333,
+          "reference_visible_face_coverage": 0.4890544262382121,
+          "coverage_basis": "common_visible",
+          "common_visible_reference_fraction": 0.5627795483602817,
+          "common_visible_reference_coverage": 0.5194761533775488,
+          "reason": "distributed_planar_matches",
+          "homography_reference_to_current": [
+            [
+              1.1173083819154852,
+              0.01154626986359455,
+              -35.80825119905855
+            ],
+            [
+              0.004148612850324103,
+              1.1351224442078829,
+              -35.98954365812599
+            ],
+            [
+              1.7242902286120336e-05,
+              3.486731585733648e-05,
+              1.0
+            ]
+          ],
+          "reference_center_pixel": [
+            320.8955078125,
+            411.8908996582031
+          ],
+          "tracked_reference_center_pixel": [
+            321.0986328125,
+            424.44415283203125
+          ],
+          "center_delta_pixel": [
+            0.203125,
+            12.553253173828125
+          ],
+          "inferred_face_corners_pixel": [
+            [
+              338.9400329589844,
+              126.51002502441406
+            ],
+            [
+              478.78997802734375,
+              673.9431762695312
+            ],
+            [
+              279.7226257324219,
+              730.8245239257812
+            ],
+            [
+              184.4238739013672,
+              155.7280731201172
+            ]
+          ],
+          "inferred_corners_inside_image": [
+            true,
+            false,
+            false,
+            true
+          ],
+          "inlier_source_pixel": [
+            [
+              327.8732604980469,
+              155.55499267578125
+            ],
+            [
+              230.5906524658203,
+              189.82992553710938
+            ],
+            [
+              233.64703369140625,
+              238.66989135742188
+            ],
+            [
+              245.70692443847656,
+              223.2144775390625
+            ],
+            [
+              327.7502746582031,
+              185.54188537597656
+            ],
+            [
+              320.8290710449219,
+              187.8190460205078
+            ],
+            [
+              230.18997192382812,
+              235.99258422851562
+            ],
+            [
+              311.07879638671875,
+              189.0451202392578
+            ],
+            [
+              315.41766357421875,
+              186.02223205566406
+            ],
+            [
+              230.21824645996094,
+              215.01168823242188
+            ],
+            [
+              235.26036071777344,
+              206.8738250732422
+            ],
+            [
+              287.2480773925781,
+              171.93045043945312
+            ],
+            [
+              322.4571228027344,
+              255.75900268554688
+            ],
+            [
+              277.6177978515625,
+              274.892578125
+            ],
+            [
+              290.3670959472656,
+              272.7115783691406
+            ],
+            [
+              317.399169921875,
+              194.1556396484375
+            ],
+            [
+              310.8250427246094,
+              168.4272003173828
+            ],
+            [
+              244.2637176513672,
+              194.22462463378906
+            ],
+            [
+              307.0698547363281,
+              186.34115600585938
+            ],
+            [
+              236.07009887695312,
+              223.15463256835938
+            ],
+            [
+              240.14442443847656,
+              245.02142333984375
+            ],
+            [
+              230.47476196289062,
+              194.177490234375
+            ],
+            [
+              227.9590606689453,
+              210.56690979003906
+            ],
+            [
+              225.2082977294922,
+              186.66432189941406
+            ],
+            [
+              237.35321044921875,
+              230.6183624267578
+            ],
+            [
+              313.20062255859375,
+              186.07366943359375
+            ],
+            [
+              231.5486602783203,
+              224.1431121826172
+            ],
+            [
+              285.72216796875,
+              280.2108459472656
+            ],
+            [
+              296.82098388671875,
+              207.0823974609375
+            ],
+            [
+              277.5523681640625,
+              259.4743957519531
+            ],
+            [
+              286.6566467285156,
+              275.8592529296875
+            ],
+            [
+              316.1763000488281,
+              205.45924377441406
+            ],
+            [
+              226.7503662109375,
+              216.16871643066406
+            ],
+            [
+              310.0668029785156,
+              268.91522216796875
+            ],
+            [
+              283.3404541015625,
+              257.9080810546875
+            ],
+            [
+              304.31732177734375,
+              205.50518798828125
+            ],
+            [
+              310.0701599121094,
+              174.15231323242188
+            ],
+            [
+              269.064453125,
+              173.09127807617188
+            ],
+            [
+              218.1054229736328,
+              198.45713806152344
+            ],
+            [
+              318.1866760253906,
+              183.07887268066406
+            ],
+            [
+              231.33436584472656,
+              230.6436309814453
+            ],
+            [
+              225.86021423339844,
+              221.70703125
+            ],
+            [
+              306.77947998046875,
+              162.772216796875
+            ],
+            [
+              209.07554626464844,
+              175.889892578125
+            ],
+            [
+              317.5229797363281,
+              176.42581176757812
+            ],
+            [
+              289.85198974609375,
+              266.7893371582031
+            ],
+            [
+              233.32740783691406,
+              196.831787109375
+            ],
+            [
+              268.8694763183594,
+              247.0129852294922
+            ],
+            [
+              305.7554931640625,
+              171.2250213623047
+            ],
+            [
+              317.3177185058594,
+              255.0830535888672
+            ],
+            [
+              232.02207946777344,
+              296.5376892089844
+            ],
+            [
+              289.3298645019531,
+              281.129638671875
+            ],
+            [
+              329.0888366699219,
+              270.9862976074219
+            ],
+            [
+              305.01483154296875,
+              165.6861114501953
+            ],
+            [
+              316.6623229980469,
+              263.1758728027344
+            ],
+            [
+              222.88876342773438,
+              203.04592895507812
+            ],
+            [
+              314.04437255859375,
+              170.6244354248047
+            ],
+            [
+              225.2582550048828,
+              196.1850128173828
+            ],
+            [
+              320.8851318359375,
+              198.64649963378906
+            ],
+            [
+              283.0124816894531,
+              267.6499328613281
+            ],
+            [
+              220.28915405273438,
+              176.48342895507812
+            ],
+            [
+              315.15093994140625,
+              197.53729248046875
+            ],
+            [
+              304.5035705566406,
+              250.65650939941406
+            ],
+            [
+              243.19818115234375,
+              219.13214111328125
+            ],
+            [
+              223.36936950683594,
+              199.290771484375
+            ],
+            [
+              293.11468505859375,
+              284.890869140625
+            ],
+            [
+              284.2583923339844,
+              247.17852783203125
+            ],
+            [
+              323.6038818359375,
+              246.78488159179688
+            ],
+            [
+              321.69091796875,
+              249.5227813720703
+            ],
+            [
+              224.92919921875,
+              206.71417236328125
+            ],
+            [
+              314.7512512207031,
+              216.7360076904297
+            ],
+            [
+              224.71778869628906,
+              178.0361785888672
+            ],
+            [
+              316.2655334472656,
+              283.5281066894531
+            ],
+            [
+              350.8919372558594,
+              422.8041687011719
+            ],
+            [
+              229.1011505126953,
+              180.09652709960938
+            ],
+            [
+              324.156982421875,
+              261.1197509765625
+            ],
+            [
+              316.1749267578125,
+              278.7320251464844
+            ],
+            [
+              339.8504333496094,
+              395.8658142089844
+            ],
+            [
+              249.73814392089844,
+              246.98748779296875
+            ],
+            [
+              302.7613220214844,
+              254.27145385742188
+            ],
+            [
+              309.2918701171875,
+              211.84429931640625
+            ],
+            [
+              353.0496826171875,
+              415.52581787109375
+            ],
+            [
+              219.4632110595703,
+              182.11029052734375
+            ],
+            [
+              342.1597900390625,
+              412.9918518066406
+            ],
+            [
+              329.4250183105469,
+              278.91314697265625
+            ],
+            [
+              311.3534851074219,
+              284.9346618652344
+            ],
+            [
+              321.6346740722656,
+              266.2552185058594
+            ],
+            [
+              308.9823913574219,
+              252.3088836669922
+            ],
+            [
+              326.7212829589844,
+              258.5242004394531
+            ],
+            [
+              324.68231201171875,
+              251.89881896972656
+            ],
+            [
+              309.1903076171875,
+              182.61102294921875
+            ],
+            [
+              301.0070495605469,
+              269.8290710449219
+            ],
+            [
+              368.02203369140625,
+              427.3983154296875
+            ],
+            [
+              339.95745849609375,
+              417.4947204589844
+            ],
+            [
+              331.3852233886719,
+              285.33447265625
+            ],
+            [
+              308.7281188964844,
+              178.5860137939453
+            ],
+            [
+              342.3243713378906,
+              393.9558410644531
+            ],
+            [
+              364.4446105957031,
+              415.72479248046875
+            ],
+            [
+              314.02337646484375,
+              191.62501525878906
+            ],
+            [
+              307.8027648925781,
+              261.534912109375
+            ],
+            [
+              240.1342315673828,
+              234.60763549804688
+            ],
+            [
+              309.40875244140625,
+              160.7510528564453
+            ],
+            [
+              234.5808563232422,
+              176.8984375
+            ],
+            [
+              310.7906494140625,
+              163.70140075683594
+            ],
+            [
+              213.88450622558594,
+              184.50808715820312
+            ],
+            [
+              217.603271484375,
+              184.71177673339844
+            ],
+            [
+              258.42608642578125,
+              179.85446166992188
+            ],
+            [
+              306.1414489746094,
+              175.197509765625
+            ],
+            [
+              253.84637451171875,
+              188.01925659179688
+            ],
+            [
+              311.7782287597656,
+              178.20132446289062
+            ],
+            [
+              229.49093627929688,
+              202.85665893554688
+            ],
+            [
+              217.66702270507812,
+              205.6636962890625
+            ],
+            [
+              217.99620056152344,
+              209.58428955078125
+            ],
+            [
+              239.5640411376953,
+              209.16720581054688
+            ],
+            [
+              249.43142700195312,
+              210.26966857910156
+            ],
+            [
+              306.5083923339844,
+              199.61549377441406
+            ],
+            [
+              235.71630859375,
+              214.46676635742188
+            ],
+            [
+              232.75828552246094,
+              220.49403381347656
+            ],
+            [
+              245.31065368652344,
+              222.16148376464844
+            ],
+            [
+              282.33209228515625,
+              215.67909240722656
+            ],
+            [
+              228.6254425048828,
+              227.44427490234375
+            ],
+            [
+              291.7327880859375,
+              216.48487854003906
+            ],
+            [
+              225.45823669433594,
+              230.1744384765625
+            ],
+            [
+              222.10906982421875,
+              232.24176025390625
+            ],
+            [
+              300.6520690917969,
+              218.10397338867188
+            ],
+            [
+              253.70535278320312,
+              231.5433807373047
+            ],
+            [
+              225.6510009765625,
+              237.2322235107422
+            ],
+            [
+              307.4117736816406,
+              221.53280639648438
+            ],
+            [
+              226.66836547851562,
+              242.22238159179688
+            ],
+            [
+              317.7653503417969,
+              224.56814575195312
+            ],
+            [
+              224.35560607910156,
+              245.18870544433594
+            ],
+            [
+              244.7875213623047,
+              242.2137451171875
+            ],
+            [
+              230.146484375,
+              246.91549682617188
+            ],
+            [
+              233.62158203125,
+              251.39183044433594
+            ],
+            [
+              276.14239501953125,
+              242.8876953125
+            ],
+            [
+              278.8358459472656,
+              251.75721740722656
+            ],
+            [
+              269.00628662109375,
+              255.73143005371094
+            ],
+            [
+              296.5528564453125,
+              251.84864807128906
+            ],
+            [
+              306.0954284667969,
+              255.13316345214844
+            ],
+            [
+              298.8692932128906,
+              261.8877258300781
+            ],
+            [
+              318.8988037109375,
+              258.32379150390625
+            ],
+            [
+              282.55902099609375,
+              274.010498046875
+            ],
+            [
+              305.58203125,
+              271.67523193359375
+            ],
+            [
+              324.6280517578125,
+              268.2582702636719
+            ],
+            [
+              291.8272399902344,
+              278.0581359863281
+            ],
+            [
+              303.2942810058594,
+              276.1322326660156
+            ],
+            [
+              283.11724853515625,
+              283.156494140625
+            ],
+            [
+              324.92681884765625,
+              275.79083251953125
+            ],
+            [
+              300.8102111816406,
+              282.55242919921875
+            ],
+            [
+              321.9709777832031,
+              280.218017578125
+            ],
+            [
+              305.0537109375,
+              286.3153991699219
+            ],
+            [
+              326.28692626953125,
+              282.89996337890625
+            ],
+            [
+              287.8746337890625,
+              291.37371826171875
+            ],
+            [
+              320.5450134277344,
+              286.0500793457031
+            ],
+            [
+              287.4109802246094,
+              300.79693603515625
+            ],
+            [
+              333.7200927734375,
+              297.07025146484375
+            ],
+            [
+              311.3694763183594,
+              302.4930114746094
+            ],
+            [
+              288.6585693359375,
+              313.60028076171875
+            ],
+            [
+              336.6425476074219,
+              408.6667175292969
+            ],
+            [
+              354.744873046875,
+              441.1886901855469
+            ],
+            [
+              354.0034484863281,
+              445.8503723144531
+            ],
+            [
+              359.7347106933594,
+              447.2339172363281
+            ]
+          ],
+          "inlier_current_pixel": [
+            [
+              328.2293701171875,
+              139.55288696289062
+            ],
+            [
+              221.7622528076172,
+              178.57022094726562
+            ],
+            [
+              224.93167114257812,
+              233.0967254638672
+            ],
+            [
+              238.231689453125,
+              215.34544372558594
+            ],
+            [
+              328.5789794921875,
+              173.6517333984375
+            ],
+            [
+              321.12310791015625,
+              176.65408325195312
+            ],
+            [
+              221.39935302734375,
+              230.24490356445312
+            ],
+            [
+              310.19769287109375,
+              177.84852600097656
+            ],
+            [
+              315.1053466796875,
+              174.34141540527344
+            ],
+            [
+              221.58030700683594,
+              206.5703125
+            ],
+            [
+              227.01979064941406,
+              197.79954528808594
+            ],
+            [
+              282.2347412109375,
+              158.35218811035156
+            ],
+            [
+              322.5982360839844,
+              252.0785675048828
+            ],
+            [
+              273.6409912109375,
+              274.06365966796875
+            ],
+            [
+              287.33123779296875,
+              270.74688720703125
+            ],
+            [
+              317.0763854980469,
+              183.45413208007812
+            ],
+            [
+              309.8919982910156,
+              154.7734832763672
+            ],
+            [
+              237.27450561523438,
+              183.839599609375
+            ],
+            [
+              305.8106689453125,
+              174.9002227783203
+            ],
+            [
+              228.08470153808594,
+              215.86854553222656
+            ],
+            [
+              232.16995239257812,
+              240.12588500976562
+            ],
+            [
+              221.55494689941406,
+              183.62997436523438
+            ],
+            [
+              218.8616180419922,
+              201.82273864746094
+            ],
+            [
+              215.6083984375,
+              175.08299255371094
+            ],
+            [
+              229.11985778808594,
+              224.03497314453125
+            ],
+            [
+              312.59466552734375,
+              174.8321533203125
+            ],
+            [
+              223.03036499023438,
+              216.66812133789062
+            ],
+            [
+              282.4419860839844,
+              279.1457214355469
+            ],
+            [
+              294.2620544433594,
+              198.09933471679688
+            ],
+            [
+              273.9415283203125,
+              256.18524169921875
+            ],
+            [
+              283.5959167480469,
+              274.4941711425781
+            ],
+            [
+              315.7028503417969,
+              196.04490661621094
+            ],
+            [
+              217.40599060058594,
+              208.09092712402344
+            ],
+            [
+              309.1678161621094,
+              266.65496826171875
+            ],
+            [
+              279.68182373046875,
+              254.70018005371094
+            ],
+            [
+              303.0111083984375,
+              195.9665985107422
+            ],
+            [
+              309.46636962890625,
+              161.35276794433594
+            ],
+            [
+              264.83258056640625,
+              159.5672149658203
+            ],
+            [
+              208.05206298828125,
+              188.1754913330078
+            ],
+            [
+              317.695068359375,
+              170.79537963867188
+            ],
+            [
+              222.6428680419922,
+              224.15536499023438
+            ],
+            [
+              217.06349182128906,
+              214.19068908691406
+            ],
+            [
+              305.89044189453125,
+              148.4785614013672
+            ],
+            [
+              198.64402770996094,
+              161.33767700195312
+            ],
+            [
+              317.4640808105469,
+              164.33071899414062
+            ],
+            [
+              286.9493408203125,
+              263.7694091796875
+            ],
+            [
+              224.720703125,
+              185.97079467773438
+            ],
+            [
+              263.8986511230469,
+              242.3334503173828
+            ],
+            [
+              304.6062316894531,
+              157.9164581298828
+            ],
+            [
+              316.5392761230469,
+              251.3968963623047
+            ],
+            [
+              224.21975708007812,
+              296.1444091796875
+            ],
+            [
+              286.5574035644531,
+              280.3657531738281
+            ],
+            [
+              329.93743896484375,
+              269.06573486328125
+            ],
+            [
+              303.7559509277344,
+              151.6647186279297
+            ],
+            [
+              316.5356140136719,
+              260.28839111328125
+            ],
+            [
+              213.55445861816406,
+              193.27122497558594
+            ],
+            [
+              313.44549560546875,
+              157.45852661132812
+            ],
+            [
+              216.1004638671875,
+              185.86587524414062
+            ],
+            [
+              320.8397521972656,
+              188.63626098632812
+            ],
+            [
+              279.5162048339844,
+              265.3221130371094
+            ],
+            [
+              210.8391571044922,
+              163.613037109375
+            ],
+            [
+              314.70782470703125,
+              187.4431915283203
+            ],
+            [
+              303.418701171875,
+              246.36538696289062
+            ],
+            [
+              234.86122131347656,
+              210.3660888671875
+            ],
+            [
+              213.6894989013672,
+              189.11976623535156
+            ],
+            [
+              290.4405517578125,
+              284.43408203125
+            ],
+            [
+              280.9504699707031,
+              242.501708984375
+            ],
+            [
+              323.8545837402344,
+              241.96109008789062
+            ],
+            [
+              322.2891540527344,
+              245.19276428222656
+            ],
+            [
+              215.4336395263672,
+              197.5347442626953
+            ],
+            [
+              314.29345703125,
+              208.89663696289062
+            ],
+            [
+              215.10723876953125,
+              165.21536254882812
+            ],
+            [
+              316.3993225097656,
+              282.9757995605469
+            ],
+            [
+              354.055419921875,
+              436.5008239746094
+            ],
+            [
+              219.88766479492188,
+              167.82533264160156
+            ],
+            [
+              324.6929626464844,
+              258.94073486328125
+            ],
+            [
+              316.0787353515625,
+              277.53192138671875
+            ],
+            [
+              341.8799743652344,
+              407.0198059082031
+            ],
+            [
+              242.60122680664062,
+              242.33346557617188
+            ],
+            [
+              302.65899658203125,
+              248.77342224121094
+            ],
+            [
+              308.47442626953125,
+              203.22940063476562
+            ],
+            [
+              356.0564880371094,
+              428.1554260253906
+            ],
+            [
+              209.11941528320312,
+              169.98342895507812
+            ],
+            [
+              343.79779052734375,
+              425.5295715332031
+            ],
+            [
+              330.0994567871094,
+              277.7093200683594
+            ],
+            [
+              310.6072692871094,
+              284.52789306640625
+            ],
+            [
+              321.7748718261719,
+              263.8486022949219
+            ],
+            [
+              308.6794738769531,
+              248.22950744628906
+            ],
+            [
+              326.9422912597656,
+              253.88998413085938
+            ],
+            [
+              325.3657531738281,
+              247.51806640625
+            ],
+            [
+              309.19659423828125,
+              170.77398681640625
+            ],
+            [
+              299.0476379394531,
+              267.1269836425781
+            ],
+            [
+              372.41510009765625,
+              441.2426452636719
+            ],
+            [
+              343.06256103515625,
+              430.4364013671875
+            ],
+            [
+              332.5032043457031,
+              284.88037109375
+            ],
+            [
+              306.50506591796875,
+              166.68032836914062
+            ],
+            [
+              344.1534729003906,
+              404.3535461425781
+            ],
+            [
+              368.403076171875,
+              428.4651184082031
+            ],
+            [
+              312.4912109375,
+              180.7681121826172
+            ],
+            [
+              306.88165283203125,
+              257.6769714355469
+            ],
+            [
+              232.23333740234375,
+              228.57315063476562
+            ],
+            [
+              308.559814453125,
+              146.17196655273438
+            ],
+            [
+              225.82144165039062,
+              163.58331298828125
+            ],
+            [
+              310.0321350097656,
+              149.39154052734375
+            ],
+            [
+              203.33001708984375,
+              173.20150756835938
+            ],
+            [
+              207.354736328125,
+              173.11419677734375
+            ],
+            [
+              251.7916259765625,
+              167.27125549316406
+            ],
+            [
+              305.04803466796875,
+              162.38284301757812
+            ],
+            [
+              247.77896118164062,
+              175.8168182373047
+            ],
+            [
+              311.92816162109375,
+              165.90786743164062
+            ],
+            [
+              220.38246154785156,
+              193.44296264648438
+            ],
+            [
+              207.63818359375,
+              196.2850341796875
+            ],
+            [
+              208.02874755859375,
+              200.569091796875
+            ],
+            [
+              231.6918487548828,
+              200.41644287109375
+            ],
+            [
+              242.8115997314453,
+              201.3358917236328
+            ],
+            [
+              305.8613586425781,
+              189.73757934570312
+            ],
+            [
+              227.32127380371094,
+              206.180419921875
+            ],
+            [
+              224.32061767578125,
+              212.822265625
+            ],
+            [
+              237.25621032714844,
+              214.07688903808594
+            ],
+            [
+              278.65106201171875,
+              206.75039672851562
+            ],
+            [
+              219.24343872070312,
+              220.1155548095703
+            ],
+            [
+              288.4774475097656,
+              208.30899047851562
+            ],
+            [
+              216.07058715820312,
+              223.24290466308594
+            ],
+            [
+              212.46475219726562,
+              225.72462463378906
+            ],
+            [
+              298.9817810058594,
+              209.30201721191406
+            ],
+            [
+              247.2813262939453,
+              225.5213623046875
+            ],
+            [
+              216.48106384277344,
+              232.0933837890625
+            ],
+            [
+              306.19189453125,
+              214.34202575683594
+            ],
+            [
+              217.5382080078125,
+              237.05259704589844
+            ],
+            [
+              317.55908203125,
+              217.3606414794922
+            ],
+            [
+              215.1664276123047,
+              240.3282470703125
+            ],
+            [
+              235.8281707763672,
+              237.7012939453125
+            ],
+            [
+              221.4435272216797,
+              242.45504760742188
+            ],
+            [
+              226.69317626953125,
+              246.7930908203125
+            ],
+            [
+              272.81488037109375,
+              237.57479858398438
+            ],
+            [
+              274.35980224609375,
+              248.1402587890625
+            ],
+            [
+              264.09552001953125,
+              253.04689025878906
+            ],
+            [
+              294.46234130859375,
+              247.61611938476562
+            ],
+            [
+              304.5272216796875,
+              251.3700714111328
+            ],
+            [
+              296.75146484375,
+              258.3337707519531
+            ],
+            [
+              318.6825866699219,
+              255.0554962158203
+            ],
+            [
+              279.6810302734375,
+              272.2043151855469
+            ],
+            [
+              304.0238037109375,
+              269.5126647949219
+            ],
+            [
+              325.2218322753906,
+              265.6644287109375
+            ],
+            [
+              288.9378662109375,
+              276.72247314453125
+            ],
+            [
+              301.0798034667969,
+              274.3014221191406
+            ],
+            [
+              279.90692138671875,
+              282.4375305175781
+            ],
+            [
+              325.7406921386719,
+              274.22137451171875
+            ],
+            [
+              298.7638854980469,
+              281.8536071777344
+            ],
+            [
+              322.30023193359375,
+              279.11273193359375
+            ],
+            [
+              303.67327880859375,
+              286.3649597167969
+            ],
+            [
+              326.9101867675781,
+              281.9830322265625
+            ],
+            [
+              284.6241149902344,
+              291.6236572265625
+            ],
+            [
+              320.6590270996094,
+              285.2720947265625
+            ],
+            [
+              284.12335205078125,
+              302.129638671875
+            ],
+            [
+              335.24444580078125,
+              297.74346923828125
+            ],
+            [
+              310.6767883300781,
+              304.2358703613281
+            ],
+            [
+              285.5473327636719,
+              316.38726806640625
+            ],
+            [
+              338.3330078125,
+              420.5521240234375
+            ],
+            [
+              358.09979248046875,
+              456.74072265625
+            ],
+            [
+              356.6841735839844,
+              461.81951904296875
+            ],
+            [
+              363.64654541015625,
+              462.87841796875
+            ]
+          ]
+        },
+        "reference_used": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261117\\photo_20261117_074444_845867_seq57_583674b7.jpg",
+        "T_base_camera": [
+          [
+            -0.23712900103425927,
+            -0.9456183370090704,
+            0.22265623184787336,
+            18.503073115178665
+          ],
+          [
+            -0.9714200566392917,
+            0.22829614978338167,
+            -0.06499185759000237,
+            -5.086138644415385
+          ],
+          [
+            0.010625931837242948,
+            -0.23170418361843045,
+            -0.9727282564346051,
+            8.961181641169802
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_camera_object": [
+          [
+            0.21433682170889579,
+            -0.9766530651851288,
+            -0.014440307841972855,
+            -0.08799494061193802
+          ],
+          [
+            0.9404961993284047,
+            0.2023657409512881,
+            0.2729743597098543,
+            2.3523851801858555
+          ],
+          [
+            -0.26367902060754606,
+            -0.07208950793096637,
+            0.9619129256073149,
+            10.370428984048413
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_board_object": [
+          [
+            0.0029332525512994513,
+            0.9999956979678848,
+            -1.3642106672086923e-17,
+            4.0060439608276965
+          ],
+          [
+            -0.9999956980054816,
+            0.0029332653689959883,
+            3.520174313215489e-18,
+            3.9825435071771498
+          ],
+          [
+            5.121432466837891e-18,
+            3.0252812618675495e-16,
+            1.0,
+            -2.4999999999999982
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "tcp_base_cm": [
+          17.306334304474923,
+          -5.1752838863264286,
+          -2.2083690810988728
+        ],
+        "tcp_board_cm": [
+          3.933756183531784,
+          2.7043732244260674,
+          -1.912286867717724
+        ],
+        "top_center_base_cm": [
+          18.608521345684103,
+          -5.137611558456755,
+          -1.6724201789345283
+        ],
+        "top_height_cm": 2.4999999999999982,
+        "minimum_box_bottom_height_cm": -2.220446049250313e-15,
+        "tcp_estimate_is_approximate": true,
+        "for_accuracy_claim": false,
+        "quality_policy": {
+          "version": "commissioning_v1",
+          "board_refined_rmse_px": 1.0,
+          "ground_texture_rmse_px": 3.0,
+          "free_object_rmse_px": 1.5
+        },
+        "pose_estimator": "two_plane_refinement",
+        "final_board_fit_rmse_px": 0.8740345404542474,
+        "object_pose_basis": "known_stationary_support_plane"
+      },
+      "reused_from_approach": true,
+      "reuse_validation_read": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 18.881039305375587,
+            "y_cm": -4.512029931868085,
+            "z_cm": -2.5778157086701476,
+            "pitch_deg": -70.08,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-17T07:45:15.703+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 382
+              },
+              {
+                "id": 2,
+                "position": 498
+              },
+              {
+                "id": 3,
+                "position": 158
+              },
+              {
+                "id": 4,
+                "position": 286
+              },
+              {
+                "id": 5,
+                "position": 611
+              },
+              {
+                "id": 6,
+                "position": 444
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.892153014433816,
+              "y_cm": -4.4311144853060265,
+              "z_cm": -2.541366478641919,
+              "pitch_deg": -70.07999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:14.813+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 287
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.91413696155309,
+              "y_cm": -4.436270773551733,
+              "z_cm": -2.460036219627556,
+              "pitch_deg": -69.83999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:15.029+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 287
+                },
+                {
+                  "id": 5,
+                  "position": 610
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.87342631948976,
+              "y_cm": -4.510210645353599,
+              "z_cm": -2.541366478641919,
+              "pitch_deg": -70.07999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:15.248+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 500
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 287
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.835404874604137,
+              "y_cm": -4.50112460434695,
+              "z_cm": -2.5218588732425236,
+              "pitch_deg": -70.07999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:15.469+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 383
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 157
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 610
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.881039305375587,
+              "y_cm": -4.512029931868085,
+              "z_cm": -2.5778157086701476,
+              "pitch_deg": -70.08,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:15.703+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 382
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 158
+                },
+                {
+                  "id": 4,
+                  "position": 286
+                },
+                {
+                  "id": 5,
+                  "position": 611
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 382,
+          "2": 498,
+          "3": 157,
+          "4": 287,
+          "5": 611,
+          "6": 444
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 2,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 1
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-17T07:45:14.962004+00:00"
+      }
+    }
+  ],
+  "phase": "holding_not_verified",
+  "grasp_region": {
+    "version": "same-box-lower-contact-v03",
+    "along_length_cm": 1.5,
+    "across_width_cm": 0.45,
+    "tcp_height_range_cm": [
+      1.5,
+      2.25
+    ],
+    "tcp_height_target_cm": 2.0,
+    "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+  },
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "preclosure_nominal_alignment_deg": 12.076446214487506,
+  "preclosure_wrist_alignment_preview": {
+    "for_motion": false,
+    "requires_wrist_calibration": true,
+    "status": "nominal_roll_preview",
+    "relative_roll_deg": -13.019403024338759,
+    "closing_axis_slope_to_support_deg": 5.143019123455954
+  },
+  "preclosure_lift_preview": {
+    "planner": "client_nominal_tcp_and_fixed_pitch",
+    "targets": {
+      "3": 132,
+      "4": 315,
+      "5": 594,
+      "6": 445
+    },
+    "expected_joint_positions": {
+      "3": 135,
+      "4": 310,
+      "5": 595,
+      "6": 444
+    },
+    "observed_joint_bias_used": {
+      "3": 3,
+      "4": -5,
+      "5": 1,
+      "6": -1
+    },
+    "max_joint_delta": 28,
+    "feedback_detectable": true,
+    "predicted_delta_cm": [
+      0.10390656438248058,
+      -0.0248307056104613,
+      2.0037013454008825
+    ],
+    "rounding_error_cm": 0.023678497532755322,
+    "pitch_goal_deg": -66.07999999999998,
+    "nominal_minimum_tcp_height_cm": 1.912286867717724,
+    "joint_limit_margin": 7,
+    "physical_accuracy_verified": false
+  },
+  "jaw_samples": [
+    487,
+    488,
+    488,
+    487,
+    488
+  ],
+  "lift_baseline_source": "preclosure_accepted_support_observation",
+  "postclosure_feedback": {
+    "status": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "mode": "serial",
+        "connection": "connected",
+        "active_task_id": null,
+        "motion_state": "target_feedback_reached",
+        "upload_in_progress": false,
+        "last_error": null,
+        "coordinate_reference": "joint_feedback_model",
+        "limits_require_recheck": false,
+        "capabilities": {
+          "hardware_verified": false,
+          "writes_enabled": true,
+          "enabled_features": [
+            "coordinate"
+          ],
+          "direct_duration_ms": 20,
+          "absolute_xyz": false,
+          "coordinate_hardware_supported": true,
+          "coordinate_backend": "host_ik",
+          "coordinate_preview_supported": true,
+          "cartesian_feedback": false,
+          "coordinate_model_calibrated": false,
+          "coordinate_feedback_validation": true,
+          "coordinate_correction_supported": true,
+          "gripper_close_supported": true,
+          "gripper_force_control": false,
+          "gripper_contact_feedback": false,
+          "gripper_grasp_detection": false,
+          "host_deduplication_only": true,
+          "stop_all_joints_confirmed": false,
+          "group_completion_feedback": false
+        },
+        "servo_limits": [
+          {
+            "id": 1,
+            "min": 178,
+            "max": 700
+          },
+          {
+            "id": 2,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 3,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 4,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 5,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 6,
+            "min": 125,
+            "max": 875
+          }
+        ],
+        "feedback_settings": {
+          "poll_interval_s": 0.25,
+          "position_tolerance": 10,
+          "reached_samples": 2
+        },
+        "gripper_settings": {
+          "max_target_gap": 30,
+          "goal_tolerance": 2,
+          "min_closing_delta": 6,
+          "settle_s": 0.5,
+          "stable_s": 1.0,
+          "stable_samples": 4,
+          "stability_tolerance": 2,
+          "timeout_s": 5.0,
+          "poll_interval_s": 0.25
+        },
+        "coordinate_settings": {
+          "max_step_cm": 5.0,
+          "max_joint_step": 100,
+          "min_joint_delta": 6,
+          "max_rounding_error_cm": 0.1,
+          "position_tolerance_cm": 0.2,
+          "pitch_tolerance_deg": 1.0,
+          "correction": {
+            "enabled": true,
+            "max_attempts": 3,
+            "max_step": 5,
+            "max_offset": 10,
+            "deadband": 1,
+            "settle_s": 0.8,
+            "stable_samples": 3,
+            "stability_tolerance": 2,
+            "min_progress": 0.1
+          },
+          "frame": "base_link",
+          "pitch_policy": "keep_current",
+          "model": {
+            "base_height_cm": 2.89,
+            "upper_arm_cm": 10.43,
+            "forearm_cm": 8.9,
+            "tool_length_cm": 17.7,
+            "units_per_degree": 4.166666666666667,
+            "zero_positions": {
+              "3": 500.0,
+              "4": 500.0,
+              "5": 500.0,
+              "6": 500.0
+            }
+          }
+        }
+      }
+    },
+    "pose": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "x_cm": 18.851133011818654,
+        "y_cm": -4.504883180595675,
+        "z_cm": -2.622601439238288,
+        "pitch_deg": -70.32,
+        "frame": "base_link",
+        "estimated": true,
+        "calibrated": false,
+        "source": "serial",
+        "observed_at": "2026-11-17T07:45:19.142+00:00",
+        "age_ms": 0,
+        "fresh": true,
+        "joint_positions": [
+          {
+            "id": 1,
+            "position": 488
+          },
+          {
+            "id": 2,
+            "position": 497
+          },
+          {
+            "id": 3,
+            "position": 157
+          },
+          {
+            "id": 4,
+            "position": 287
+          },
+          {
+            "id": 5,
+            "position": 612
+          },
+          {
+            "id": 6,
+            "position": 444
+          }
+        ]
+      }
+    },
+    "pose_samples": [
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 18.87342631948976,
+          "y_cm": -4.510210645353599,
+          "z_cm": -2.541366478641919,
+          "pitch_deg": -70.07999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-17T07:45:18.252+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 487
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 157
+            },
+            {
+              "id": 4,
+              "position": 287
+            },
+            {
+              "id": 5,
+              "position": 611
+            },
+            {
+              "id": 6,
+              "position": 444
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 18.892153014433816,
+          "y_cm": -4.4311144853060265,
+          "z_cm": -2.541366478641919,
+          "pitch_deg": -70.07999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-17T07:45:18.478+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 488
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 157
+            },
+            {
+              "id": 4,
+              "position": 287
+            },
+            {
+              "id": 5,
+              "position": 611
+            },
+            {
+              "id": 6,
+              "position": 445
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 18.892153014433816,
+          "y_cm": -4.4311144853060265,
+          "z_cm": -2.541366478641919,
+          "pitch_deg": -70.07999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-17T07:45:18.695+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 488
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 157
+            },
+            {
+              "id": 4,
+              "position": 287
+            },
+            {
+              "id": 5,
+              "position": 611
+            },
+            {
+              "id": 6,
+              "position": 445
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 18.851133011818654,
+          "y_cm": -4.504883180595675,
+          "z_cm": -2.622601439238288,
+          "pitch_deg": -70.32,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-17T07:45:18.926+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 487
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 157
+            },
+            {
+              "id": 4,
+              "position": 287
+            },
+            {
+              "id": 5,
+              "position": 612
+            },
+            {
+              "id": 6,
+              "position": 444
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 18.851133011818654,
+          "y_cm": -4.504883180595675,
+          "z_cm": -2.622601439238288,
+          "pitch_deg": -70.32,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-17T07:45:19.142+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 488
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 157
+            },
+            {
+              "id": 4,
+              "position": 287
+            },
+            {
+              "id": 5,
+              "position": 612
+            },
+            {
+              "id": 6,
+              "position": 444
+            }
+          ]
+        }
+      }
+    ],
+    "joint_median": {
+      "1": 488,
+      "2": 498,
+      "3": 157,
+      "4": 287,
+      "5": 611,
+      "6": 444
+    },
+    "joint_span": {
+      "1": 1,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 1,
+      "6": 1
+    },
+    "joint_mad": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "received_at": "2026-11-17T07:45:18.446335+00:00"
+  },
+  "lift_plan": {
+    "planner": "client_nominal_tcp_and_fixed_pitch",
+    "targets": {
+      "3": 132,
+      "4": 315,
+      "5": 594,
+      "6": 445
+    },
+    "expected_joint_positions": {
+      "3": 135,
+      "4": 310,
+      "5": 595,
+      "6": 444
+    },
+    "observed_joint_bias_used": {
+      "3": 3,
+      "4": -5,
+      "5": 1,
+      "6": -1
+    },
+    "max_joint_delta": 28,
+    "feedback_detectable": true,
+    "predicted_delta_cm": [
+      0.10390656438248058,
+      -0.0248307056104613,
+      2.0037013454008825
+    ],
+    "rounding_error_cm": 0.023678497532755322,
+    "pitch_goal_deg": -66.07999999999998,
+    "nominal_minimum_tcp_height_cm": 1.912286867717724,
+    "joint_limit_margin": 7,
+    "physical_accuracy_verified": false
+  },
+  "lift_joint_feedback": [
+    {
+      "command": {
+        "3": 132,
+        "4": 315,
+        "5": 594,
+        "6": 445
+      },
+      "expected": {
+        "3": 135,
+        "4": 310,
+        "5": 595,
+        "6": 444
+      },
+      "actual": {
+        "3": 136,
+        "4": 309,
+        "5": 600,
+        "6": 445
+      },
+      "model_total_rise_cm": 1.6050815206275153,
+      "model_planned_step_rise_cm": 2.006417887094695
+    },
+    {
+      "command": {
+        "3": 131,
+        "4": 315,
+        "5": 588,
+        "6": 445
+      },
+      "expected": {
+        "3": 135,
+        "4": 309,
+        "5": 594,
+        "6": 445
+      },
+      "actual": {
+        "3": 136,
+        "4": 309,
+        "5": 595,
+        "6": 444
+      },
+      "model_total_rise_cm": 1.9723407882809683,
+      "model_planned_step_rise_cm": 0.4163353959086544
+    }
+  ],
+  "lift_correction_plan": {
+    "planner": "client_nominal_tcp_and_fixed_pitch",
+    "targets": {
+      "3": 131,
+      "4": 315,
+      "5": 588,
+      "6": 445
+    },
+    "expected_joint_positions": {
+      "3": 135,
+      "4": 309,
+      "5": 594,
+      "6": 445
+    },
+    "observed_joint_bias_used": {
+      "3": 4,
+      "4": -6,
+      "5": 6,
+      "6": 0
+    },
+    "max_joint_delta": 12,
+    "feedback_detectable": true,
+    "predicted_delta_cm": [
+      0.019012702118622826,
+      -0.004459389022430926,
+      0.4158846698779052
+    ],
+    "rounding_error_cm": 0.021562700648577935,
+    "pitch_goal_deg": -66.07999999999998,
+    "nominal_minimum_tcp_height_cm": 3.5173683883452393,
+    "joint_limit_margin": 6,
+    "physical_accuracy_verified": false
+  },
+  "observation_rejections": [
+    {
+      "before": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 19.02703660599691,
+            "y_cm": -4.462751146090462,
+            "z_cm": -0.34126974341132943,
+            "pitch_deg": -65.75999999999999,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-17T07:45:27.328+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 487
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 136
+              },
+              {
+                "id": 4,
+                "position": 309
+              },
+              {
+                "id": 5,
+                "position": 594
+              },
+              {
+                "id": 6,
+                "position": 445
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 19.02703660599691,
+              "y_cm": -4.462751146090462,
+              "z_cm": -0.34126974341132943,
+              "pitch_deg": -65.75999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:26.438+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 594
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.94236103148035,
+              "y_cm": -4.526684075593094,
+              "z_cm": -0.3715676120347755,
+              "pitch_deg": -66.0,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:26.655+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 488
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 135
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 594
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.947688761625066,
+              "y_cm": -4.444140277212508,
+              "z_cm": -0.45311849088428247,
+              "pitch_deg": -66.23999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:26.872+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 135
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.928907017317634,
+              "y_cm": -4.523468949898786,
+              "z_cm": -0.45311849088428247,
+              "pitch_deg": -66.23999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:27.111+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 135
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 19.02703660599691,
+              "y_cm": -4.462751146090462,
+              "z_cm": -0.34126974341132943,
+              "pitch_deg": -65.75999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:27.328+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 594
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 487,
+          "2": 497,
+          "3": 135,
+          "4": 309,
+          "5": 594,
+          "6": 445
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 1,
+          "3": 1,
+          "4": 0,
+          "5": 1,
+          "6": 1
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-17T07:45:26.589943+00:00"
+      },
+      "after": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 19.01369222236596,
+            "y_cm": -4.459621249166624,
+            "z_cm": -0.4231043357680804,
+            "pitch_deg": -66.0,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-17T07:45:34.555+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 488
+              },
+              {
+                "id": 2,
+                "position": 498
+              },
+              {
+                "id": 3,
+                "position": 136
+              },
+              {
+                "id": 4,
+                "position": 309
+              },
+              {
+                "id": 5,
+                "position": 595
+              },
+              {
+                "id": 6,
+                "position": 445
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.994845052658174,
+              "y_cm": -4.539226259880149,
+              "z_cm": -0.4231043357680804,
+              "pitch_deg": -66.0,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:33.666+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 19.137961916225958,
+              "y_cm": -4.57342710877034,
+              "z_cm": -0.1929453640566443,
+              "pitch_deg": -65.27999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:33.886+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 488
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 135
+                },
+                {
+                  "id": 4,
+                  "position": 313
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 19.060448876153412,
+              "y_cm": -4.55490370276176,
+              "z_cm": -0.2760552533346612,
+              "pitch_deg": -65.52,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:34.118+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 488
+                },
+                {
+                  "id": 2,
+                  "position": 502
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 310
+                },
+                {
+                  "id": 5,
+                  "position": 594
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 18.994845052658174,
+              "y_cm": -4.539226259880149,
+              "z_cm": -0.4231043357680804,
+              "pitch_deg": -66.0,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:34.339+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 487
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 444
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 19.01369222236596,
+              "y_cm": -4.459621249166624,
+              "z_cm": -0.4231043357680804,
+              "pitch_deg": -66.0,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-17T07:45:34.555+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 488
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 136
+                },
+                {
+                  "id": 4,
+                  "position": 309
+                },
+                {
+                  "id": 5,
+                  "position": 595
+                },
+                {
+                  "id": 6,
+                  "position": 445
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 488,
+          "2": 498,
+          "3": 136,
+          "4": 309,
+          "5": 595,
+          "6": 444
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 4,
+          "3": 1,
+          "4": 4,
+          "5": 1,
+          "6": 1
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-17T07:45:33.813454+00:00"
+      },
+      "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261117\\photo_20261117_074532_751522_seq60_3ea3cc01.jpg",
+      "visual_error": "盒面真实匹配点未形成可靠位姿：[{\"rmse_px\": 0.6252175696834997, \"height_cm\": 4.016851274871987, \"tilt_deg\": 17.127118265569443, \"inliers\": 117, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074510_287148_seq59_348adaaa.jpg\"}, {\"rmse_px\": 14.373207503134575, \"height_cm\": 2.8312710410837525, \"tilt_deg\": 55.60483212517682, \"inliers\": 117, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074510_287148_seq59_348adaaa.jpg\"}, {\"rmse_px\": 0.6435061046645602, \"height_cm\": 4.006293493908906, \"tilt_deg\": 17.17214551697924, \"inliers\": 132, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074457_397732_seq58_ccb1cc4c.jpg\"}, {\"rmse_px\": 15.010137671409227, \"height_cm\": 2.6147744036113103, \"tilt_deg\": 59.028111947730125, \"inliers\": 132, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074457_397732_seq58_ccb1cc4c.jpg\"}, {\"rmse_px\": 0.5954306388258643, \"height_cm\": 4.004524147629355, \"tilt_deg\": 17.08356015590139, \"inliers\": 123, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074444_845867_seq57_583674b7.jpg\"}, {\"rmse_px\": 15.556477288894959, \"height_cm\": 2.9976435096161986, \"tilt_deg\": 57.508521947673074, \"inliers\": 123, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074444_845867_seq57_583674b7.jpg\"}, {\"rmse_px\": 0.6039817456671364, \"height_cm\": 4.012831050741563, \"tilt_deg\": 17.417443894738515, \"inliers\": 120, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074433_129532_seq56_df026720.jpg\"}, {\"rmse_px\": 5.076494854727936, \"height_cm\": 0.6123986261280279, \"tilt_deg\": 60.53849805436956, \"inliers\": 120, \"reference\": \"C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_074433_129532_seq56_df026720.jpg\"}]"
+    }
+  ],
+  "error": "[WinError 10054] 远程主机强迫关闭了一个现有的连接。"
+}

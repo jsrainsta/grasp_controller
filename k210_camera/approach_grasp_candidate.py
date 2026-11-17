@@ -238,6 +238,80 @@ def split_pregrasp_segment(start,waypoint,model,center,up,limits,tcp_offset,mini
     return max(choices,key=lambda item:item[0])[1] if choices else None
 
 
+def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,record,save):
+    reading=read_arm(arm_url)
+    start=reading['joint_median']
+    require_start_state(start,tcp_profile['jaw_position'],tcp_profile['roll_position'],motion=motion)
+    if (any(abs(start[j]-observation['after']['joint_median'][j])>2 for j in start)
+            or any(v>6 for v in reading['joint_span'].values())
+            or any(v>2 for v in reading['joint_mad'].values())):
+        raise RuntimeError('观察姿态已变化或反馈不稳定，停止补拍动作')
+    if reading['status']['data']['capabilities'].get('writes_enabled') is not True:
+        raise RuntimeError('运动未启用')
+    limits={v['id']:(v['min'],v['max']) for v in reading['status']['data']['servo_limits']}
+    model=nominal_model()
+    board=np.asarray(board_pose)
+    up=-board[:3,2]
+    top=board[:3,3]+2.5*up
+    offset=np.asarray(tcp_profile['offset_tool_cm'])
+    clearance=motion['pregrasp_min_top_clearance_cm']
+    observation_floor=max(1.9,clearance-.6)
+    gap=path_margin(start,start,model,top,up,limits,offset,observation_floor)
+    frame=robot_frame(start,model,'pitch_tool')
+    tcp=frame[:3,:3]@offset+frame[:3,3]
+    outward=np.array([tcp[0],tcp[1],0.])
+    outward-=up*float(outward@up)
+    radial_distance=np.linalg.norm(outward)
+    if radial_distance<1e-6:
+        raise ValueError('无法确定观察位回收方向')
+    direction=outward/radial_distance
+    pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
+    minimum=min(gap,clearance)
+    # Prefer the established viewing change, then trade pitch for clearance
+    # when the same retraction distance is near a joint limit.
+    candidates=((.5,4),(.5,3.5),(.5,3),(.5,2.5),(.5,2),
+                (.65,1),(.8,1),(.5,0),(.65,0),(.8,0))
+    for rise,angle in candidates:
+        try:
+            plan=plan_step(model,start,-1.85*direction+rise*up,pitch-angle,offset,limits,gap,up,minimum)
+            targets=plan['targets']
+            retraction=float(-np.asarray(plan['predicted_delta_cm'])@direction)
+            if retraction<1.8 or not 6<=plan['max_joint_delta']<=min(50,motion['maximum_coarse_joint_delta']):
+                continue
+            path_margin(start,{**start,**targets},model,top,up,limits,offset,minimum)
+        except ValueError:
+            continue
+        break
+    else:
+        raise RuntimeError('当前关节限位和净空下，找不到可执行的观察位回收路径')
+    body={'request_id':'observation_retract_'+uuid.uuid4().hex,
+          'targets':[{'id':int(j),'position':v} for j,v in targets.items()],
+          'duration_ms':20}
+    record.update(start_joints=start,starting_clearance_cm=gap,request=body,
+                  planned_retraction_cm=retraction,requested_rise_cm=rise,
+                  requested_pitch_change_deg=-angle)
+    save()
+    task=call(arm_url,'move',body)['task']
+    record['task']=task
+    save()
+    deadline=time.monotonic()+22
+    while task['status']=='sent' and time.monotonic()<deadline:
+        time.sleep(.3);task=call(arm_url,'tasks/'+task['task_id'])
+    record['task']=task
+    if task['status']!='reached':
+        raise RuntimeError('观察位回收未确认到位：'+str(task))
+    feedback=read_arm(arm_url)
+    measured=feedback['joint_median']
+    record['measured_joints']=measured
+    if (any(v>6 for v in feedback['joint_span'].values())
+            or any(v>2 for v in feedback['joint_mad'].values())):
+        raise RuntimeError('观察位回收后的关节反馈仍不稳定')
+    require_start_state(measured,tcp_profile['jaw_position'],tcp_profile['roll_position'],motion=motion)
+    # The arm is stationary for the next photo. Pregrasp checks clearance
+    # again against the newly registered scene before any further movement.
+    record['measured_clearance_cm']=path_margin(measured,measured,model,top,up,limits,offset,observation_floor)
+
+
 def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('observation',type=Path)
@@ -282,27 +356,42 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
             if gap<recovery_floor:
                 raise PregraspClearanceError(f'观察位净空 {gap:.3f} cm，低于起步抬升试验下限 {recovery_floor:.3f} cm')
             pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
-            lift=plan_step(model,start,up*(minimum-gap+.45),pitch,tcp_offset,limits,gap,up,gap)
-            targets=lift['targets']; lifted={**start,**targets}
-            path_margin(start,lifted,model,center,up,limits,tcp_offset,gap)
-            recovery={'high_start_targets':targets,'starting_clearance_cm':gap,
-                      'source_observation':str(args.observation.resolve()),'precheck_profile':'primary'}
-            try:
-                plan_box_pregrasp(model,lifted,center,up,limits,tcp_offset,motion,target['length_axis_base'])
-            except PregraspPathUnavailable as primary_error:
-                if args.fallback_motion_profile is None:
-                    raise
-                fallback=load_motion_profile(args.fallback_motion_profile)
-                require_start_state(start,profile['jaw_position'],profile['roll_position'],motion=fallback)
+            profiles={'primary':motion}
+            if args.fallback_motion_profile is not None:
+                profiles['fallback']=load_motion_profile(args.fallback_motion_profile)
+            rejected=[]
+            selected_lift=None
+            for pitch_change in (0,1,2,3,4):
                 try:
-                    plan_box_pregrasp(model,lifted,center,up,limits,tcp_offset,fallback,target['length_axis_base'])
-                except PregraspPathUnavailable as fallback_error:
-                    raise PregraspPathUnavailable(
-                        f'高台面抬升未下发，抬升后两套路径预检均失败。常规：{primary_error}；远端：{fallback_error}'
-                    ) from fallback_error
-                recovery['precheck_profile']='fallback'
+                    lift=plan_step(model,start,up*(minimum-gap+.45),pitch+pitch_change,
+                                   tcp_offset,limits,gap,up,gap)
+                    targets=lift['targets']
+                    lifted={**start,**targets}
+                    path_margin(start,lifted,model,center,up,limits,tcp_offset,gap)
+                    path_margin(lifted,lifted,model,center,up,limits,tcp_offset,minimum)
+                except ValueError as error:
+                    rejected.append(f'{pitch_change}° 抬升：{error}')
+                    continue
+                for name,candidate_motion in profiles.items():
+                    require_start_state(start,profile['jaw_position'],profile['roll_position'],motion=candidate_motion)
+                    try:
+                        plan_box_pregrasp(model,lifted,center,up,limits,tcp_offset,candidate_motion,
+                                          target['length_axis_base'])
+                    except PregraspPathUnavailable as error:
+                        rejected.append(f'{pitch_change}° {name} 预接近：{error}')
+                        continue
+                    selected_lift={'high_start_targets':targets,'starting_clearance_cm':gap,
+                                   'source_observation':str(args.observation.resolve()),
+                                   'requested_pitch_change_deg':pitch_change,'precheck_profile':name}
+                    break
+                if selected_lift is not None:
+                    break
+            if selected_lift is None:
+                raise PregraspPathUnavailable('高台面抬升未下发，抬升或后续预接近无解。'+'；'.join(rejected))
+            recovery=selected_lift
+            if recovery['precheck_profile']=='fallback':
                 print('高台面抬升后的常规规划无解，远端配置预检通过。',flush=True)
-            print(f'高台面起步：当前名义净空 {gap:.3f} cm，先抬升再重新观察。',flush=True)
+            print(f'高台面起步：当前名义净空 {gap:.3f} cm，抬头 {pitch_change}° 后重新观察。',flush=True)
             if args.execute:
                 body={'request_id':'high_start_'+uuid.uuid4().hex,
                       'targets':[{'id':int(j),'position':v} for j,v in targets.items()],'duration_ms':20}

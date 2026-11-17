@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "high_1116_10096_25039",
+  "run_id": "535d832b34714e62b215ee1755500ff0",
+  "target_id": "med_003",
+  "started_at": "2026-11-17T06:57:38.956769+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于guarded_visual_approach.py；原因：ValueError: 两次近图均未通过观测：固定参照板未提供可靠的独立相机位姿：{'marker_ids': [14, 16], 'marker_count': 2, 'pose_support': 'decoded_marker_centers_with_outer_corner_check', 'rejection': 'insufficient_decoded_markers', 'texture_support': [{'reference': 'C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_065812_534201_seq2_78e46669.jpg', 'inliers': 28}]} | 固定参照板未提供可靠的独立相机位姿：{'marker_ids': [14, 16], 'marker_count': 2, 'pose_support': 'decoded_marker_centers_with_outer_corner_check', 'rejection': 'insufficient_decoded_markers', 'texture_support': [{'reference': 'C:\\\\Users\\\\10766\\\\Desktop\\\\grasp_controller_handoff_20261109\\\\k210_camera\\\\vision_grasp_images\\\\20261117\\\\photo_20261117_065812_534201_seq2_78e46669.jpg', 'inliers': 28}]}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\535d832b34714e62b215ee1755500ff0.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-17T06:59:01.208069+00:00"
+}

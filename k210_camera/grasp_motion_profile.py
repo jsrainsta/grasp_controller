@@ -6,7 +6,7 @@ LEGACY_REGION={'version':'same_box_trial_v2','along_length_cm':1.5,'across_width
     'tcp_height_range_cm':[2.2,3.0],'tcp_height_target_cm':2.6,
     'basis':'Legacy current-box holding trial, not grasp quality acceptance.'}
 DEFAULT_FIXED_WRIST_ALIGNMENT_DEG=12
-MAX_FIXED_WRIST_ALIGNMENT_DEG=20
+MAX_FIXED_WRIST_ALIGNMENT_DEG=25
 
 def load_motion_profile(path=None):
     if path is None:return {'version':'legacy-v02','grasp_region':copy.deepcopy(LEGACY_REGION),
