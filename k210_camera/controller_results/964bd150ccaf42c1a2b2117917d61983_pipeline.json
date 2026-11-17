@@ -1,0 +1,157 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1794903581.3019567,
+      "returncode": 0,
+      "completed_at": 1794903592.1920161
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1794903592.2128005,
+      "returncode": 1,
+      "error": "LowerBoxEdgeUnclear: 新场景中药盒边界拟合失败，边缘中位误差 1.31px，P90 30.53px，蓝色覆盖 98.8%",
+      "completed_at": 1794903593.119498
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM14",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -60
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 25,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 2.5,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Opt-in adaptive same-box trial with higher initial hover and a broad nominal pitch search. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "cd1af000ffbf9bd80ca0b27b1c25ca2bdde6b8864681739412c502ebbd620865",
+      "approach_grasp_candidate.py": "c49f9d5180217a411cafd4514d7f2f2f67f03af8bf8ae1bc45f68181c39c85c0",
+      "guarded_visual_approach.py": "ae4444ee56ad691659b989b2351060ad85fe0d46a40a1ebf4571f0cd4503cd47",
+      "verify_same_box_grasp.py": "4e70abd89b41d5054aed9275a0d912504edd591426b8cb6587bcae937fb54a82",
+      "run_current_box_trial.py": "4ed46c6d7d7589c485bcebec15373c65658fa7307300a251e35d988005cf6058",
+      "grasp_controller.py": "0cd59e7cc04437f21841d61519a047f12257bf0a1faff6244d40741e81ece88a",
+      "register_current_scene.py": "5ccfb57d977801f1c0a454c36ae8192139ad2cf4a0b9a3244b2a7794e853bee1",
+      "board_marker_pose.py": "c5af6908c72aa98672c22e9a6c146f9301dc8ba50ee549811875743acdf605ac",
+      "detect_box_outline.py": "4b44cfc0a101428978c7722d84567a6a1997f8e74e3ac466b641a2cb8c52074c",
+      "fit_known_box_outline.py": "6155d5c06252d5236d29b3872805ce2fb0d1a5547d63fdbbdf9620b778d8ac12",
+      "fit_grasp_handeye.py": "011dc9df1f0298c5e462d6956bb400f92f54c8bbd298bed27b359063bbb8fbbb",
+      "grasp_visual_observer.py": "dc67a309373a4ae8804356748e0191a1ed12db566b116b74d2f0911897269e8f",
+      "tcp_pose_planner.py": "5907c967d8e00fed31326e19d1d20ec0847a6ad9abd14d9fbe5b69d6d7e590af",
+      "grasp_approach_policy.py": "c3b52356d5175f505424ba4bf50c8d817b42be8616ba0f7a96e446ebe3f0ff08"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261117_081948_178828_seq67_8b932052_56d4bc70_commissioning.json",
+  "observation_retract": {
+    "source_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261117_081948_178828_seq67_8b932052_56d4bc70_commissioning.json",
+    "reason": "新场景中药盒边界拟合失败，边缘中位误差 1.31px，P90 30.53px，蓝色覆盖 98.8%",
+    "start_joints": {
+      "1": 378,
+      "2": 498,
+      "3": 163,
+      "4": 142,
+      "5": 415,
+      "6": 496
+    },
+    "starting_clearance_cm": 2.888037934688022,
+    "request": {
+      "request_id": "observation_retract_8bee608a60944d1b9886651bcef5293b",
+      "targets": [
+        {
+          "id": 3,
+          "position": 134
+        },
+        {
+          "id": 4,
+          "position": 169
+        },
+        {
+          "id": 5,
+          "position": 422
+        },
+        {
+          "id": 6,
+          "position": 497
+        }
+      ],
+      "duration_ms": 20,
+      "position_tolerance": 3
+    },
+    "task": {
+      "task_id": "25791e7d2eb345999f91a282c65d5c6a",
+      "request_id": "observation_retract_8bee608a60944d1b9886651bcef5293b",
+      "type": "move",
+      "status": "outcome_unknown",
+      "created_at": "2026-11-17T08:19:55.010+00:00",
+      "updated_at": "2026-11-17T08:20:10.104+00:00",
+      "targets": {
+        "3": 134,
+        "4": 169,
+        "5": 422,
+        "6": 497
+      },
+      "feedback_confirmed": false,
+      "physically_stopped": null,
+      "consecutive_samples": 0,
+      "message": "到位反馈超时；未自动返程或停止，执行结果未知",
+      "acceptance": {
+        "position_tolerance": 3,
+        "required_samples": 2
+      },
+      "position_feedback": {
+        "observed_at": "2026-11-17T08:20:10.104+00:00",
+        "joint_positions": {
+          "1": 378,
+          "2": 498,
+          "3": 137,
+          "4": 163,
+          "5": 423,
+          "6": 496
+        },
+        "target_errors": {
+          "3": 3,
+          "4": -6,
+          "5": 1,
+          "6": -1
+        },
+        "within_tolerance": false,
+        "position_tolerance": 3,
+        "required_samples": 2
+      }
+    },
+    "error": "观察位回收未确认到位：{'task_id': '25791e7d2eb345999f91a282c65d5c6a', 'request_id': 'observation_retract_8bee608a60944d1b9886651bcef5293b', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-17T08:19:55.010+00:00', 'updated_at': '2026-11-17T08:20:10.104+00:00', 'targets': {'3': 134, '4': 169, '5': 422, '6': 497}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '到位反馈超时；未自动返程或停止，执行结果未知', 'acceptance': {'position_tolerance': 3, 'required_samples': 2}, 'position_feedback': {'observed_at': '2026-11-17T08:20:10.104+00:00', 'joint_positions': {'1': 378, '2': 498, '3': 137, '4': 163, '5': 423, '6': 496}, 'target_errors': {'3': 3, '4': -6, '5': 1, '6': -1}, 'within_tolerance': False, 'position_tolerance': 3, 'required_samples': 2}}"
+  }
+}

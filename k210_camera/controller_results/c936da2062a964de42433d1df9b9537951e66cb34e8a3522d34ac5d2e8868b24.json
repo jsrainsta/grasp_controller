@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "high_1116_19488_15893",
+  "run_id": "59235c0774c445efb306132f9c82e0e7",
+  "target_id": "med_003",
+  "started_at": "2026-11-17T07:31:04.727490+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于guarded_visual_approach.py；原因：RuntimeError: 动作未确认到位：{'task_id': '6a8f042e4d1a4e93b188ccaaeb0d773f', 'request_id': 'guarded_joint_1f5d33da25a144a28f30361719e03f77', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-17T07:32:29.132+00:00', 'updated_at': '2026-11-17T07:32:30.505+00:00', 'targets': {'3': 160, '4': 285, '5': 603, '6': 466}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '通信失败，无法确认此前运动结果', 'acceptance': {'position_tolerance': 10, 'required_samples': 2}, 'position_feedback': {'observed_at': '2026-11-17T07:32:29.255+00:00', 'joint_positions': {'1': 376, '2': 497, '3': 175, '4': 260, '5': 581, '6': 466}, 'target_errors': {'3': 15, '4': -25, '5': -22, '6': 0}, 'within_tolerance': False, 'position_tolerance': 10, 'required_samples': 2}}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\59235c0774c445efb306132f9c82e0e7.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-17T07:32:30.197609+00:00"
+}
