@@ -107,6 +107,9 @@ class Coordinator:
             command.extend(['--motion-profile',self.config['motion_profile']])
         if self.config.get('fallback_motion_profile'):
             command.extend(['--fallback-motion-profile',self.config['fallback_motion_profile']])
+        close_only=self.config.get('close_only') is True
+        if close_only and not preview:
+            command.append('--close-only')
         tail=deque(maxlen=80)
         with log.open('w',encoding='utf-8') as stream:
             process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
@@ -131,6 +134,8 @@ class Coordinator:
         if result.get('selected_motion_profile'):
             record['motion_profile']=result['selected_motion_profile']
         if preview:return result
+        if close_only and result.get('closure_confirmed') is True and result.get('status')=='awaiting_stow_confirmation':
+            return result
         if result.get('grasp_confirmed') is not True:raise RuntimeError('流程未提供持物验收通过证据')
         return result
     def handle(self,event):
@@ -153,9 +158,16 @@ class Coordinator:
             save()
             try:
                 result=self.runner(event,r)
-                if not isinstance(result,dict) or result.get('grasp_confirmed') is not True:
+                if (self.config.get('close_only') is True and isinstance(result,dict)
+                        and result.get('closure_confirmed') is True and result.get('status')=='awaiting_stow_confirmation'):
+                    r.update(status='awaiting_stow_confirmation',closure_confirmed=True,pipeline=result)
+                elif not isinstance(result,dict) or result.get('grasp_confirmed') is not True:
                     raise RuntimeError('缺少持物验收通过结果')
-                r.update(status='held_verified',grasp_confirmed=True,pipeline=result)
+                elif (self.config.get('auto_stow') and result.get('status')=='stowed_verified'
+                        and result.get('stow_verification')):
+                    r.update(status='stowed_verified',grasp_confirmed=True,closure_confirmed=True,pipeline=result)
+                else:
+                    r.update(status='held_verified',grasp_confirmed=True,pipeline=result)
             except BaseException as error:
                 r.update(status='failed',error=str(error),recovery='No automatic reset, open, reconnect, release, or retry.')
                 if isinstance(error,(KeyboardInterrupt,SystemExit)):r['status']='interrupted'
