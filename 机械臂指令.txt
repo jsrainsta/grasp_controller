@@ -15,6 +15,11 @@ cd /home/pi/competition/mechanical-arm
 默认：
 .\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --execute
 
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once high_1116_%RANDOM%_%RANDOM% --execute
+
+
+.\.venv\Scripts\python.exe -X utf8 "k210_camera\grasp_controller.py" --config "k210_camera\controller_pc_fixed_placement_trial.json" --once high_1116_%RANDOM%_%RANDOM% --execute
+
 更多：
 .\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --wrist-probe --confirm-empty --execute
 
