@@ -7,13 +7,13 @@ import argparse,copy,json
 from pathlib import Path
 import numpy as np
 import cv2
-from check_grasp_board import ROOT,GRASP_BOARD_PROFILE,inspect,make_board
+from check_grasp_board import LARGE_GRASP_BOARD_PROFILE,ROOT,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
 from observe_grasp_target import locate
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
 
-def robust_board_pose_candidates(board,K,D):
+def robust_board_pose_candidates(board,K,D,*,minimum_hull_fraction=None):
     """Use the RANSAC-supported corner set consistently in metric PnP.
 
     The visibility stage permits <=10% rejected interpolation points; those
@@ -22,13 +22,22 @@ def robust_board_pose_candidates(board,K,D):
     """
     ids=np.array(board['corner_ids']).reshape(-1)
     img=np.array(board['corners_px'],np.float64)
-    size=board['profile']['square_length'];columns=board['profile']['squares_x']-1
+    profile=board['profile']
+    size=profile['square_length'];columns=profile['squares_x']-1
     obj=np.array([[(int(i)%columns+1)*size,(int(i)//columns+1)*size,0] for i in ids],np.float64)
     undistorted=cv2.undistortPoints(img.reshape(-1,1,2),K,D,P=K).reshape(-1,2)
     H,mask=cv2.findHomography(obj[:,:2],undistorted,cv2.RANSAC,1.5)
     if H is None or mask is None:raise ValueError('板角点稳健拟合失败')
     keep=mask.ravel().astype(bool)
     if keep.sum()<12 or keep.mean()<.9:raise ValueError('板位姿有效角点比例不足')
+    coverage={}
+    if minimum_hull_fraction is not None:
+        hull=cv2.convexHull(obj[keep,:2].astype(np.float32))
+        full_area=(columns-1)*(profile['squares_y']-2)*size**2
+        fraction=float(cv2.contourArea(hull))/full_area
+        if fraction<minimum_hull_fraction:
+            raise ValueError(f'板位姿有效角点覆盖不足：{fraction:.1%}，要求 {minimum_hull_fraction:.0%}')
+        coverage={'pose_inlier_hull_fraction':fraction}
     filtered={**board,'corner_ids':ids[keep].tolist(),'corners_px':img[keep].tolist()}
     solutions=[]
     for C,_ in camera_candidates(filtered,K,D):
@@ -41,7 +50,7 @@ def robust_board_pose_candidates(board,K,D):
         solutions.append((T,error))
     metadata={'raw_corner_count':len(ids),'pose_inlier_count':int(keep.sum()),
               'rejected_corner_ids':ids[~keep].tolist(),'inlier_ratio':float(keep.mean()),
-              'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True}
+              'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True,**coverage}
     return sorted(solutions,key=lambda row:row[1]),metadata
 
 class BoardPoseAmbiguous(ValueError):
@@ -100,8 +109,10 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
             'box_inliers':tracked['inlier_count'],'box_projection_p90_px':p90}
 
 
-def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None):
+def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None,
+             board_profile=None):
     o=json.loads(path.read_text(encoding='utf-8'))
+    previous=None
     if saved_plane:
         cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
         if cal.get('scene_registration',{}).get('basis')!='decoded_current_board_and_nominal_robot_camera_mount':
@@ -112,19 +123,29 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         cal['scene_registration']={**cal['scene_registration'],'basis':'saved_support_plane_preview',
                                    'saved_calibration':o['calibration'],'board_pnp_rmse_px':None}
     else:
-        b=inspect(Path(o['image']),GRASP_BOARD_PROFILE)
+        b=inspect(Path(o['image']),board_profile)
+        if previous_registration is not None:
+            previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
+            previous_profile=previous['scene_registration'].get('board_profile')
+            if previous_profile is not None and previous_profile != b['profile']:
+                raise ValueError('同一次抓取的标定板发生变化，请从观察位重新开始')
         k=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
         K,D=np.array(k['camera_matrix_px']),np.array(k['distortion_coefficients'])
         image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
         board=make_board(b['profile'])
+        large_board=b['profile'].get('board_id')==LARGE_GRASP_BOARD_PROFILE.stem
         parameters=cv2.aruco.DetectorParameters();parameters.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
         solutions,pose_validation=marker_plane_candidates_with_contrast(
             cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),K,D,board,cv2.aruco.ArucoDetector(board.getDictionary(),parameters),
-            allow_isolated_outlier=True)
+            allow_isolated_outlier=True,allow_wide_inlier_support=large_board)
         method='decoded_marker_centers'
-        if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and b['reference_candidate']:
+        # The visibility check fits distorted pixels. For the large board let
+        # the pose solver assess coverage on its own undistorted inlier set.
+        fallback_available=b['reference_candidate'] or (large_board and b['corner_count']>=12)
+        if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and fallback_available:
             try:
-                alternate,corner_validation=robust_board_pose_candidates(b,K,D)
+                alternate,corner_validation=robust_board_pose_candidates(
+                    b,K,D,minimum_hull_fraction=1/3 if large_board else None)
                 if alternate and alternate[0][1]<=.6 and (len(alternate)==1 or alternate[1][1]-alternate[0][1]>=.5):
                     solutions,pose_validation=alternate,{'method':'robust_charuco_fallback','marker_diagnostics':pose_validation,'corner_diagnostics':corner_validation}
                     method='robust_charuco_fallback'
@@ -155,8 +176,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             detail=(f"{reason}边缘中位误差 {fit['edge_median_px']:.2f}px，"
                     f"P90 {fit['edge_p90_px']:.2f}px，蓝色覆盖 {fit['blue_fraction_inside']:.1%}")
         message='新场景中药盒边界拟合失败，'+detail
-        if previous_registration is not None and not saved_plane:
-            previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
+        if previous is not None:
             try:
                 evidence=verify_stationary_box(previous,cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),
                                                np.asarray(best['T_base_board_cm']),camera,K,D)
@@ -224,5 +244,6 @@ def undirected_angle_deg(axis,reference):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('observation',type=Path)
     p.add_argument('--motion-profile',type=Path)
+    p.add_argument('--board-profile',type=Path)
     a=p.parse_args()
-    register(a.observation,motion=load_motion_profile(a.motion_profile))
+    register(a.observation,motion=load_motion_profile(a.motion_profile),board_profile=a.board_profile)

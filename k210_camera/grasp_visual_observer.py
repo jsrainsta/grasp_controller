@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import cv2
 import numpy as np
-from check_grasp_board import ROOT
+from check_grasp_board import GRASP_BOARD_PROFILE, LARGE_GRASP_BOARD_PROFILE, ROOT, make_board
 from fit_grasp_handeye import transform,discrepancy,robot_frame
 from jpeg_integrity import check_jpeg
 from sample_grasp_handeye import nominal_model
@@ -35,8 +35,12 @@ class GraspVisualObserver:
         self.model=nominal_model()
         data=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
         self.K,self.D=np.array(data['camera_matrix_px']),np.array(data['distortion_coefficients'])
-        self.dictionary=cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-        self.board=cv2.aruco.CharucoBoard((7,5),1.44,.96,self.dictionary)
+        profile=self.observation.get('scene_registration',{}).get('board_profile')
+        if profile is None:
+            profile=json.loads(GRASP_BOARD_PROFILE.read_text(encoding='utf-8'))
+        self.large_board=profile.get('board_id')==LARGE_GRASP_BOARD_PROFILE.stem
+        self.board=make_board(profile)
+        self.dictionary=self.board.getDictionary()
         dp=cv2.aruco.DetectorParameters();dp.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
         self.detector=cv2.aruco.ArucoDetector(self.dictionary,dp)
         self.refs=[];self.last_camera=None;self.last_object=None
@@ -130,7 +134,9 @@ class GraspVisualObserver:
         self.refs=self.refs[:4]
 
     def board_candidates(self,gray,image_path=None):
-        poses,metadata=marker_plane_candidates_with_contrast(gray,self.K,self.D,self.board,self.detector,allow_three=True)
+        poses,metadata=marker_plane_candidates_with_contrast(
+            gray,self.K,self.D,self.board,self.detector,allow_three=True,
+            allow_isolated_outlier=self.large_board,allow_wide_inlier_support=self.large_board)
         result=[(self.Y@inverse(C),error) for C,error in poses]
         if result:
             return result,metadata

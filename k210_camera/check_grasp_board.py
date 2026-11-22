@@ -11,6 +11,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 GRASP_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_7x5_print96_v1.json'
+LARGE_GRASP_BOARD_PROFILE = ROOT/'calibration_boards'/'charuco_12x8_14p4mm_v1.json'
 
 
 def make_board(profile):
@@ -23,8 +24,31 @@ def make_board(profile):
     return board
 
 
-def inspect(path, profile_path):
-    profile = json.loads(profile_path.read_text(encoding='utf-8'))
+def detect_grasp_board_profile(gray):
+    profiles = [json.loads(path.read_text(encoding='utf-8'))
+                for path in (GRASP_BOARD_PROFILE, LARGE_GRASP_BOARD_PROFILE)]
+    # DICT_4X4_100 contains the old board's DICT_4X4_50 codes as a subset.
+    dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
+    detector = cv2.aruco.ArucoDetector(dictionary)
+    enhanced = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(gray)
+    enlarged = cv2.resize(enhanced, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    decoded_sets = []
+    for frame in (gray, enhanced, enlarged):
+        _, ids, _ = detector.detectMarkers(frame)
+        if ids is not None:
+            decoded_sets.append(set(ids.ravel().tolist()))
+    counts = {
+        profile['board_id']: max(
+            (len(set(profile['marker_ids']) & ids) for ids in decoded_sets), default=0)
+        for profile in profiles
+    }
+    supported = [profile for profile in profiles if counts[profile['board_id']] >= 4]
+    if len(supported) != 1:
+        raise ValueError(f'初图无法唯一识别 7×5 或 12×8 标定板，各板完整标记数：{counts}')
+    return supported[0]
+
+
+def inspect(path, profile_path=None):
     raw = path.read_bytes()
     from jpeg_integrity import check_jpeg
     integrity = check_jpeg(path)
@@ -33,11 +57,13 @@ def inspect(path, profile_path):
     im = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
     if im is None or im.shape != (480, 640, 3):
         raise ValueError('需要640×480的完整K210原图')
+    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    profile = (detect_grasp_board_profile(gray) if profile_path is None
+               else json.loads(profile_path.read_text(encoding='utf-8')))
     board = make_board(profile)
     intrinsics_path=ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json'
     intrinsics=json.loads(intrinsics_path.read_text(encoding='utf-8'))
     candidates = []
-    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     for minimum in (2,1):
         for scale in (1, 2):
             charuco_params=cv2.aruco.CharucoParameters()
@@ -125,8 +151,10 @@ def inspect(path, profile_path):
         raise ValueError('检测图编码失败')
     (output / (stem + '.png')).write_bytes(png.tobytes())
     print('原图：', path)
-    print('标记数量：', report['marker_count'], '角点：', count, '/ 24')
-    print('ChArUco插值检查：', '角点几何通过，仍需独立求板位姿' if geometry['consistent'] else '插值角点不足；将另行检查真实编码标记，不据此单项判定定位失败')
+    print('标定板：', profile['board_id'])
+    print('标记数量：', report['marker_count'], '角点：', count, '/', profile['expected_charuco_corners'])
+    print('ChArUco插值检查：', '角点几何初筛通过' if geometry['consistent'] else '角点几何初筛未通过',
+          '；最终以独立板位姿检查为准', sep='')
     print('记录：', output / (stem + '.json'))
     print('检测图：', output / (stem + '.png'))
     return report
@@ -138,7 +166,7 @@ def main():
     group.add_argument('--capture', action='store_true')
     group.add_argument('--image', type=Path)
     parser.add_argument('--port')
-    parser.add_argument('--profile', type=Path, default=ROOT/'calibration_boards'/'charuco_7x5_print96_v1.json')
+    parser.add_argument('--profile', type=Path, help='指定板配置，默认自动识别 7×5 或 12×8')
     args = parser.parse_args()
     path = args.image
     if args.capture:

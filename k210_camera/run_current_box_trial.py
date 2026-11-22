@@ -51,6 +51,7 @@ def main():
     p.add_argument('--close-only',action='store_true',help='闭爪反馈稳定后等待现场收臂')
     p.add_argument('--result',type=Path)
     p.add_argument('--motion-profile',type=Path)
+    p.add_argument('--board-profile',type=Path,help='指定板配置，默认按初图自动识别')
     p.add_argument('--fallback-motion-profile',type=Path)
     resume=p.add_mutually_exclusive_group()
     resume.add_argument('--resume-hover',type=Path,help='只接续同场景已完成的预接近，不重发旧动作')
@@ -86,7 +87,7 @@ def run_trial(a,camera):
     hover_only=getattr(a,'hover_only',False)
     motion_args=[] if a.motion_profile is None else ['--motion-profile',str(a.motion_profile.resolve())]
     tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py',
-                     'board_marker_pose.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
+                     'check_grasp_board.py','board_marker_pose.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
                      'grasp_visual_observer.py','tcp_pose_planner.py','grasp_approach_policy.py')
     report={'stages':stages,'grasp_confirmed':False,
         'trial_conditions':{'mode':'hover_only' if hover_only else ('execute' if a.execute else 'preview'),
@@ -113,7 +114,7 @@ def run_trial(a,camera):
             outcome=None
             if script=='register_current_scene.py':
                 registered=register(Path(args[0]),motion=motion,saved_plane=getattr(a,"saved_plane",False),
-                                    previous_registration=previous_registration)
+                                    previous_registration=previous_registration,board_profile=a.board_profile)
                 scene=json.loads(registered.read_text(encoding='utf-8'))
                 report.update(registered_scene=str(registered),
                     nominal_scene_geometry=scene['scene_registration']['nominal_scene_geometry'],

@@ -41,6 +41,10 @@ def load_config(path):
         raise ValueError('本版只实现med_003、10.5×3.4×2.5cm和520；不能仅改配置就声称支持新药瓶')
     for name in ('calibration','results_dir'):
         c[name]=str((path.parent/c[name]).resolve())
+    if c.get('board_profile'):
+        board_profile=(path.parent/c['board_profile']).resolve()
+        if not board_profile.is_file():raise ValueError('找不到所选的标定板配置文件')
+        c['board_profile']=str(board_profile)
     for name in ('motion_profile','fallback_motion_profile'):
         if c.get(name):
             c[name]=str((path.parent/c[name]).resolve())
@@ -64,7 +68,8 @@ def check_environment(config):
     modules=('numpy','cv2','serial','PIL','rapidocr','onnxruntime')
     missing=[m for m in modules if importlib.util.find_spec(m) is None]
     files=[ROOT/'run_current_box_trial.py',ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json',
-           ROOT/'calibration_boards/charuco_7x5_print96_v1.json',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
+           ROOT/'calibration_boards/charuco_7x5_print96_v1.json',ROOT/'calibration_boards/charuco_12x8_14p4mm_v1.json',
+           ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
            ROOT.parent/'arm_service_review/received_20261105/arm_service/kinematics.py',
            ROOT.parent/'arm_service_review/received_20261105/config.serial.integration.json']
     absent=[str(p) for p in files if not p.is_file()]
@@ -107,6 +112,8 @@ class Coordinator:
             command.extend(['--motion-profile',self.config['motion_profile']])
         if self.config.get('fallback_motion_profile'):
             command.extend(['--fallback-motion-profile',self.config['fallback_motion_profile']])
+        if self.config.get('board_profile'):
+            command.extend(['--board-profile',self.config['board_profile']])
         close_only=self.config.get('close_only') is True
         if close_only and not preview:
             command.append('--close-only')

@@ -6,21 +6,25 @@ spatial support, full marker-outline cross-checks, and positive-depth PnP.
 import cv2
 import numpy as np
 
-def marker_plane_candidates_with_contrast(gray,K,D,board,detector,*,allow_three=False,allow_isolated_outlier=False):
+def marker_plane_candidates_with_contrast(gray,K,D,board,detector,*,allow_three=False,
+                                          allow_isolated_outlier=False,allow_wide_inlier_support=False):
     poses,metadata=marker_plane_candidates(gray,K,D,board,detector,allow_three=allow_three,
-                                          allow_isolated_outlier=allow_isolated_outlier)
+                                          allow_isolated_outlier=allow_isolated_outlier,
+                                          allow_wide_inlier_support=allow_wide_inlier_support)
     if poses:
         return poses,metadata
     enhanced=cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8)).apply(gray)
     retry,retry_meta=marker_plane_candidates(enhanced,K,D,board,detector,allow_three=allow_three,
-                                            allow_isolated_outlier=allow_isolated_outlier)
+                                            allow_isolated_outlier=allow_isolated_outlier,
+                                            allow_wide_inlier_support=allow_wide_inlier_support)
     if not retry:
         return poses,metadata
     retry_meta['image_preprocessing']='clahe'
     retry_meta['raw_marker_rejection']=metadata.get('rejection')
     return retry,retry_meta
 
-def marker_plane_candidates(gray,K,D,board,detector,*,allow_three=False,allow_isolated_outlier=False):
+def marker_plane_candidates(gray,K,D,board,detector,*,allow_three=False,
+                            allow_isolated_outlier=False,allow_wide_inlier_support=False):
     corners,ids,_=detector.detectMarkers(gray)
     lookup={int(j):i for i,j in enumerate(board.getIds())}
     pairs=[];kept_ids=[]
@@ -45,14 +49,19 @@ def marker_plane_candidates(gray,K,D,board,detector,*,allow_three=False,allow_is
         if H is None or mask is None:return [],{**meta,'rejection':'marker_layout_fit_failed'}
         valid=mask.ravel().astype(bool)
     area=float(cv2.contourArea(cv2.convexHull(obj[valid,:2].astype(np.float32))))
-    meta.update(layout_inlier_count=int(valid.sum()),layout_inlier_ratio=float(valid.mean()),layout_hull_area_cm2=area,
+    count=int(valid.sum())
+    ratio=float(valid.mean())
+    meta.update(layout_inlier_count=count,layout_inlier_ratio=ratio,layout_hull_area_cm2=area,
                 rejected_marker_ids=[j for j,ok in zip(kept_ids,valid) if not ok])
-    isolated_outlier=(allow_isolated_outlier and not three and valid.sum()>=5
-                      and valid.sum()==len(pairs)-1 and area>=20)
-    if valid.sum()<(3 if three else 4) or (valid.mean()<.9 and not isolated_outlier) or area<2:
+    isolated_outlier=allow_isolated_outlier and count>=5 and count==len(pairs)-1 and area>=20
+    # A large, well-distributed set can tolerate a few mislocalized detections.
+    # All retained markers still face the same metric pose and outline checks.
+    wide_support=allow_wide_inlier_support and count>=12 and ratio>=.85 and area>=40
+    if count<(3 if three else 4) or area<2 or (ratio<.9 and not (isolated_outlier or wide_support)):
         return [],{**meta,'rejection':'insufficient_spatial_marker_support'}
-    if isolated_outlier and valid.mean()<.9:
-        meta['layout_acceptance']='one_outlier_with_wide_inlier_support'
+    if ratio<.9:
+        meta['layout_acceptance']=('one_outlier_with_wide_inlier_support' if isolated_outlier
+                                   else 'large_board_wide_inlier_support')
     obj,pixels=obj[valid],pixels[valid]
     allobj=np.concatenate([p[0] for p,ok in zip(pairs,valid) if ok]).astype(np.float64)
     allpixels=np.concatenate([p[1] for p,ok in zip(pairs,valid) if ok]).astype(np.float64)
