@@ -10,6 +10,7 @@ import uuid
 import cv2
 import numpy as np
 
+from box_segmentation import image_masks, overview_mask, coverage, polygon_mask
 from check_grasp_board import ROOT
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
@@ -19,7 +20,7 @@ from sample_grasp_handeye import nominal_model
 from vision_task import VisionTaskSession
 
 
-def locate(im, ocr, joints, handeye, camera_override=None):
+def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
     intrinsic = json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
     K,D = np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients'])
     camera = robot_frame(joints,nominal_model(),'pitch_tool') @ np.array(handeye['T_mount_camera_cm'])
@@ -29,11 +30,26 @@ def locate(im, ocr, joints, handeye, camera_override=None):
     normal = board[:3,2]
     surface = board[:3,3]-normal*2.5
     outline = detect(im,ocr,'阿昔洛韦乳膏')
-    if not outline['candidates']:
+    masks = image_masks(image_path) if image_path is not None else None
+    box = None
+    if masks is not None:
+        box = overview_mask(masks, im.shape[:2], ocr)
+        outline['segmentation'] = {'model':'expv4s','instances':len(masks),'associated':box is not None}
+        if box is None:
+            outline.update(candidates=[], reason='target_text_without_unique_box_mask')
+        else:
+            outline['candidates'] = [c for c in outline['candidates']
+                if coverage(box, polygon_mask(box.shape, c['corners_pixel'])) >= .85]
+    if not outline['candidates'] and (masks is None or box is not None):
         from fit_known_box_outline import fit_outline
         fitted = fit_outline(im,ocr,K,D,camera,board)
+        if box is not None and (not fitted or not fitted['image_geometry_supported']
+                or coverage(box, polygon_mask(box.shape, fitted['corners_pixel'])) < .85):
+            fitted = fit_outline(im,ocr,K,D,camera,board,instance_mask=box)
+            outline['segmentation']['retried_fit_inside_mask'] = True
         outline['metric_edge_fit'] = fitted
-        if fitted and fitted['image_geometry_supported']:
+        if (fitted and fitted['image_geometry_supported'] and
+                (box is None or coverage(box, polygon_mask(box.shape, fitted['corners_pixel'])) >= .85)):
             outline['candidates'] = [fitted]
     supported = []
     for candidate in outline['candidates']:
@@ -115,7 +131,7 @@ def main(argv=None, camera=None):
               'before':before,'after':after,'ocr':ocr,'calibration':str(args.calibration.resolve()),
               'jpeg_integrity':integrity,'arm_motion_commands_sent':False}
     if ocr.get('target_selection',{}).get('status')=='target_found':
-        report['geometry'] = locate(im,ocr,before['joint_median'],best)
+        report['geometry'] = locate(im,ocr,before['joint_median'],best,image_path=path)
     else:
         report['geometry'] = None
     directory=ROOT/'vision_grasp_results'

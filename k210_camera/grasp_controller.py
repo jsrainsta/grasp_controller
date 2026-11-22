@@ -67,6 +67,9 @@ def check_environment(config):
            ROOT/'calibration_boards/charuco_7x5_print96_v1.json',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
            ROOT.parent/'arm_service_review/received_20261105/arm_service/kinematics.py',
            ROOT.parent/'arm_service_review/received_20261105/config.serial.integration.json']
+    inference_python=os.environ.get('GRASP_YOLO_PYTHON')
+    if inference_python:
+        files.extend([Path(inference_python),ROOT/'box_segmentation.py',ROOT.parent/'yolo/expv4s.pt'])
     absent=[str(p) for p in files if not p.is_file()]
     missing_features=[]
     if 'cv2' not in missing:
@@ -76,7 +79,7 @@ def check_environment(config):
         for attr in ('CharucoBoard','CharucoDetector','ArucoDetector'):
             if not hasattr(getattr(cv2,'aruco',None),attr):missing_features.append('cv2.aruco.'+attr)
     return {'type':'controller_environment_check','missing_modules':missing,'missing_files':absent,
-            'missing_opencv_features':missing_features,
+            'missing_opencv_features':missing_features,'box_segmentation':'expv4s' if inference_python else 'legacy',
             'ready_for_connection_check':not missing and not absent and not missing_features,'hardware_commands_sent':False,
             'independent_full_run_validated':False,'pi_hardware_validated':False}
 

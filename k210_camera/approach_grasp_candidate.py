@@ -15,6 +15,7 @@ from jpeg_integrity import check_jpeg
 from plan_fixed_box_grasp import ik
 from receive_photo import receive_photos
 from sample_grasp_handeye import call,nominal_model
+from box_segmentation import image_masks
 from track_box_reference import track
 from grasp_start_state import require_start_state,start_state_error
 from grasp_motion_profile import load_motion_profile
@@ -575,7 +576,7 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
         corners=np.array(target['top_corners_base_cm'])
         predicted=cv2.projectPoints(corners,cv2.Rodrigues(inv[:3,:3])[0],inv[:3,3],np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients']))[0].reshape(-1,2)
         expected_scale=abs(cv2.contourArea(predicted.astype(np.float32)))/abs(cv2.contourArea(np.array(target['corners_pixel'],np.float32)))
-        tracked=track(reference,frame,target['corners_pixel'],scale_bounds=(expected_scale*.6,expected_scale*1.6),coverage_basis='common_visible',current_face_hint=predicted)
+        tracked=track(reference,frame,target['corners_pixel'],scale_bounds=(expected_scale*.6,expected_scale*1.6),coverage_basis='common_visible',current_face_hint=predicted,instance_masks=image_masks(image))
         report.update(completed=True,hover_motion_completed=True,
                       near_tracking_accepted=tracked['status']=='tracked_face_for_review',
                       final=after,tracking=tracked,predicted_corners_pixel=predicted.tolist(),expected_scale=expected_scale)

@@ -1,4 +1,5 @@
 """Offline planar box-face feature tracking; no device or movement commands."""
+from box_segmentation import match_region, polygon_mask
 import argparse
 import hashlib
 import json
@@ -46,7 +47,30 @@ def rectified_face_points(reference,current,reference_quad,current_quad,ratio):
     return cv2.perspectiveTransform(p[None],np.linalg.inv(A))[0],cv2.perspectiveTransform(q[None],np.linalg.inv(B))[0]
 
 def track(reference, current, corners, scale_bounds=(.4,2.5), ratio_threshold=.7,
-          coverage_basis='full',current_face_hint=None):
+          coverage_basis='full',current_face_hint=None,instance_masks=None):
+    options = dict(scale_bounds=scale_bounds, ratio_threshold=ratio_threshold,
+                   coverage_basis=coverage_basis, current_face_hint=current_face_hint)
+    if instance_masks is None:
+        return _track(reference, current, corners, **options)
+    if current_face_hint is None:
+        raise ValueError('Instance selection requires an independent face prediction')
+    hint = np.asarray(current_face_hint, np.float32)
+    if hint.shape != (4,2) or not np.isfinite(hint).all() or not cv2.isContourConvex(hint):
+        raise ValueError('Invalid current face prediction')
+    instance = match_region(instance_masks, polygon_mask(current.shape, hint), .5)
+    if instance is None:
+        return dict(status='needs_observation', for_motion=False, robot_target=None,
+                    reason='no_unique_yolo_box_at_predicted_face')
+    measured = _track(reference, current, corners, **options)
+    if measured['status'] == 'tracked_face_for_review':
+        xy = np.rint(measured['inlier_current_pixel']).astype(int)
+        if np.all(instance[xy[:,1].clip(0,current.shape[0]-1), xy[:,0].clip(0,current.shape[1]-1)]):
+            return dict(measured, segmentation='expv4s_confirmed_inliers')
+    return _track(reference, current, corners, instance=instance, **options)
+
+
+def _track(reference, current, corners, *, scale_bounds, ratio_threshold,
+           coverage_basis, current_face_hint, instance=None):
     result = {"status":"needs_observation", "for_motion":False,
               "robot_target":None, "method":"masked_sift_planar_homography_prototype",
               "projected_corners_are_inferred":True,
@@ -71,9 +95,13 @@ def track(reference, current, corners, scale_bounds=(.4,2.5), ratio_threshold=.7
             return dict(result,reason='invalid_independent_current_face_hint')
         current_mask=np.zeros_like(current)
         cv2.fillConvexPoly(current_mask,np.rint(hint).astype(np.int32),255)
+        if instance is not None:
+            result['segmentation'] = 'expv4s_masked_retry'
         margin=max(12,min(40,round(np.sqrt(abs(cv2.contourArea(hint)))*.1)))
         current_mask=cv2.dilate(current_mask,np.ones((margin*2+1,margin*2+1),np.uint8))
         result['matching_scope']='independent_pose_predicted_face_roi'
+    if instance is not None:
+        current_mask &= instance
     k2, d2 = sift.detectAndCompute(current, current_mask)
     if d1 is None or d2 is None or len(d1)<12 or len(d2)<12:
         return dict(result, reason="insufficient_face_features")
@@ -94,6 +122,12 @@ def track(reference, current, corners, scale_bounds=(.4,2.5), ratio_threshold=.7
     result['raw_match_count']=len(good)
     if current_face_hint is not None:
         a,b=rectified_face_points(reference,current,q,current_face_hint,ratio_threshold)
+        if instance is not None and len(b):
+            xy = np.rint(b).astype(int)
+            h,w = current.shape
+            inside = (xy[:,0]>=0)&(xy[:,0]<w)&(xy[:,1]>=0)&(xy[:,1]<h)
+            inside[inside] = instance[xy[inside,1],xy[inside,0]] != 0
+            a,b = a[inside],b[inside]
         result['rectified_match_count']=len(a)
         merged=[]
         for source,target_point in list(zip(p1,p2))+list(zip(a,b)):

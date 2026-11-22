@@ -11,6 +11,7 @@ from check_grasp_board import ROOT
 from fit_grasp_handeye import transform,discrepancy,robot_frame
 from jpeg_integrity import check_jpeg
 from sample_grasp_handeye import nominal_model
+from box_segmentation import image_masks
 from track_box_reference import track
 from board_marker_pose import marker_plane_candidates_with_contrast
 
@@ -235,6 +236,7 @@ class GraspVisualObserver:
         texture_evidence=metadata.pop('texture_candidate_evidence',None)
         if texture_evidence is not None:
             metadata.update(texture_evidence[index])
+        masks = None if held else image_masks(path)
         attempts=[];independent_ground_attempts=[];diagnostics=[]
         for ref in self.refs:
             # Predict magnification from the measured camera pose instead of
@@ -243,7 +245,7 @@ class GraspVisualObserver:
             projected=cv2.projectPoints(self.corner_local,cv2.Rodrigues(nominal_face[:3,:3])[0],nominal_face[:3,3],self.K,self.D)[0].reshape(-1,2)
             area=abs(cv2.contourArea(np.array(ref['corners'],np.float32)))
             scale=abs(cv2.contourArea(projected.astype(np.float32)))/max(area,1.)
-            result=track(ref['gray'],gray,ref['corners'],scale_bounds=(scale*.6,scale*1.6),ratio_threshold=.7,coverage_basis='common_visible',current_face_hint=projected)
+            result=track(ref['gray'],gray,ref['corners'],scale_bounds=(scale*.6,scale*1.6),ratio_threshold=.7,coverage_basis='common_visible',current_face_hint=projected,instance_masks=masks)
             if result['status']!='tracked_face_for_review':
                 diagnostics.append({'reference':ref['path'],'tracking_reason':result.get('reason'),
                     'match_count':result.get('match_count'),'inlier_count':result.get('inlier_count'),

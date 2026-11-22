@@ -3,7 +3,7 @@
 PC currently owns the camera and dispatches the existing Pi HTTP executor.
 This is not yet the final Pi-owned coordinator or a general bottle detector.
 """
-import argparse,hashlib,json,time
+import argparse,hashlib,json,os,time
 from pathlib import Path
 from datetime import datetime
 from check_grasp_board import ROOT
@@ -86,11 +86,12 @@ def run_trial(a,camera):
     hover_only=getattr(a,'hover_only',False)
     motion_args=[] if a.motion_profile is None else ['--motion-profile',str(a.motion_profile.resolve())]
     tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py',
-                     'board_marker_pose.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
+                     'board_marker_pose.py','box_segmentation.py','track_box_reference.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
                      'grasp_visual_observer.py','tcp_pose_planner.py','grasp_approach_policy.py')
     report={'stages':stages,'grasp_confirmed':False,
         'trial_conditions':{'mode':'hover_only' if hover_only else ('execute' if a.execute else 'preview'),
             'camera_port':a.port,'camera_baudrate':a.camera_baudrate,
+            'box_segmentation':'expv4s' if os.environ.get('GRASP_YOLO_PYTHON') else 'legacy',
             'motion_profile':motion,'calibration_sha256':hashlib.sha256(a.calibration.read_bytes()).hexdigest(),
             'core_source_sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in tracked_sources}}}
     def save():

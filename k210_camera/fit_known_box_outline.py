@@ -3,23 +3,25 @@
 Not a general object detector. Fits a metric rectangle to measured image edges
 and requires blue-mask support; a checkerboard edge alone cannot satisfy it.
 """
+from functools import partial
 import math
 import cv2
 import numpy as np
 
 
-def fit_outline(image, ocr, K, D, T_base_camera, T_base_board):
-    fit = _fit_outline(image, ocr, K, D, T_base_camera, T_base_board)
+def fit_outline(image, ocr, K, D, T_base_camera, T_base_board, *, instance_mask=None):
+    fit_one = partial(_fit_outline, instance_mask=instance_mask)
+    fit = fit_one(image, ocr, K, D, T_base_camera, T_base_board)
     if fit and fit['image_geometry_supported']:
         return fit
     # Small blue fringes on the reference board can skew the initial rectangle.
-    retry = _fit_outline(image, ocr, K, D, T_base_camera, T_base_board,
+    retry = fit_one(image, ocr, K, D, T_base_camera, T_base_board,
                          min_component_area=200)
     if retry and retry['image_geometry_supported']:
         return retry
     # Refit weak blue/white edges using color and account for visible sides.
     if fit is not None:
-        edge_retry = _fit_outline(image, ocr, K, D, T_base_camera, T_base_board,
+        edge_retry = fit_one(image, ocr, K, D, T_base_camera, T_base_board,
                                   use_color_and_side_geometry=True)
         if edge_retry and edge_retry['image_geometry_supported']:
             return edge_retry
@@ -28,7 +30,7 @@ def fit_outline(image, ocr, K, D, T_base_camera, T_base_board):
         fits=[r for r in (fit,retry,edge_retry) if r and r['edge_median_px']<1.5
               and r['edge_p90_px']<3 and max(r['edge_p90_by_side_px'])<3.25]
         if len(fits)==1:
-            combined=_fit_outline(image,ocr,K,D,T_base_camera,T_base_board,
+            combined=fit_one(image,ocr,K,D,T_base_camera,T_base_board,
                                   min_component_area=200,use_color_and_side_geometry=True)
             if (combined and combined['edge_median_px']<1.5 and combined['edge_p90_px']<3
                     and max(combined['edge_p90_by_side_px'])<3.25):
@@ -55,13 +57,15 @@ def fit_outline(image, ocr, K, D, T_base_camera, T_base_board):
 
 
 def _fit_outline(image, ocr, K, D, T_base_camera, T_base_board,
-                 min_component_area=20, *, use_color_and_side_geometry=False):
+                 min_component_area=20, *, use_color_and_side_geometry=False, instance_mask=None):
     seed_rows = [r for r in ocr.get('lines',[]) if r.get('text')=='阿昔洛韦乳膏' and r.get('confidence',0)>=.8]
     if not seed_rows:
         return None
     seed = np.array(seed_rows[0]['polygon'],np.float32)
     hsv = cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
     blue = cv2.inRange(hsv,np.array([84,65,45],np.uint8),np.array([135,255,255],np.uint8))
+    if instance_mask is not None:
+        blue = cv2.bitwise_and(blue, instance_mask)
     num,labels,stats,centers = cv2.connectedComponentsWithStats(blue)
     center = seed.mean(0)
     available = [i for i in range(1,num) if stats[i,cv2.CC_STAT_AREA]>=200

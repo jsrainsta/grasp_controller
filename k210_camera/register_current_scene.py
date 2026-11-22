@@ -9,6 +9,7 @@ import numpy as np
 import cv2
 from check_grasp_board import ROOT,GRASP_BOARD_PROFILE,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
+from box_segmentation import image_masks
 from observe_grasp_target import locate
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
@@ -54,7 +55,7 @@ class LowerBoxEdgeUnclear(ValueError):
         self.board_pose=board_pose
 
 
-def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
+def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, instance_masks=None):
     from track_box_reference import read_image, track
 
     old_cal=json.loads(Path(previous['calibration']).read_text(encoding='utf-8'))
@@ -75,7 +76,7 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
     tvec=world_to_camera[:3,3]
     projected=cv2.projectPoints(top_corners,rvec,tvec,K,D)[0].reshape(-1,2)
     tracked=track(read_image(previous['image'],cv2.IMREAD_GRAYSCALE),current_image,corners,
-                  current_face_hint=projected,coverage_basis='common_visible')
+                  current_face_hint=projected,coverage_basis='common_visible',instance_masks=instance_masks)
     if tracked['status']!='tracked_face_for_review' or tracked['inlier_count']<16:
         raise ValueError('抬高后盒面纹理不足，无法确认药盒仍在原位')
 
@@ -144,7 +145,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
     calpath.write_text(json.dumps(cal,ensure_ascii=False,indent=2),encoding='utf-8')
     image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
     o['calibration']=str(calpath.resolve())
-    o['geometry']=locate(image,o['ocr'],o['before']['joint_median'],best,camera_override=camera)
+    o['geometry']=locate(image,o['ocr'],o['before']['joint_median'],best,camera_override=camera,image_path=o['image'])
     o['scene_registration']=cal['scene_registration']
     if o['geometry']['selected'] is None:
         outline=o['geometry']['outline']
@@ -155,11 +156,12 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             detail=(f"{reason}边缘中位误差 {fit['edge_median_px']:.2f}px，"
                     f"P90 {fit['edge_p90_px']:.2f}px，蓝色覆盖 {fit['blue_fraction_inside']:.1%}")
         message='新场景中药盒边界拟合失败，'+detail
-        if previous_registration is not None and not saved_plane:
+        if (previous_registration is not None and not saved_plane
+                and outline.get('segmentation', {}).get('associated', True)):
             previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
             try:
                 evidence=verify_stationary_box(previous,cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),
-                                               np.asarray(best['T_base_board_cm']),camera,K,D)
+                                               np.asarray(best['T_base_board_cm']),camera,K,D,instance_masks=image_masks(o['image']))
             except ValueError as error:
                 raise ValueError(f'{message}。{error}') from error
             # Preserve the proven image and its matching pixel coordinates.
