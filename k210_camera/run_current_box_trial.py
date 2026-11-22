@@ -48,6 +48,7 @@ def main():
     mode.add_argument('--preview',action='store_true',help='仅拍照、定位和预览抓取路径')
     mode.add_argument('--hover-only',action='store_true',help='执行预接近并拍摄悬停近图')
     p.add_argument('--saved-plane',action='store_true',help='复用 --calibration 中的台面，仅用于预览')
+    p.add_argument('--close-only',action='store_true',help='闭爪反馈稳定后等待现场收臂')
     p.add_argument('--result',type=Path)
     p.add_argument('--motion-profile',type=Path)
     p.add_argument('--fallback-motion-profile',type=Path)
@@ -239,10 +240,13 @@ def run_trial(a,camera):
             return
     run('guarded_visual_approach.py',*common,'--observation',registered,'--hover-report',hover,*seed_args,*motion_args,'--execute')
     approach_report=newest('visual_approach_*.json',start,lambda d:Path(d.get('source','')).resolve()==registered.resolve() and d.get('completed'))
-    run('verify_same_box_grasp.py',approach_report,*common,'--execute')
+    close_args=['--close-only'] if a.close_only else []
+    run('verify_same_box_grasp.py',approach_report,*common,'--execute',*close_args)
     trial=newest('grasp_trial_*.json',start,lambda d:Path(d.get('source','')).resolve()==approach_report.resolve())
     result=json.loads(trial.read_text(encoding='utf-8'))
     report.update(verification=str(trial),grasp_confirmed=result.get('grasp_confirmed',False))
+    if a.close_only and result.get('closure_confirmed') is True:
+        report.update(status='awaiting_stow_confirmation',closure_confirmed=True)
     save()
     print('整轮记录：',out)
 

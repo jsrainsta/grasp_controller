@@ -74,6 +74,7 @@ def main(argv=None, camera_session=None):
     p.add_argument('--camera-baudrate',type=int,default=115200)
     mode=p.add_mutually_exclusive_group()
     mode.add_argument('--execute',action='store_true')
+    p.add_argument('--close-only',action='store_true',help='闭爪反馈稳定后等待现场收臂')
     mode.add_argument('--recheck-held',action='store_true',help='输入已试提记录，只补拍和读反馈，不发送动作')
     a=p.parse_args(argv)
     prior=json.loads(a.approach.read_text(encoding='utf-8')) if a.recheck_held else None
@@ -245,7 +246,7 @@ def main(argv=None, camera_session=None):
                             joint_bias={j:max(-8,min(8,v)) for j,v in errors.items()}
                 return plan_verification_lift(model,joints,observer.tcp['offset_tool_cm'],limits,height,up,motion,
                                               joint_bias=joint_bias)
-            if motion.get('adaptive_pitch_search'):
+            if motion.get('adaptive_pitch_search') and not a.close_only:
                 result['preclosure_lift_preview']=plan_lift(state,-tcp[2]);save()
             if not a.execute:result['phase']='preview_only';return
             move({'1':520},'single authorized empirical closure; coarse position completion is not grasp confirmation',40)
@@ -262,6 +263,10 @@ def main(argv=None, camera_session=None):
                     jaw.append(next(v['position'] for v in readings['positions'] if v['id']==1));time.sleep(.25)
             result['jaw_samples']=jaw;save()
             if not stable_loaded(jaw):raise RuntimeError('闭合位置不在当前药盒的稳定观察区；不试提或追加收紧')
+            if a.close_only:
+                result.update(phase='awaiting_stow_confirmation',closure_confirmed=True)
+                print('闭爪反馈稳定，请现场收臂并确认药盒夹稳。',flush=True)
+                return
             if after_close is not None and can_reuse_lift_baseline(state,after_close,visual):
                 baseline,state=visual,after_close
                 result['lift_baseline_source']='preclosure_accepted_support_observation'

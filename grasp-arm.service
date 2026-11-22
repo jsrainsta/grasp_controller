@@ -1,0 +1,8 @@
+[Unit]
+Description=Grasp mechanical arm HTTP service
+
+[Service]
+WorkingDirectory=/home/pi/competition/mechanical-arm
+ExecStart=/home/pi/competition/mechanical-arm/.venv/bin/python -B -m arm_service --config config.serial.integration.json
+KillSignal=SIGINT
+TimeoutStopSec=15
