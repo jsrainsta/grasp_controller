@@ -51,6 +51,17 @@ def fit_outline(image, ocr, K, D, T_base_camera, T_base_board):
                 return {**best,'image_geometry_supported':True,
                         'acceptance_basis':'consistent_grayscale_rim_with_lower_common_edge_error'}
             return {**fit,'rejection_reason':'edge_fits_disagree_on_box_corners'}
+        if not fits:
+            combined=_fit_outline(image,ocr,K,D,T_base_camera,T_base_board,
+                                  min_component_area=200,use_color_and_side_geometry=True)
+            # This fit requires a complete in-frame outline, so a fourth edge
+            # with weak support cannot pass via the color tolerance alone.
+            if (combined and combined['edge_median_px']<1.5
+                    and max(combined['edge_p90_by_side_px'])<=2
+                    and combined['blue_fraction_inside']>=.895
+                    and combined['raw_blue_fraction_inside_top']>.8):
+                return {**combined,'image_geometry_supported':True,
+                        'acceptance_basis':'sharp_edges_with_filtered_blue_and_side_geometry'}
     return fit
 
 
