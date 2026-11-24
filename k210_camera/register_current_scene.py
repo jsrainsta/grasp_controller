@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 from check_grasp_board import LARGE_GRASP_BOARD_PROFILE,ROOT,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
-from observe_grasp_target import locate
+from observe_grasp_target import clipped_box_top,locate
 from box_rim_geometry import RimEvidence,face_corners,refine_grounded_rim
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
@@ -158,6 +158,12 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         if fit:
             detail=f"可见边覆盖 {fit['edge_coverage']}，边缘平均偏差 {fit['mean_edge_distance_px']:.2f}px"
         message='新场景中药盒边界拟合失败，'+detail
+        if not saved_plane:
+            frame_points=clipped_box_top(image,o['ocr'])
+            if frame_points is not None:
+                raise ObservationBoxEdgeUnclear(
+                    f'{message}；已确认药名对应盒面接触画面顶部，先抬头补拍',
+                    best['T_base_board_cm'],frame_points)
         if previous is not None:
             try:
                 evidence=verify_stationary_box(previous,cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),

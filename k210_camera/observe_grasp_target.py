@@ -1,4 +1,5 @@
 """Current-box observation using commissioned camera candidate; no arm writes."""
+from medicine_match import name_matches
 import argparse
 from contextlib import nullcontext
 from datetime import datetime
@@ -20,6 +21,33 @@ from sample_grasp_handeye import nominal_model
 from vision_task import VisionTaskSession
 
 
+def clipped_box_top(image, ocr):
+    """Return observed frame intersections for a target-associated blue face.
+
+    This only requests a better view; these points are not box corners and
+    must never be used to authorize grasping from an incomplete outline.
+    """
+    identity = [np.asarray(row['polygon'], float) for row in ocr.get('lines', [])
+                if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence', 0) >= .8]
+    if not identity:
+        return None
+    mask = cv2.inRange(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
+                       np.array([84, 65, 45], np.uint8), np.array([135, 255, 255], np.uint8))
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask)
+    for polygon in identity:
+        center = polygon.mean(axis=0)
+        for index in range(1, count):
+            x, y, width, height, area = stats[index]
+            if (area < 200 or y > 5 or not x - 20 <= center[0] <= x + width + 20
+                    or not y - 20 <= center[1] <= y + height + 180):
+                continue
+            rows, columns = np.nonzero(labels[:6] == index)
+            if len(columns) >= 8:
+                return [[float(columns.min()), float(rows.min())],
+                        [float(columns.max()), float(rows.min())]]
+    return None
+
+
 def locate(im, ocr, joints, handeye, camera_override=None):
     intrinsic = json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
     K,D = np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients'])
@@ -32,7 +60,7 @@ def locate(im, ocr, joints, handeye, camera_override=None):
     outline = detect(im,ocr,'阿昔洛韦乳膏')
     if not outline['candidates']:
         identity=[row['polygon'] for row in ocr.get('lines',[])
-                  if row.get('text')=='阿昔洛韦乳膏' and row.get('confidence',0)>=.8]
+                  if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence',0)>=.8]
         fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
                             np.linalg.solve(camera,board),(10.5,3.4,2.5),identity)
         if fitted is not None:

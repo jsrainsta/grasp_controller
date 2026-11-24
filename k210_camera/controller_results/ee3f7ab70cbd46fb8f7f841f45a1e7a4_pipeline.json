@@ -1,0 +1,232 @@
+{
+  "stages": [
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1795507690.096026,
+      "returncode": 0,
+      "completed_at": 1795507706.3525372
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1795507706.383051,
+      "returncode": 1,
+      "error": "ObservationBoxEdgeUnclear: 新场景中药盒边界拟合失败，可见边覆盖 [0.45161290322580644, None, 0.9333333333333333, 0.8055555555555556]，边缘平均偏差 1.85px；已确认药名对应盒面接触画面顶部，先抬头补拍",
+      "completed_at": 1795507713.9197628
+    },
+    {
+      "script": "observe_grasp_target.py",
+      "started_at": 1795507717.609238,
+      "returncode": 0,
+      "completed_at": 1795507732.3728504
+    },
+    {
+      "script": "register_current_scene.py",
+      "started_at": 1795507732.410474,
+      "returncode": 0,
+      "completed_at": 1795507738.627716
+    },
+    {
+      "script": "approach_grasp_candidate.py",
+      "started_at": 1795507738.628594,
+      "returncode": 0,
+      "completed_at": 1795507758.4688566
+    },
+    {
+      "script": "guarded_visual_approach.py",
+      "started_at": 1795507758.4856913,
+      "returncode": 1,
+      "error": "RuntimeError: TCP高度超出本次试验范围",
+      "completed_at": 1795507808.067907
+    }
+  ],
+  "grasp_confirmed": false,
+  "trial_conditions": {
+    "mode": "execute",
+    "camera_port": "COM14",
+    "camera_baudrate": 230400,
+    "motion_profile": {
+      "version": "same-box-adaptive-placement-trial",
+      "commissioning_only": true,
+      "object_id": "med_003",
+      "enabled_for_execution": true,
+      "grasp_region": {
+        "version": "same-box-lower-contact-v03",
+        "along_length_cm": 1.5,
+        "across_width_cm": 0.45,
+        "tcp_height_range_cm": [
+          1.5,
+          2.25
+        ],
+        "tcp_height_target_cm": 2.0,
+        "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+      },
+      "preferred_nominal_pitch_deg": -80,
+      "nominal_pitch_range_deg": [
+        -90,
+        -50
+      ],
+      "adaptive_pitch_search": true,
+      "maximum_fixed_wrist_alignment_deg": 25,
+      "verify_hold_with_joint_feedback": true,
+      "reuse_preclosure_lift_baseline": true,
+      "open_jaw_minimum": 370,
+      "pregrasp_height_cm": 6.0,
+      "pregrasp_min_top_clearance_cm": 2.5,
+      "minimum_nominal_pad_height_cm": 1.3,
+      "maximum_near_corrections": 8,
+      "maximum_coarse_joint_delta": 60,
+      "whole_path_precheck": true,
+      "maximum_near_step_cm": 3.2,
+      "reuse_fresh_stationary_frame_s": 30,
+      "grasp_quality_validated": false,
+      "note": "Far placement commissioning trial. Extends nominal pitch search to -55 degrees. Physical contact and grasp quality are unverified."
+    },
+    "calibration_sha256": "39d7eaad1596a16af9f209fe710fe000a09fe99a724bc55fbee6fa179d194fed",
+    "core_source_sha256": {
+      "observe_grasp_target.py": "d5f4d5fc4475cf0d46a53fe7d221d5f51441ffec3a4e6ac9c7c37e9b10eede86",
+      "approach_grasp_candidate.py": "ce43afa2324aee7ee19b56bef0552c09ca9fed2bc6deca261bb141c1bf68b443",
+      "guarded_visual_approach.py": "ae4444ee56ad691659b989b2351060ad85fe0d46a40a1ebf4571f0cd4503cd47",
+      "verify_same_box_grasp.py": "5bdfd3b91307a5e3c353b029dc4d7086c1cbc15528874d81fa91a8e5e945bfef",
+      "run_current_box_trial.py": "dab1bef9447d72a9245a421ae181b02ceee128dd490f65e51910946fa234eae3",
+      "grasp_controller.py": "de2bb520243c72f740207c4057948e29feec4c55d8b2a6a78ecbf64e17fcfb3e",
+      "register_current_scene.py": "5f21c32e4621f0811e63a40d83393c9be3f08910e793ab809406545a1a69b5a5",
+      "check_grasp_board.py": "df391a11913bd927f8ba936ef5cdf1adf5ca39031282b09064ad4ba9cc64a9c3",
+      "board_marker_pose.py": "ae5f179ff9bb81b1508b10f2199a396763d9ce0726eb95897524982b00d9774f",
+      "detect_box_outline.py": "4b44cfc0a101428978c7722d84567a6a1997f8e74e3ac466b641a2cb8c52074c",
+      "fit_grasp_handeye.py": "01dcac116a0634c661525bcad549cdf491b6b6ffd9c76b123a540bc2b0d87aa7",
+      "grasp_visual_observer.py": "dd91eb4090020a1881038deb4e3950f3959d355ef047aecc7ae192de759b522e",
+      "box_rim_geometry.py": "cc55773395bf0f05ff1746a447b22c353b90f57aa7a3d14ecb00879f2cb675e1",
+      "tcp_pose_planner.py": "5907c967d8e00fed31326e19d1d20ec0847a6ad9abd14d9fbe5b69d6d7e590af",
+      "grasp_approach_policy.py": "c3b52356d5175f505424ba4bf50c8d817b42be8616ba0f7a96e446ebe3f0ff08"
+    }
+  },
+  "initial_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_080818_389054_seq65_2791099b_00167b52_commissioning.json",
+  "observation_retract": {
+    "source_observation": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_080818_389054_seq65_2791099b_00167b52_commissioning.json",
+    "reason": "新场景中药盒边界拟合失败，可见边覆盖 [0.45161290322580644, None, 0.9333333333333333, 0.8055555555555556]，边缘平均偏差 1.85px；已确认药名对应盒面接触画面顶部，先抬头补拍",
+    "projected_box_upper_edge_px": [
+      [
+        285.96584753765774,
+        103.87488849127718
+      ],
+      [
+        305.2800490905677,
+        103.91833324125963
+      ]
+    ],
+    "head_up_candidate_count": 20,
+    "head_up_target_inset_px": 100.0,
+    "start_joints": {
+      "1": 385,
+      "2": 498,
+      "3": 171,
+      "4": 130,
+      "5": 412,
+      "6": 496
+    },
+    "starting_clearance_cm": 2.185723013477999,
+    "request": {
+      "request_id": "observation_retract_52cd1a7eb62541e78a49ff60c083b53c",
+      "targets": [
+        {
+          "id": 3,
+          "position": 150
+        },
+        {
+          "id": 4,
+          "position": 158
+        },
+        {
+          "id": 5,
+          "position": 386
+        },
+        {
+          "id": 6,
+          "position": 497
+        }
+      ],
+      "duration_ms": 20
+    },
+    "planned_retraction_cm": 0.011902372721304667,
+    "requested_rise_cm": 2.5,
+    "requested_pitch_change_deg": 8,
+    "task": {
+      "task_id": "d2c90bf5eb9940d3bc7f1ff106e6d8f0",
+      "request_id": "observation_retract_52cd1a7eb62541e78a49ff60c083b53c",
+      "type": "move",
+      "status": "reached",
+      "created_at": "2026-11-24T08:08:35.590+00:00",
+      "updated_at": "2026-11-24T08:08:36.900+00:00",
+      "targets": {
+        "3": 150,
+        "4": 158,
+        "5": 386,
+        "6": 497
+      },
+      "feedback_confirmed": true,
+      "physically_stopped": null,
+      "consecutive_samples": 2,
+      "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+      "acceptance": {
+        "position_tolerance": 10,
+        "required_samples": 2
+      },
+      "feedback_delay_s": 0.5,
+      "position_feedback": {
+        "observed_at": "2026-11-24T08:08:36.899+00:00",
+        "joint_positions": {
+          "1": 385,
+          "2": 498,
+          "3": 155,
+          "4": 152,
+          "5": 390,
+          "6": 496
+        },
+        "target_errors": {
+          "3": 5,
+          "4": -6,
+          "5": 4,
+          "6": -1
+        },
+        "within_tolerance": true,
+        "position_tolerance": 10,
+        "required_samples": 2
+      }
+    },
+    "measured_joints": {
+      "1": 385,
+      "2": 498,
+      "3": 153,
+      "4": 153,
+      "5": 391,
+      "6": 496
+    },
+    "measured_clearance_cm": 4.191439689196187
+  },
+  "observation_after_retract": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_080845_923838_seq66_08ad4c15_483e3020_commissioning.json",
+  "registered_scene": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_080845_923838_seq66_08ad4c15_483e3020_commissioning_registered.json",
+  "nominal_scene_geometry": {
+    "box_top_center_base_cm": [
+      24.221636004574496,
+      -1.662401788486361,
+      -1.8324189538860751
+    ],
+    "support_at_box_center_base_cm": [
+      24.15804829357632,
+      -1.7459975106106909,
+      -4.330211651099462
+    ],
+    "support_down_normal_base": [
+      -0.02543508439926962,
+      -0.03343828884973187,
+      -0.9991170788853546
+    ]
+  },
+  "board_pose_rmse_px": 0.517764442427504,
+  "box_alignment_deg": 1.393972374783267,
+  "selected_motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_far_placement_trial.json",
+  "motion_profile_selection": {
+    "mode": "fallback",
+    "primary_error": "盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0, 5.0, 5.25, 5.75, 6.25, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：0.8 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0, 5.0, 5.25, 5.75, 6.25, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；0.4 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0, 5.0, 5.25, 5.75, 6.25, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；1.2 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0, 5.0, 5.25, 5.75, 6.25, 6.75, 7.25, 7.5, 7.75, 8.0, 8.25, 8.5, 8.75, 9.0, 9.25, 9.5, 9.75, 10.0, 10.25, 10.5, 10.75, 11.0, 11.25, 11.5, 11.75, 12.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解"
+  }
+}

@@ -3,6 +3,7 @@
 Not a general object detector. Fits a metric rectangle to measured image edges
 and requires blue-mask support; a checkerboard edge alone cannot satisfy it.
 """
+from medicine_match import name_matches
 import math
 import cv2
 import numpy as np
@@ -67,7 +68,7 @@ def fit_outline(image, ocr, K, D, T_base_camera, T_base_board):
 
 def _fit_outline(image, ocr, K, D, T_base_camera, T_base_board,
                  min_component_area=20, *, use_color_and_side_geometry=False):
-    seed_rows = [r for r in ocr.get('lines',[]) if r.get('text')=='阿昔洛韦乳膏' and r.get('confidence',0)>=.8]
+    seed_rows = [r for r in ocr.get('lines',[]) if name_matches(r.get('text',''), '阿昔洛韦乳膏') and r.get('confidence',0)>=.8]
     if not seed_rows:
         return None
     seed = np.array(seed_rows[0]['polygon'],np.float32)

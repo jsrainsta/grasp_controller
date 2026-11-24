@@ -205,7 +205,7 @@ def main(argv=None, camera_session=None):
                                                   for v in last_targets}
                     minimum_height=motion['minimum_nominal_pad_height_cm']
                     if decision['phase']=='horizontal_alignment_at_clearance':
-                        minimum_height=max(minimum_height,3.0)
+                        minimum_height=max(minimum_height,min(3.0,height))
                     planned=choose_step(model,positions,delta,observer.tcp['offset_tool_cm'],limits,height,-observer.Y[:3,2],
                         minimum_height,motion['preferred_nominal_pitch_deg'],motion['nominal_pitch_range_deg'],
                         joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)

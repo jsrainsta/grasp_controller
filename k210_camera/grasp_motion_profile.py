@@ -26,14 +26,14 @@ def load_motion_profile(path=None):
         if type(limit) not in (int,float) or not DEFAULT_FIXED_WRIST_ALIGNMENT_DEG<=limit<=MAX_FIXED_WRIST_ALIGNMENT_DEG:
             raise ValueError(f'固定腕轴对齐角度须在 {DEFAULT_FIXED_WRIST_ALIGNMENT_DEG}～{MAX_FIXED_WRIST_ALIGNMENT_DEG}°')
     r=data['grasp_region'];lo,hi=r['tcp_height_range_cm'];target=r['tcp_height_target_cm']
-    if not 1.5<=lo<=target<=hi<=3.0:raise ValueError('抓点高度配置无效')
+    if not 1.0<=lo<=target<=hi<=3.0:raise ValueError('抓点高度配置无效')
     if not 0<r['along_length_cm']<=1.5 or not 0<r['across_width_cm']<=.45:raise ValueError('抓取区域超出当前盒试验范围')
     a,b=data['nominal_pitch_range_deg']
-    if not -95<=a<=data['preferred_nominal_pitch_deg']<=b<=-55:raise ValueError('俯仰配置无效')
+    if not -95<=a<=data['preferred_nominal_pitch_deg']<=b<=-50:raise ValueError('俯仰配置无效')
     if not 1<=data['maximum_near_corrections']<=10:raise ValueError('纠偏预算无效')
     if not 60<=data['maximum_coarse_joint_delta']<=100:raise ValueError('粗接近关节步幅无效')
     if not 0<data['maximum_near_step_cm']<=3.2:raise ValueError('末端步幅无效')
-    if not 1.3<=data['minimum_nominal_pad_height_cm']<=lo:raise ValueError('路径高度门槛无效')
+    if not 1.0<=data['minimum_nominal_pad_height_cm']<=lo:raise ValueError('路径高度门槛无效')
     if not 4.2<=data['pregrasp_height_cm']<=8.5 or not 1.7<=data['pregrasp_min_top_clearance_cm']<=3:
         raise ValueError('预抓取余量配置无效')
     return data

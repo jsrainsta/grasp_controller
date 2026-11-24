@@ -135,7 +135,7 @@ class OCRRunner:
         focus_record=None
         if known_box_focus and match_medicine(lines,self.catalog,self.min_name_score)['status'] in ('no_text','unknown','low_confidence'):
             # Current blue/white box only: color proposes a bounded ROI, but
-            # identity still requires the complete OCR name. Never guess it.
+            # Identity still requires catalog matching using the shared OCR policy.
             import cv2
             import numpy as np
             rgb=np.array(image);hsv=cv2.cvtColor(rgb,cv2.COLOR_RGB2HSV)
@@ -154,7 +154,7 @@ class OCRRunner:
                         lines.append({**line,'polygon':[[x/scale+x0,y/scale+y0] for x,y in line['polygon']],
                                       'ocr_source':'known_box_color_roi_3x'})
                     focus_record={'source_bbox_px':[x0,y0,x1,y1],'scale':scale,
-                                  'adds_physical_detail':False,'complete_name_required':True}
+                                  'adds_physical_detail':False,'name_matching_policy':'exact_or_one_edit_or_four_character_fragment'}
                     orientation_attempts.extend({**v,'source':'known_box_color_roi_3x'} for v in attempts)
         elapsed = time.perf_counter() - started
         self._has_run = True
@@ -177,7 +177,7 @@ class OCRRunner:
         elif match_status == "no_text":
             print("名称匹配：没有文字，暂未确认。")
         else:
-            print("名称匹配：没有读到名单中的完整名称，暂未确认。")
+            print("名称匹配：没有读到能匹配名单的药名，暂未确认。")
 
         target_selection = select_target(medicine_match, self.target)
         if target_selection is not None:
@@ -236,7 +236,7 @@ def main():
     parser.add_argument("--catalog", type=Path, default=PROJECT_DIR / "medicines.json",
                         help="演示药品名称名单")
     parser.add_argument("--min-name-score", type=float, default=0.8,
-                        help="完整名称匹配所需的最低 OCR 模型分数，默认 0.8")
+                        help="药名匹配所需的最低 OCR 模型分数，默认 0.8")
     parser.add_argument("--target", help="筛选目标药品的演示编号，例如 med_002；省略时只做名称匹配")
     args = parser.parse_args()
     image_path = (args.image or latest_photo(PROJECT_DIR / "images")).expanduser().resolve()

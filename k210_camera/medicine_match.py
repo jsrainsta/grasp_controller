@@ -1,8 +1,4 @@
-"""Conservative, local matching of complete OCR lines to a medicine catalog.
-
-OCR confidence is used only as a threshold; it is not proof of medicine identity.
-No fuzzy matching, missing-character completion, or substring matching is used.
-"""
+"""Local medicine matching with bounded OCR spelling and truncation tolerance."""
 
 import json
 import math
@@ -15,6 +11,26 @@ def normalise_text(text):
     if not isinstance(text, str):
         raise ValueError("文字必须是字符串。")
     return "".join(unicodedata.normalize("NFKC", text).split()).casefold()
+
+
+def name_matches(text, name):
+    text, name = normalise_text(text), normalise_text(name)
+    if text == name:
+        return True
+    if len(text) < 4 or len(name) < 4:
+        return False
+    if text in name:
+        return True
+    if abs(len(text) - len(name)) > 1:
+        return False
+    previous = list(range(len(name) + 1))
+    for i, char in enumerate(text, 1):
+        current = [i]
+        for j, expected in enumerate(name, 1):
+            current.append(min(current[-1] + 1, previous[j] + 1,
+                               previous[j - 1] + (char != expected)))
+        previous = current
+    return previous[-1] <= 1
 
 
 def _validate_catalog(catalog):
@@ -67,7 +83,7 @@ def _validate_score(value, field):
 
 
 def match_medicine(lines, catalog, min_score=0.8):
-    """Match complete OCR lines; return an auditable JSON-serialisable result.
+    """Match OCR lines with spelling/truncation tolerance; return an auditable JSON-serialisable result.
 
     Line indexes are zero-based. Evidence from repeated lines is grouped by
     medicine ID, so repeated observations of one name are not ambiguous.
@@ -87,31 +103,22 @@ def match_medicine(lines, catalog, min_score=0.8):
         if not normalised:
             continue
         has_text = True
-        medicine = by_name.get(normalised)
-        if medicine is None:
+        exact = by_name.get(normalised)
+        matches = [exact] if exact is not None else [
+            item for item in medicines if name_matches(normalised, item['name'])]
+        if not matches:
             continue
-        candidate = candidates_by_id.setdefault(
-            medicine["id"],
-            {
-                "medicine_id": medicine["id"],
-                "name": medicine["name"],
-                "ocr_confidence": score,
-                "source_line_indices": [],
-                "evidence": [],
-                "meets_threshold": False,
-            },
-        )
-        candidate["ocr_confidence"] = max(candidate["ocr_confidence"], score)
-        candidate["source_line_indices"].append(index)
-        candidate["evidence"].append(
-            {
-                "line_index": index,
-                "text": line["text"],
-                "ocr_confidence": score,
-                "meets_threshold": score >= threshold,
-            }
-        )
-        candidate["meets_threshold"] = candidate["meets_threshold"] or score >= threshold
+        # A partial line matching multiple catalog names remains ambiguous.
+        for medicine in matches:
+            candidate = candidates_by_id.setdefault(
+                medicine['id'], {'medicine_id': medicine['id'], 'name': medicine['name'],
+                                 'ocr_confidence': score, 'source_line_indices': [],
+                                 'evidence': [], 'meets_threshold': False})
+            candidate['ocr_confidence'] = max(candidate['ocr_confidence'], score)
+            candidate['source_line_indices'].append(index)
+            candidate['evidence'].append({'line_index': index, 'text': line['text'],
+                                          'ocr_confidence': score, 'meets_threshold': score >= threshold})
+            candidate['meets_threshold'] |= score >= threshold
 
     candidates = list(candidates_by_id.values())
     qualifying = [item for item in candidates if item["meets_threshold"]]
@@ -124,11 +131,11 @@ def match_medicine(lines, catalog, min_score=0.8):
         "source_line_indices": [],
         "min_score": threshold,
         "candidates": candidates,
-        "reason": "识别出了文字，但没有与目录完整药名一致且达到阈值的结果。",
+        "reason": "识别出了文字，但没有与目录药名匹配且达到阈值的结果。",
     }
     if len(qualifying) >= 2:
         result["status"] = "ambiguous"
-        result["reason"] = "多个不同药品名称完整匹配且达到阈值，暂不选择药品。"
+        result["reason"] = "多个不同药品名称匹配且达到阈值，暂不选择药品。"
     elif len(qualifying) == 1:
         selected = qualifying[0]
         best_evidence = max(selected["evidence"], key=lambda item: item["ocr_confidence"])
@@ -141,11 +148,11 @@ def match_medicine(lines, catalog, min_score=0.8):
             source_line_indices=[
                 item["line_index"] for item in selected["evidence"] if item["meets_threshold"]
             ],
-            reason="完整药名与目录一致，OCR 置信度达到阈值。",
+            reason="药名完整或容错匹配目录，OCR 置信度达到阈值。",
         )
     elif candidates:
         result["status"] = "low_confidence"
-        result["reason"] = "完整药名与目录一致，但 OCR 置信度未达到阈值，暂不确认。"
+        result["reason"] = "药名完整或容错匹配目录，但 OCR 置信度未达到阈值，暂不确认。"
     elif not has_text:
         result["status"] = "no_text"
         result["reason"] = "没有识别出文字。"

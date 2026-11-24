@@ -85,7 +85,7 @@ def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons):
     indices=np.argsort(-lengths)
     segments=local[indices[(lengths[indices]>=.65)&(lengths[indices]<=length+2)]]
     sides=joined_side_segments(segments,length)
-    ends=[local[i] for i in indices if .9<=lengths[i]<=width+.8][:55]
+    ends=[local[i] for i in indices if .65<=lengths[i]<=width+1.2]
     seeds=[]
     def consider(center,direction,perpendicular):
         pose=plane.copy()
@@ -181,7 +181,7 @@ def joined_side_segments(segments, length):
         coordinates=segments[matches]@direction
         if coordinates.max()-coordinates.min()>=2.5:
             result.append((support,np.outer([coordinates.min(),coordinates.max()],direction)+across*normal))
-    return [side for _,side in sorted(result,key=lambda item:-item[0])[:45]]
+    return [side for _,side in sorted(result,key=lambda item:-item[0])[:120]]
 
 
 def associated(corners, identity_polygons):

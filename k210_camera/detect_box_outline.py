@@ -3,6 +3,7 @@
 Known single rectangular package only. Candidates require human review and are
 not calibrated robot targets. Rejects missing full-name evidence and border cuts.
 """
+from medicine_match import name_matches
 import argparse
 import hashlib
 import json
@@ -16,7 +17,7 @@ import numpy as np
 def detect(image, ocr, name):
     h, w = image.shape[:2]
     seeds = [np.array(row['polygon'], np.float32) for row in ocr.get('lines', [])
-             if row.get('text') == name and row.get('confidence', 0) >= .8]
+             if name_matches(row.get('text',''), name) and row.get('confidence', 0) >= .8]
     result = {'status': 'needs_observation', 'reason': 'full_name_not_confirmed',
               'candidates': [], 'for_motion': False, 'robot_target': None,
               'method': 'ocr_seeded_edge_hull_prototype',

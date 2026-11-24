@@ -42,7 +42,7 @@ def approach_decision(tcp_board,T_board_object,motion_profile=None,*,grasp_offse
         # the current height instead of repeatedly returning to the hover.
         alignment_floor=3.5 if adaptive else 4.2
         if adaptive and abs(local[0])<=region['along_length_cm'] and abs(local[1])<=.65:
-            alignment_floor=3.3
+            alignment_floor=2.8
         # Align with margin while still above the box, before committing
         # to the low approach where lateral correction may require retreat.
         if adaptive and height>=3.5:

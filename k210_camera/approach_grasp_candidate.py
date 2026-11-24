@@ -126,6 +126,11 @@ def build_pregrasp_plan(model,start,center,up,limits,tcp_offset,motion):
     if adaptive:
         heights.extend(h for h in (preferred-.5,preferred+.5,preferred+1.)
                        if 4.2<=h<=8.5 and h-2.5>=motion['pregrasp_min_top_clearance_cm'])
+        # Search the whole observation-to-hover band, including heights well
+        # above the old 7 cm ceiling. IK and full-path checks decide feasibility.
+        minimum_height=max(4.2,2.5+motion['pregrasp_min_top_clearance_cm'])
+        heights.extend(step/4 for step in range(math.ceil(minimum_height*4),49))
+        heights=list(dict.fromkeys(heights))
     rejections={}
     plans=[]
     for height in heights:
@@ -288,8 +293,9 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
                                                         (.65,1),(.8,1),(.5,0),(.65,0),(.8,0))]
     else:
         candidates=[(retreat,rise,angle) for retreat in (0.,.65,1.25,1.85)
-                    for rise,angle in ((1.,-4),(1.3,-4),(1.5,-6),(1.,-2),(1.3,-2),
-                                       (1.,0),(1.3,0),(.8,-2),(.8,0),(.5,0),(.8,2),(1.,4))]
+                    for rise,angle in ((3.,-10),(2.5,-8),(2.,-6),(1.5,-6),(1.3,-4),
+                                       (1.,-4),(1.,-2),(1.,0),(.8,-2),(.8,0),(.5,0),(.8,2),(1.,4))]
+    upper_choices=[]
     for retreat,rise,angle in candidates:
         try:
             plan=plan_step(model,start,-retreat*direction+rise*up,pitch-angle,offset,limits,gap,up,minimum)
@@ -306,12 +312,23 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
                 if (np.any(projected[:,0]<8) or np.any(projected[:,0]>631)
                         or np.any(projected[:,1]<24) or np.any(projected[:,1]>467)):
                     continue
-                record['projected_box_upper_edge_px']=projected.tolist()
+                # Prefer useful framing over the first barely in-frame candidate.
+                # A 100 px inset leaves room for the unseen end and actuation error.
+                inset=float(np.min(projected[:,1]))
+                score=-abs(inset-100.)
+                upper_choices.append((score,plan,targets,retraction,rise,angle,projected))
+                continue
         except ValueError:
             continue
         break
     else:
-        raise RuntimeError('当前关节限位、净空和视野要求下，找不到可执行的观察位调整路径')
+        if upper_edge_pixels is None or not upper_choices:
+            raise RuntimeError('当前关节限位、净空和视野要求下，找不到可执行的观察位调整路径')
+    if upper_edge_pixels is not None:
+        _,plan,targets,retraction,rise,angle,projected=max(upper_choices,key=lambda item:item[0])
+        record.update(projected_box_upper_edge_px=projected.tolist(),
+                      head_up_candidate_count=len(upper_choices),
+                      head_up_target_inset_px=100.)
     body={'request_id':'observation_retract_'+uuid.uuid4().hex,
           'targets':[{'id':int(j),'position':v} for j,v in targets.items()],
           'duration_ms':20}
