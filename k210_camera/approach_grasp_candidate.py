@@ -288,7 +288,8 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
                                                         (.65,1),(.8,1),(.5,0),(.65,0),(.8,0))]
     else:
         candidates=[(retreat,rise,angle) for retreat in (0.,.65,1.25,1.85)
-                    for rise,angle in ((.5,0),(.8,0),(1.,0),(.5,-2),(.8,-2),(1.,-4),(.8,2),(1.,4))]
+                    for rise,angle in ((1.,-4),(1.3,-4),(1.5,-6),(1.,-2),(1.3,-2),
+                                       (1.,0),(1.3,0),(.8,-2),(.8,0),(.5,0),(.8,2),(1.,4))]
     for retreat,rise,angle in candidates:
         try:
             plan=plan_step(model,start,-retreat*direction+rise*up,pitch-angle,offset,limits,gap,up,minimum)
@@ -303,7 +304,7 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
                     continue
                 projected=cv2.projectPoints(rim_points,cv2.Rodrigues(to_camera[:3,:3])[0],to_camera[:3,3],K,D)[0].reshape(-1,2)
                 if (np.any(projected[:,0]<8) or np.any(projected[:,0]>631)
-                        or np.any(projected[:,1]<12) or np.any(projected[:,1]>467)):
+                        or np.any(projected[:,1]<24) or np.any(projected[:,1]>467)):
                     continue
                 record['projected_box_upper_edge_px']=projected.tolist()
         except ValueError:

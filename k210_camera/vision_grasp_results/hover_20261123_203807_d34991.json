@@ -1,0 +1,156 @@
+{
+  "type": "commissioning_pregrasp_clearance",
+  "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261123_123759_034647_seq11_41a9a2fe_73bfab60_commissioning_registered.json",
+  "nominal_hover_cm": [
+    18.31282186641626,
+    -1.9471798336478041,
+    1.2838849913190709
+  ],
+  "nominal_minimum_margin_cm": 2.535329552343013,
+  "waypoints": [
+    {
+      "3": 162,
+      "4": 180,
+      "5": 456,
+      "6": 494
+    },
+    {
+      "3": 152,
+      "4": 231,
+      "5": 500,
+      "6": 492
+    },
+    {
+      "3": 141,
+      "4": 282,
+      "5": 545,
+      "6": 490
+    },
+    {
+      "3": 131,
+      "4": 332,
+      "5": 589,
+      "6": 488
+    }
+  ],
+  "commands": [
+    {
+      "request": {
+        "request_id": "hover_95f3305a4ab94f4989da82f01fe16322",
+        "targets": [
+          {
+            "id": 3,
+            "position": 162
+          },
+          {
+            "id": 4,
+            "position": 180
+          },
+          {
+            "id": 5,
+            "position": 456
+          },
+          {
+            "id": 6,
+            "position": 494
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "f774ed64f6ba4cfabcd7a87c28fcf989",
+          "request_id": "hover_95f3305a4ab94f4989da82f01fe16322",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-23T12:38:08.612+00:00",
+          "updated_at": "2026-11-23T12:38:08.612+00:00",
+          "targets": {
+            "3": 162,
+            "4": 180,
+            "5": 456,
+            "6": 494
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          }
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_95f3305a4ab94f4989da82f01fe16322",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "f774ed64f6ba4cfabcd7a87c28fcf989",
+        "request_id": "hover_95f3305a4ab94f4989da82f01fe16322",
+        "type": "move",
+        "status": "outcome_unknown",
+        "created_at": "2026-11-23T12:38:08.612+00:00",
+        "updated_at": "2026-11-23T12:38:09.947+00:00",
+        "targets": {
+          "3": 162,
+          "4": 180,
+          "5": 456,
+          "6": 494
+        },
+        "feedback_confirmed": false,
+        "physically_stopped": null,
+        "consecutive_samples": 0,
+        "message": "通信失败，无法确认此前运动结果",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "position_feedback": {
+          "observed_at": "2026-11-23T12:38:08.695+00:00",
+          "joint_positions": {
+            "1": 375,
+            "2": 498,
+            "3": 172,
+            "4": 130,
+            "5": 412,
+            "6": 496
+          },
+          "target_errors": {
+            "3": 10,
+            "4": -50,
+            "5": -44,
+            "6": 2
+          },
+          "within_tolerance": false,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    }
+  ],
+  "completed": false,
+  "physical_grasp_tcp_validated": false,
+  "contact_motion_allowed": false,
+  "tcp_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\calibration_boards\\grasp_tcp_hover_candidate_20261105.json",
+  "nominal_tcp_height_above_support_cm": 5.5,
+  "split_descent_precheck": true,
+  "grasp_offset_base_cm": [
+    -1.1973688868235381,
+    0.0777036531821742,
+    0.016428364164020236
+  ],
+  "wrist_alignment_preview": {
+    "for_motion": false,
+    "requires_wrist_calibration": true,
+    "status": "nominal_roll_preview",
+    "relative_roll_deg": 0.9671354046887883,
+    "closing_axis_slope_to_support_deg": 2.340671832887138
+  },
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "motion_profile_selection": {
+    "mode": "primary"
+  },
+  "error": "运动未确认：{'task_id': 'f774ed64f6ba4cfabcd7a87c28fcf989', 'request_id': 'hover_95f3305a4ab94f4989da82f01fe16322', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-23T12:38:08.612+00:00', 'updated_at': '2026-11-23T12:38:09.947+00:00', 'targets': {'3': 162, '4': 180, '5': 456, '6': 494}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '通信失败，无法确认此前运动结果', 'acceptance': {'position_tolerance': 10, 'required_samples': 2}, 'position_feedback': {'observed_at': '2026-11-23T12:38:08.695+00:00', 'joint_positions': {'1': 375, '2': 498, '3': 172, '4': 130, '5': 412, '6': 496}, 'target_errors': {'3': 10, '4': -50, '5': -44, '6': 2}, 'within_tolerance': False, 'position_tolerance': 10, 'required_samples': 2}}"
+}

@@ -1,0 +1,139 @@
+{
+  "type": "commissioning_pregrasp_clearance",
+  "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_070436_731859_seq22_f34d43c9_da23890f_commissioning_registered.json",
+  "nominal_hover_cm": [
+    21.244501958367472,
+    -1.658685814815685,
+    1.1563739967264763
+  ],
+  "nominal_minimum_margin_cm": 2.9306875359392026,
+  "waypoints": [
+    {
+      "3": 156,
+      "4": 206,
+      "5": 474,
+      "6": 494
+    },
+    {
+      "3": 155,
+      "4": 262,
+      "5": 526,
+      "6": 494
+    },
+    {
+      "3": 154,
+      "4": 317,
+      "5": 577,
+      "6": 494
+    },
+    {
+      "3": 153,
+      "4": 372,
+      "5": 629,
+      "6": 493
+    }
+  ],
+  "commands": [
+    {
+      "request": {
+        "request_id": "hover_93b8e2150ea14ea2a420069dc5f4a472",
+        "targets": [
+          {
+            "id": 3,
+            "position": 156
+          },
+          {
+            "id": 4,
+            "position": 206
+          },
+          {
+            "id": 5,
+            "position": 474
+          },
+          {
+            "id": 6,
+            "position": 494
+          }
+        ],
+        "duration_ms": 20
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "cfbd83524e36465489f919192d16a264",
+          "request_id": "hover_93b8e2150ea14ea2a420069dc5f4a472",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-24T07:04:45.014+00:00",
+          "updated_at": "2026-11-24T07:04:45.014+00:00",
+          "targets": {
+            "3": 156,
+            "4": 206,
+            "5": 474,
+            "6": 494
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          },
+          "feedback_delay_s": 0.5
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "hover_93b8e2150ea14ea2a420069dc5f4a472",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "cfbd83524e36465489f919192d16a264",
+        "request_id": "hover_93b8e2150ea14ea2a420069dc5f4a472",
+        "type": "move",
+        "status": "outcome_unknown",
+        "created_at": "2026-11-24T07:04:45.014+00:00",
+        "updated_at": "2026-11-24T07:04:48.515+00:00",
+        "targets": {
+          "3": 156,
+          "4": 206,
+          "5": 474,
+          "6": 494
+        },
+        "feedback_confirmed": false,
+        "physically_stopped": null,
+        "consecutive_samples": 0,
+        "message": "通信失败，无法确认此前运动结果",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "feedback_delay_s": 0.5
+      }
+    }
+  ],
+  "completed": false,
+  "physical_grasp_tcp_validated": false,
+  "contact_motion_allowed": false,
+  "tcp_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\calibration_boards\\grasp_tcp_hover_candidate_20261105.json",
+  "nominal_tcp_height_above_support_cm": 5.5,
+  "split_descent_precheck": true,
+  "grasp_offset_base_cm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "wrist_alignment_preview": {
+    "for_motion": false,
+    "requires_wrist_calibration": true,
+    "status": "nominal_roll_preview",
+    "relative_roll_deg": 2.2000904620121466,
+    "closing_axis_slope_to_support_deg": 3.094699447818636
+  },
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_far_placement_trial.json",
+  "motion_profile_selection": {
+    "mode": "fallback",
+    "primary_error": "盒心路径无解：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；盒内偏移抓点亦无解：0.8 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；0.4 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解；1.2 cm：悬停高度候选 [6.0, 5.5, 6.5, 7.0] cm 及适用的中间高度均无完整路径。悬停点没有可用逆解"
+  },
+  "error": "运动未确认：{'task_id': 'cfbd83524e36465489f919192d16a264', 'request_id': 'hover_93b8e2150ea14ea2a420069dc5f4a472', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-24T07:04:45.014+00:00', 'updated_at': '2026-11-24T07:04:48.515+00:00', 'targets': {'3': 156, '4': 206, '5': 474, '6': 494}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '通信失败，无法确认此前运动结果', 'acceptance': {'position_tolerance': 10, 'required_samples': 2}, 'feedback_delay_s': 0.5}"
+}

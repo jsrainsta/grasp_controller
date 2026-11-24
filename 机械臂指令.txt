@@ -8,7 +8,7 @@ curl.exe -sS --fail-with-body --max-time 10 -H "Content-Type: application/json" 
 
 tigervnc上启用机械臂服务
 cd /home/pi/competition/mechanical-arm
-.venv/bin/python -B -m arm_service --config config.serial.integration.json
+.venv/bin/python -B -m arm_service --config config.serial.integration.json --move-feedback-delay 0.5
 
 启动测试代码：
 单次测试：
