@@ -10,6 +10,7 @@ import cv2
 from check_grasp_board import LARGE_GRASP_BOARD_PROFILE,ROOT,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
 from observe_grasp_target import locate
+from box_rim_geometry import RimEvidence,face_corners,refine_grounded_rim
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
 
@@ -57,15 +58,14 @@ class BoardPoseAmbiguous(ValueError):
     pass
 
 
-class LowerBoxEdgeUnclear(ValueError):
-    def __init__(self,message,board_pose):
+class ObservationBoxEdgeUnclear(ValueError):
+    def __init__(self,message,board_pose,upper_edge_pixels=None):
         super().__init__(message)
         self.board_pose=board_pose
+        self.upper_edge_pixels=upper_edge_pixels
 
 
 def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
-    from track_box_reference import read_image, track
-
     old_cal=json.loads(Path(previous['calibration']).read_text(encoding='utf-8'))
     old_board=np.asarray(next(c for c in old_cal['candidates']
                               if c['mount_hypothesis']=='pitch_tool')['T_base_board_cm'])
@@ -73,40 +73,24 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
     if translation>.5 or rotation>3:
         raise ValueError(f'抬高后标定板位置不一致（{translation:.2f} cm，{rotation:.2f}°）')
     geometry=previous['geometry']
-    old_camera=np.asarray(geometry['T_base_camera_cm'])
-    # Register the new camera to the same board frame as the saved box.
-    new_camera=old_board@np.linalg.inv(board_pose)@camera
-    world_to_camera=np.linalg.inv(new_camera)
     target=geometry['selected']
-    corners=np.asarray(target['corners_pixel'],dtype=np.float32)
-    top_corners=np.asarray(target['top_corners_base_cm'])
-    rvec=cv2.Rodrigues(world_to_camera[:3,:3])[0]
-    tvec=world_to_camera[:3,3]
-    projected=cv2.projectPoints(top_corners,rvec,tvec,K,D)[0].reshape(-1,2)
-    tracked=track(read_image(previous['image'],cv2.IMREAD_GRAYSCALE),current_image,corners,
-                  current_face_hint=projected,coverage_basis='common_visible')
-    if tracked['status']!='tracked_face_for_review' or tracked['inlier_count']<16:
-        raise ValueError('抬高后盒面纹理不足，无法确认药盒仍在原位')
-
-    source=np.asarray(tracked['inlier_source_pixel'],dtype=np.float64)
-    rays_camera=cv2.undistortPoints(source.reshape(-1,1,2),K,D).reshape(-1,2)
-    rays=np.column_stack((rays_camera,np.ones(len(source))))@old_camera[:3,:3].T
+    axis=np.asarray(target['length_axis_base'])
     normal=old_board[:3,2]
-    origin=old_camera[:3,3]
-    denominators=rays@normal
-    if np.any(abs(denominators)<1e-8):
-        raise ValueError('抬高前盒面匹配点无法投影')
-    depth=((top_corners[0]-origin)@normal)/denominators
-    if np.any(depth<=0):
-        raise ValueError('抬高前盒面匹配点深度无效')
-    world=origin+rays*depth[:,None]
-    expected=cv2.projectPoints(world,rvec,tvec,K,D)[0].reshape(-1,2)
-    errors=np.linalg.norm(expected-np.asarray(tracked['inlier_current_pixel']),axis=1)
-    p90=float(np.quantile(errors,.9))
-    if not np.isfinite(p90) or p90>3:
-        raise ValueError(f'抬高后盒面与原位的投影误差过大（P90 {p90:.2f}px）')
+    box=np.eye(4)
+    box[:3,:3]=np.column_stack((axis,np.cross(normal,axis),normal))
+    box[:3,3]=target['top_center_base_cm']
+    current_camera=old_board@np.linalg.solve(board_pose,camera)
+    nominal=np.linalg.solve(current_camera,box)
+    evidence=RimEvidence(current_image,K,D,face_corners(geometry['assumed_box_dimensions_cm']))
+    fit=refine_grounded_rim(evidence,nominal,allow_cropped=True)
+    if fit is None:
+        raise ValueError('抬高后可见盒边不足，无法确认药盒仍在原位')
+    pose,rim=fit
+    shift,yaw=discrepancy(nominal,pose)
+    if shift>.3 or yaw>3:
+        raise ValueError(f'抬高后药盒轮廓位置改变（{shift:.2f} cm，{yaw:.2f}°）')
     return {'board_shift_cm':translation,'board_rotation_deg':rotation,
-            'box_inliers':tracked['inlier_count'],'box_projection_p90_px':p90}
+            'box_shift_cm':shift,'box_rotation_deg':yaw,'box_edge_coverage':rim['coverage']}
 
 
 def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None,
@@ -172,9 +156,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         fit=outline.get('metric_edge_fit')
         detail=outline['reason']
         if fit:
-            reason='拟合得到的盒顶角点不一致，' if fit.get('rejection_reason')=='edge_fits_disagree_on_box_corners' else ''
-            detail=(f"{reason}边缘中位误差 {fit['edge_median_px']:.2f}px，"
-                    f"P90 {fit['edge_p90_px']:.2f}px，蓝色覆盖 {fit['blue_fraction_inside']:.1%}")
+            detail=f"可见边覆盖 {fit['edge_coverage']}，边缘平均偏差 {fit['mean_edge_distance_px']:.2f}px"
         message='新场景中药盒边界拟合失败，'+detail
         if previous is not None:
             try:
@@ -194,20 +176,13 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             out.write_text(json.dumps(o,ensure_ascii=False,indent=2),encoding='utf-8')
             print('抬高后已核对板和盒面，沿用抬高前定位：',out,flush=True)
             return out
-        if not saved_plane and fit and not fit['image_geometry_supported'] and not fit.get('rejection_reason'):
+        if not saved_plane and outline.get('frame_edge')=='upper':
             corners=np.asarray(fit['corners_pixel'])
-            edges=np.asarray(fit['edge_p90_by_side_px'])
-            edge_rows=(corners[:,1]+np.roll(corners[:,1],-1))/2
-            lower=int(np.argmax(edge_rows))
-            other_edges=np.delete(edges,lower)
-            isolated_lower_failure=np.all(other_edges<3)
-            # Occlusion at a lower corner can pull the whole fitted
-            # rectangle off the true outline, including its opposite edge.
-            near_gripper=edge_rows[lower]>=.85*image.shape[0]
-            lower_corner_failure=near_gripper and np.count_nonzero(other_edges<=20)>=2
-            if (edges[lower]>=3 and fit['blue_fraction_inside']>.9
-                    and (isolated_lower_failure or lower_corner_failure)):
-                raise LowerBoxEdgeUnclear(message,best['T_base_board_cm'])
+            edge=int(np.argmin((corners[:,1]+np.roll(corners[:,1],-1))/2))
+            pixels=corners[[edge,(edge+1)%4]].tolist()
+            raise ObservationBoxEdgeUnclear(f'{message}；疑似药盒上沿出框',best['T_base_board_cm'],pixels)
+        if not saved_plane and outline.get('frame_edge')=='lower':
+            raise ObservationBoxEdgeUnclear(f'{message}；药盒下沿证据不足',best['T_base_board_cm'])
         raise ValueError(message)
     # Wrist-roll alignment has not been calibrated for arbitrary orientations.
     # Reject unsupported yaw before any movement, rather than claiming that

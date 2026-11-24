@@ -70,7 +70,7 @@ def main():
 def run_trial(a,camera):
     from grasp_motion_profile import load_motion_profile
     from observe_grasp_target import main as observe
-    from register_current_scene import BoardPoseAmbiguous,LowerBoxEdgeUnclear,register
+    from register_current_scene import BoardPoseAmbiguous,ObservationBoxEdgeUnclear,register
     from approach_grasp_candidate import main as approach,retract_for_observation
     from guarded_visual_approach import main as correct
     from verify_same_box_grasp import main as verify
@@ -87,8 +87,8 @@ def run_trial(a,camera):
     hover_only=getattr(a,'hover_only',False)
     motion_args=[] if a.motion_profile is None else ['--motion-profile',str(a.motion_profile.resolve())]
     tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py',
-                     'check_grasp_board.py','board_marker_pose.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
-                     'grasp_visual_observer.py','tcp_pose_planner.py','grasp_approach_policy.py')
+                     'check_grasp_board.py','board_marker_pose.py','detect_box_outline.py','fit_grasp_handeye.py',
+                     'grasp_visual_observer.py','box_rim_geometry.py','tcp_pose_planner.py','grasp_approach_policy.py')
     report={'stages':stages,'grasp_confirmed':False,
         'trial_conditions':{'mode':'hover_only' if hover_only else ('execute' if a.execute else 'preview'),
             'camera_port':a.port,'camera_baudrate':a.camera_baudrate,
@@ -182,16 +182,18 @@ def run_trial(a,camera):
                 if isinstance(cause,BoardPoseAmbiguous) and 'registration_retry_observation' not in report:
                     print('初图板位姿有歧义，原地补拍一次。',flush=True)
                     record_key='registration_retry_observation'
-                elif (isinstance(cause,LowerBoxEdgeUnclear) and (a.execute or hover_only)
+                elif (isinstance(cause,ObservationBoxEdgeUnclear) and (a.execute or hover_only)
                       and 'observation_retract' not in report):
                     tcp_profile=ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json'
                     recovery={'source_observation':str(observation),'reason':str(cause)}
                     report['observation_retract']=recovery
                     save()
-                    print('药盒下边缘证据不足，检查观察位回收路径。',flush=True)
+                    edge='上沿疑似出框' if cause.upper_edge_pixels is not None else '下沿证据不足'
+                    print(f'药盒{edge}，检查观察位调整路径。',flush=True)
                     try:
                         retract_for_observation(a.arm_url,json.loads(observation.read_text(encoding='utf-8')),
-                            cause.board_pose,json.loads(tcp_profile.read_text(encoding='utf-8')),motion,recovery,save)
+                            cause.board_pose,json.loads(tcp_profile.read_text(encoding='utf-8')),motion,recovery,save,
+                            upper_edge_pixels=cause.upper_edge_pixels)
                     except Exception as retract_error:
                         recovery['error']=str(retract_error)
                         raise

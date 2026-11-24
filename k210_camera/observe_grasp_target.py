@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 
 from check_grasp_board import ROOT
+from box_rim_geometry import overview_rim
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
 from fit_grasp_handeye import robot_frame
@@ -30,11 +31,27 @@ def locate(im, ocr, joints, handeye, camera_override=None):
     surface = board[:3,3]-normal*2.5
     outline = detect(im,ocr,'阿昔洛韦乳膏')
     if not outline['candidates']:
-        from fit_known_box_outline import fit_outline
-        fitted = fit_outline(im,ocr,K,D,camera,board)
-        outline['metric_edge_fit'] = fitted
-        if fitted and fitted['image_geometry_supported']:
-            outline['candidates'] = [fitted]
+        identity=[row['polygon'] for row in ocr.get('lines',[])
+                  if row.get('text')=='阿昔洛韦乳膏' and row.get('confidence',0)>=.8]
+        fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
+                            np.linalg.solve(camera,board),(10.5,3.4,2.5),identity)
+        if fitted is not None:
+            _,rim=fitted
+            pixels=rim['corners_pixel']
+            h,w=im.shape[:2]
+            complete=bool(np.all(pixels[:,0]>=6) and np.all(pixels[:,0]<w-6)
+                          and np.all(pixels[:,1]>=6) and np.all(pixels[:,1]<h-8)
+                          and all(value is not None for value in rim['coverage']))
+            candidate={'corners_pixel':pixels.tolist(),'center_pixel':pixels.mean(0).tolist(),
+                       'edge_coverage':rim['coverage'],'mean_edge_distance_px':rim['mean_edge_distance_px'],
+                       'image_geometry_supported':complete,'method':'metric_visible_rim_fit'}
+            outline['metric_edge_fit']=candidate
+            if complete:
+                outline['candidates']=[candidate]
+            elif pixels[:,1].min()<6:
+                outline['frame_edge']='upper'
+            elif pixels[:,1].max()>=h-8:
+                outline['frame_edge']='lower'
     supported = []
     for candidate in outline['candidates']:
         pixel = np.array(candidate['corners_pixel'],np.float64)
@@ -63,8 +80,8 @@ def locate(im, ocr, joints, handeye, camera_override=None):
             'length_axis_base':axis_long.tolist(),'width_axis_base':axis_short.tolist(),
             'measured_length_cm':long,'measured_width_cm':short,
             'dimensional_error':dimensional_error,'orthogonality_error':orthogonality,
-            'dimensions_independently_measured':candidate.get('method')!='known_blue_white_box_metric_rectangle_edge_fit',
-            'dimension_note':'Metric edge fit imposes the known size; its dimensional residual is not independent validation.' if candidate.get('method')=='known_blue_white_box_metric_rectangle_edge_fit' else 'Ray-plane estimate; depends on plane and assumed height.',
+            'dimensions_independently_measured':candidate.get('method')!='metric_visible_rim_fit',
+            'dimension_note':'Metric edge fit imposes the known size; its dimensional residual is not independent validation.' if candidate.get('method')=='metric_visible_rim_fit' else 'Ray-plane estimate; depends on plane and assumed height.',
             'geometry_supported':bool(abs(long/10.5-1)<=.18 and abs(short/3.4-1)<=.18 and orthogonality<.18)}
         supported.append(row)
     supported.sort(key=lambda row:row['dimensional_error']+row['orthogonality_error'])

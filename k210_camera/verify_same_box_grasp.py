@@ -203,7 +203,8 @@ def main(argv=None, camera_session=None):
             cached=journal['observations'][-1]
             age=time.time()-datetime.fromisoformat(cached['after']['received_at']).timestamp()
             reused=False
-            if age<=motion['reuse_fresh_stationary_frame_s']:
+            if (age<=motion['reuse_fresh_stationary_frame_s']
+                    and cached['visual'].get('pose_estimator')=='independent_camera_and_visible_box_rim'):
                 state=read_arm(a.arm_url)
                 if all(abs(state['joint_median'][j]-cached['after']['joint_median'][j])<=2 for j in state['joint_median']):
                     visual=cached['visual'];reused=True
