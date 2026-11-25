@@ -112,6 +112,7 @@ def main(argv=None, camera_session=None):
         with session_context as camera:
             def observe():
                 errors=[]
+                lower_exposure=False
                 for attempt in range(2):
                     for settle in range(3):
                         before=read_arm(a.arm_url)
@@ -120,7 +121,7 @@ def main(argv=None, camera_session=None):
                         except RuntimeError:
                             if settle==2:raise
                             time.sleep(.5)
-                    c=camera.capture('guarded_obs_'+uuid.uuid4().hex)
+                    c=camera.capture('guarded_obs_'+uuid.uuid4().hex, **({'exposure_scale': .5} if lower_exposure else {}))
                     if c['status']!='captured':raise RuntimeError('采传失败：'+str(c))
                     after=read_arm(a.arm_url);check_pose(after)
                     if any(abs(before['joint_median'][j]-after['joint_median'][j])>2 for j in before['joint_median']):
@@ -138,7 +139,8 @@ def main(argv=None, camera_session=None):
                     except ValueError as error:
                         errors.append(str(error))
                         packet['visual_error']=str(error);save()
-                        if attempt==0:print('近图定位失败，原地重拍一次。',flush=True)
+                        lower_exposure=True
+                        if attempt==0:print('近图定位失败，尝试半曝光原地补拍一次。',flush=True)
                         continue
                     packet['visual']=visual;save()
                     return visual,after

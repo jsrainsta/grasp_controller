@@ -200,10 +200,17 @@ def run_trial(a,camera):
                     finally:
                         save()
                     record_key='observation_after_retract'
+                elif (isinstance(cause,ValueError) and str(cause).startswith('新场景中药盒边界拟合失败')
+                      and 'registration_exposure_retry' not in report):
+                    report['registration_exposure_retry']={'reason':str(cause),'requested_scale':.5}
+                    save()
+                    print('盒边拟合失败，保持机械臂静止，尝试半曝光补拍一次。',flush=True)
+                    record_key='observation_after_exposure_retry'
                 else:
                     raise
                 retry_start=time.time()
-                run('observe_grasp_target.py',*common,'--calibration',a.calibration)
+                exposure_args=['--exposure-scale','0.5'] if record_key=='observation_after_exposure_retry' else []
+                run('observe_grasp_target.py',*common,'--calibration',a.calibration,*exposure_args)
                 observation=newest('*_commissioning.json',retry_start,
                     lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
                 report[record_key]=str(observation)

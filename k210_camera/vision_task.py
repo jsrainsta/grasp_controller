@@ -142,16 +142,18 @@ class VisionTaskSession:
     def recognize(self, task_id, location_id=None):
         return self._run_task(task_id, location_id, with_ocr=True)
 
-    def capture(self, task_id, location_id=None):
+    def capture(self, task_id, location_id=None, *, exposure_scale=None):
         """Capture a fresh requested photo without OCR or identity confirmation."""
-        return self._run_task(task_id, location_id, with_ocr=False)
+        return self._run_task(task_id, location_id, with_ocr=False, exposure_scale=exposure_scale)
 
-    def _run_task(self, task_id, location_id=None, with_ocr=True):
+    def _run_task(self, task_id, location_id=None, with_ocr=True, exposure_scale=None):
         """Return this task's result; transport/OCR failures have status=error.
 
         The target is fixed for this session. Validation errors, a duplicate ID
         or a concurrent call raise before another capture can be submitted.
         """
+        if exposure_scale is not None and (type(exposure_scale) not in (int, float) or exposure_scale not in (0.5, 0.75)):
+            raise ValueError("exposure_scale 只支持 0.5 或 0.75")
         if (not isinstance(task_id, str)
                 or re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", task_id) is None):
             raise ValueError("task_id须为1到128位字母、数字、下划线、点或短横线。")
@@ -180,7 +182,7 @@ class VisionTaskSession:
                 self._active = active
                 fatal = self._fatal
                 if fatal is None:
-                    self._requests.put_nowait(True)
+                    self._requests.put_nowait(True if exposure_scale is None else {"exposure_scale": exposure_scale})
             try:
                 if fatal is not None:
                     raise RuntimeError(str(fatal))

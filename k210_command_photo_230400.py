@@ -31,7 +31,7 @@ MAX_PHOTO_BYTES = 512 * 1024
 MAX_COMMAND_BYTES = 256
 READ_CHUNK_BYTES = 64
 COMMAND_PREFIX = b"@K210:"
-TEST_BUILD = "command_photo_230400_gap5_1"
+TEST_BUILD = "command_photo_230400_gap5_exposure_1"
 TRANSFER_BAUDRATE = 230400
 ID_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 
@@ -65,7 +65,12 @@ def parse_command_line(raw):
         return command_error("invalid_version", request_id)
     if packet.get("type") not in ("ping", "capture"):
         return command_error("unsupported_command", request_id)
-    if set(packet) != {"type", "version", "request_id"}:
+    allowed = {"type", "version", "request_id"}
+    if packet["type"] == "capture" and "exposure_scale" in packet:
+        allowed.add("exposure_scale")
+        if type(packet["exposure_scale"]) not in (int, float) or packet["exposure_scale"] not in (0.5, 0.75):
+            return command_error("invalid_exposure_scale", request_id)
+    if set(packet) != allowed:
         return command_error("unexpected_fields", request_id)
     return packet
 
@@ -115,10 +120,13 @@ class CommandDecoder:
 class CameraCommands:
     """One pending capture, one shared sequence counter, no command queue."""
 
-    def __init__(self, uart, emit_packet=None):
+    def __init__(self, uart, emit_packet=None, exposure_supported=False):
         self.uart = uart
         self.emit = emit_json if emit_packet is None else emit_packet
         self.decoder = CommandDecoder()
+        self.exposure_supported = exposure_supported
+        self.pending_exposure = 1.0
+        self.active_exposure = 1.0
         self.seq = 0
         self.busy = False
         self.pending_id = None
@@ -143,11 +151,13 @@ class CameraCommands:
                 elif kind == "ping":
                     self.emit({
                         "type": "pong", "version": 1, "request_id": request_id,
-                        "capabilities": ["capture"],
+                        "capabilities": ["capture"] + (["exposure_scale"] if self.exposure_supported else []),
                         "busy": self.busy or self.pending_id is not None,
                         "uart": repr(self.uart), "test_build": TEST_BUILD,
                         "ignored_bytes_total": self.decoder.ignored_bytes_total,
                     })
+                elif packet.get("exposure_scale", 1.0) != 1.0 and not self.exposure_supported:
+                    self.emit(command_error("exposure_unsupported", request_id))
                 elif request_id in self.recent_ids:
                     self.emit(command_error("duplicate_request", request_id))
                 elif self.busy or self.pending_id is not None:
@@ -155,6 +165,7 @@ class CameraCommands:
                 else:
                     # Reserve immediately, before handling the rest of a batch.
                     self.pending_id = request_id
+                    self.pending_exposure = packet.get("exposure_scale", 1.0)
                     self.recent_ids.append(request_id)
                     if len(self.recent_ids) > 8:
                         del self.recent_ids[0]
@@ -166,6 +177,8 @@ class CameraCommands:
         self.seq += 1  # Failed sends consume a sequence number too.
         request_id = self.pending_id
         self.pending_id = None
+        self.active_exposure = self.pending_exposure if request_id is not None else 1.0
+        self.pending_exposure = 1.0
         if request_id is not None:
             self.emit({"type": "capture_accepted", "version": 1,
                        "request_id": request_id, "seq": self.seq})
@@ -297,7 +310,7 @@ def show_result_status(image, text):
                    "detail": str(error)})
 
 
-def capture_vga_photo():
+def capture_vga_photo(exposure_scale=1.0):
     """Save a clean VGA frame, then restore the small LCD's QVGA preview."""
     import gc
     import sensor
@@ -309,6 +322,12 @@ def capture_vga_photo():
         sensor.set_vflip(False)
         sensor.set_hmirror(False)
         sensor.skip_frames(time=600)
+        if exposure_scale != 1.0:
+            current = sensor.get_exposure_us()
+            if current <= 0:
+                raise RuntimeError("Invalid sensor exposure readback")
+            sensor.set_auto_exposure(False, exposure_us=max(1, int(current * exposure_scale)))
+            sensor.skip_frames(time=250)
         photo = sensor.snapshot()
         width = photo.width()
         height = photo.height()
@@ -324,6 +343,8 @@ def capture_vga_photo():
         # or copy a second large image just for the LCD.
         photo = None
         gc.collect()
+        if exposure_scale != 1.0:
+            sensor.set_auto_exposure(True)
         sensor.set_framesize(sensor.QVGA)
         sensor.set_vflip(False)
         sensor.set_hmirror(False)
@@ -353,7 +374,7 @@ def main():
         # Hold K1 at startup to retain 115200 for IDE recovery.
         if key.key_scan(1) != 1:
             uart.init(TRANSFER_BAUDRATE, 8, None, 1, read_buf_len=2048)
-        commands = CameraCommands(uart)
+        commands = CameraCommands(uart, exposure_supported=hasattr(sensor, "get_exposure_us") and hasattr(sensor, "set_auto_exposure"))
     except Exception as error:
         emit_json({"type": "photo_error", "seq": 0, "message": str(error)})
         raise
@@ -383,7 +404,7 @@ def main():
                 show_status(image, "Capturing 640x480...")
                 image = None
                 gc.collect()
-                width, height = capture_vga_photo()
+                width, height = capture_vga_photo(commands.active_exposure)
                 # Commands received during sensor switching are handled as busy.
                 commands.poll()
                 # Take a new QVGA frame after the sensor switches back.

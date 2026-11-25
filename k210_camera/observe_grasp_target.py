@@ -125,6 +125,7 @@ def main(argv=None, camera=None):
     parser.add_argument('--arm-url',default='http://127.0.0.1:18000/v1/arm')
     parser.add_argument('--port',default='COM5')
     parser.add_argument('--calibration',type=Path,required=True)
+    parser.add_argument('--exposure-scale',type=float,choices=(.5,.75))
     args = parser.parse_args(argv)
     cal = json.loads(args.calibration.read_text(encoding='utf-8'))
     best = next(r for r in cal['candidates'] if r['mount_hypothesis']=='pitch_tool')
@@ -137,7 +138,7 @@ def main(argv=None, camera=None):
             before = read_arm(args.arm_url)
             if abs(before['joint_median']['2']-496)>3:
                 raise RuntimeError('腕轴状态与本次安装标定基准不符')
-            captured = session.capture('observe_'+uuid.uuid4().hex)
+            captured = session.capture('observe_'+uuid.uuid4().hex, **({'exposure_scale': args.exposure_scale} if args.exposure_scale is not None else {}))
             if captured['status']!='captured':
                 raise RuntimeError(str(captured))
             after = read_arm(args.arm_url)
