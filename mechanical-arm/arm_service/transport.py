@@ -1,7 +1,7 @@
 """Mock and explicit-open serial channels for the factory LeArm protocol.
 
-The serial channel never opens itself on import or retries a command.  A failed
-transaction closes the channel so a late response cannot satisfy a later query.
+Only a silent first position query after a move may be resent once. Motion
+commands are never retried. A failed transaction closes the serial channel.
 """
 
 from __future__ import annotations
@@ -132,6 +132,7 @@ class SerialTransport:
         self._serial: Any | None = None
         self._lock = threading.Lock()
         self._last_transaction_end = 0.0
+        self._last_command: int | None = None
 
     @property
     def is_open(self) -> bool:
@@ -155,6 +156,7 @@ class SerialTransport:
 
     def _close_locked(self) -> None:
         channel, self._serial = self._serial, None
+        self._last_command = None
         self._dispose(channel)
 
     def close(self) -> None:
@@ -228,14 +230,37 @@ class SerialTransport:
         expected_command: int | None = None,
         timeout: float = 1,
     ) -> Packet | None:
-        _request(packet)
+        request = _request(packet)
         timeout = _positive_seconds(timeout, "timeout")
         if expected_command is not None and int(expected_command) not in _REPLY_LENGTHS:
             raise ProtocolError("this command has no supported reply")
-        deadline = time.monotonic() + timeout
+        logger = logging.getLogger(__name__)
+        started = time.monotonic()
+        deadline = started + timeout
         if not self._lock.acquire(timeout=timeout):
+            logger.info("serial_trace cmd=%d result=lock_timeout elapsed_ms=%.1f",
+                        request.command, (time.monotonic() - started) * 1000)
             raise TransportError("communication_timeout", "serial channel is busy")
         may_have_sent = False
+        stage = "pre_write"
+        result = "failed"
+        error_type = "-"
+        written = 0
+        tx_done = None
+        received_bytes = 0
+        decoded_frames = 0
+        matched_frames = 0
+        valid_position_reply = False
+        receive_retries = 0
+        receive_had_error = False
+        requery_started = False
+        requery_tx_done = None
+        requery_reply = None
+        # Only the first position query following a move may be repeated.
+        # Its reply cannot be the second consecutive in-tolerance sample.
+        position_query = (request.command == int(Command.POSITIONS_READ)
+                          and expected_command == int(Command.POSITIONS_READ))
+        may_requery = position_query and self._last_command == int(Command.MOVE)
         try:
             if not self.is_open:
                 raise TransportError("not_connected", "serial channel is not connected")
@@ -263,34 +288,80 @@ class SerialTransport:
                 raise _DeadlineExceeded()
             write_deadline = min(deadline, time.monotonic() + self.write_timeout)
             channel.write_timeout = min(self.write_timeout, remaining)
+            stage = "write"
             may_have_sent = True
             written = _bounded_io(lambda: channel.write(packet), write_deadline)
             if written != len(packet):
                 raise OSError("incomplete serial write")
+            stage = "flush"
             _bounded_io(channel.flush, write_deadline)
+            tx_done = time.monotonic()
             if expected_command is None:
+                result = "sent_no_reply_expected"
                 return None
+            stage = "receive"
             decoder = PacketDecoder()
-            receive_retries = 0
             # Give bounded reads the full receive budget up front. A worker
             # timeout cannot safely be retried while its read may still run.
             receive_deadline = (deadline + 2 * timeout
-                                if expected_command == int(Command.POSITIONS_READ) else deadline)
+                                if position_query else deadline)
+            if may_requery:
+                # Let the final bounded driver read finish after the protocol
+                # deadline so the loop can decide whether a requery is safe.
+                # A stuck worker still expires here and never triggers a write.
+                receive_deadline += 0.1
             while True:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
-                    if expected_command != int(Command.POSITIONS_READ) or receive_retries >= 2:
-                        raise _DeadlineExceeded()
+                    if requery_started:
+                        if requery_reply is None:
+                            raise _DeadlineExceeded()
+                        valid_position_reply = True
+                        result = "reply_ok_after_requery"
+                        return requery_reply
+                    if not position_query or receive_retries >= 2:
+                        if not may_requery or received_bytes or receive_had_error:
+                            raise _DeadlineExceeded()
+                        stage = "requery_quiet"
+                        quiet_until = time.monotonic() + min(timeout, 0.2)
+                        while time.monotonic() < quiet_until:
+                            channel.timeout = max(0.0, min(0.05, quiet_until - time.monotonic()))
+                            stale = _bounded_io(lambda: channel.read(32), quiet_until + 0.05)
+                            received_bytes += len(stale)
+                            if stale:
+                                raise ProtocolError("late data before position requery")
+                        requery_started = True
+                        stage = "requery_write"
+                        write_deadline = time.monotonic() + min(self.write_timeout, timeout)
+                        channel.write_timeout = min(self.write_timeout, timeout)
+                        if _bounded_io(lambda: channel.write(packet), write_deadline) != len(packet):
+                            raise OSError("incomplete serial write during position requery")
+                        stage = "requery_flush"
+                        _bounded_io(channel.flush, write_deadline)
+                        requery_tx_done = time.monotonic()
+                        deadline = requery_tx_done + timeout
+                        receive_deadline = deadline + 0.05
+                        stage = "requery_receive"
+                        logger.info("serial_trace position_requery=sent tx_done_mono=%.6f",
+                                    requery_tx_done)
+                        continue
                     receive_retries += 1
-                    deadline = time.monotonic() + timeout
-                    remaining = timeout
+                    deadline = (deadline if may_requery else time.monotonic()) + timeout
+                    # Recompute below if more than one window has already elapsed.
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        continue
                     logging.getLogger(__name__).warning(
                         "Position feedback delayed; receive retry %d/2", receive_retries)
                 channel.timeout = min(0.05, remaining)
                 try:
                     chunk = _bounded_io(lambda: channel.read(32), receive_deadline)
+                except _DeadlineExceeded:
+                    stage = "receive_worker_timeout"
+                    raise
                 except OSError as error:
-                    if (expected_command != int(Command.POSITIONS_READ)
+                    receive_had_error = True
+                    if (requery_started or not position_query
                             or receive_retries >= 2 or not channel.is_open
                             or time.monotonic() >= deadline):
                         raise
@@ -299,20 +370,40 @@ class SerialTransport:
                         "Position read failed; receive retry %d/2: %r", receive_retries, error)
                     time.sleep(min(0.1, max(0.0, deadline - time.monotonic())))
                     continue
+                received_bytes += len(chunk)
+                if requery_started and received_bytes > 4 + _REPLY_LENGTHS[int(Command.POSITIONS_READ)]:
+                    raise ProtocolError("additional data after position requery")
                 for reply in decoder.feed(chunk):
+                    decoded_frames += 1
                     if int(reply.command) != int(expected_command):
+                        if requery_started:
+                            raise ProtocolError("unexpected command after position requery")
                         continue
+                    matched_frames += 1
+                    stage = "validate_reply"
                     _validate_reply(reply)
+                    if requery_started:
+                        # Wait out the bounded window and reject duplicate data.
+                        # The protocol cannot identify a lone arbitrarily late
+                        # reply, so a separate later query is still required.
+                        requery_reply = reply
+                        stage = "requery_receive"
+                        continue
+                    valid_position_reply = expected_command == int(Command.POSITIONS_READ)
+                    result = "reply_ok"
                     return reply
                 if not chunk:
                     time.sleep(min(0.001, max(0.0, deadline - time.monotonic())))
-        except TransportError:
+        except TransportError as exc:
+            error_type = exc.code
             raise
         except BaseException as exc:
+            error_type = type(exc).__name__
             self._close_locked()
             timed_out = isinstance(exc, (_DeadlineExceeded, TimeoutError)) or (
                 type(exc).__name__ == "SerialTimeoutException"
             )
+            result = "timeout" if timed_out else "error"
             if isinstance(exc, (KeyboardInterrupt, SystemExit)):
                 raise
             raise TransportError(
@@ -321,8 +412,21 @@ class SerialTransport:
                 outcome_unknown=may_have_sent,
             ) from exc
         finally:
-            self._last_transaction_end = time.monotonic()
+            finished = time.monotonic()
+            self._last_transaction_end = finished
+            self._last_command = int(request.command) if self.is_open else None
             self._lock.release()
+            logger.info(
+                "serial_trace cmd=%d expected=%s result=%s stage=%s error=%s "
+                "tx_bytes=%d tx_done_mono=%s rx_bytes=%d decoded_frames=%d "
+                "matched_frames=%d valid_position_reply=%s receive_retries=%d "
+                "requery_eligible=%s requery_tx_done_mono=%s elapsed_ms=%.1f",
+                request.command, expected_command, result, stage, error_type,
+                written, "-" if tx_done is None else f"{tx_done:.6f}", received_bytes,
+                decoded_frames, matched_frames, valid_position_reply, receive_retries,
+                may_requery, "-" if requery_tx_done is None else f"{requery_tx_done:.6f}",
+                (finished - started) * 1000,
+            )
 
 
 class MockTransport:

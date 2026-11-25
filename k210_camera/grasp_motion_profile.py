@@ -28,6 +28,10 @@ def load_motion_profile(path=None):
     r=data['grasp_region'];lo,hi=r['tcp_height_range_cm'];target=r['tcp_height_target_cm']
     if not 1.0<=lo<=target<=hi<=3.0:raise ValueError('抓点高度配置无效')
     if not 0<r['along_length_cm']<=1.5 or not 0<r['across_width_cm']<=.45:raise ValueError('抓取区域超出当前盒试验范围')
+    if 'closure_across_width_cm' in r:
+        closure_width=r['closure_across_width_cm']
+        if type(closure_width) not in (int,float) or not r['across_width_cm']<=closure_width<=.50:
+            raise ValueError('闭爪宽向容差超出当前盒试验范围')
     a,b=data['nominal_pitch_range_deg']
     if not -95<=a<=data['preferred_nominal_pitch_deg']<=b<=-50:raise ValueError('俯仰配置无效')
     if not 1<=data['maximum_near_corrections']<=10:raise ValueError('纠偏预算无效')

@@ -1,4 +1,4 @@
-"""Position-only approach policy; no device access and no acceptance widening."""
+"""Position-only approach and grasp-region policy; no device access."""
 import numpy as np
 
 GRASP_REGION={'version':'same_box_trial_v2','along_length_cm':1.5,'across_width_cm':.45,
@@ -12,7 +12,8 @@ def in_grasp_region(tcp,obj,region=None,*,grasp_offset_board=None):
         error[:2]+=np.asarray(grasp_offset_board)[:2]
     e=obj[:3,:3].T@error
     lo,hi=region['tcp_height_range_cm']
-    return bool(abs(e[0])<=region['along_length_cm'] and abs(e[1])<=region['across_width_cm'] and lo<=-tcp[2]<=hi)
+    closure_width=region.get('closure_across_width_cm',region['across_width_cm'])
+    return bool(abs(e[0])<=region['along_length_cm'] and abs(e[1])<=closure_width and lo<=-tcp[2]<=hi)
 
 def approach_decision(tcp_board,T_board_object,motion_profile=None,*,grasp_offset_board=None):
     tcp=np.asarray(tcp_board,float);obj=np.asarray(T_board_object,float)
