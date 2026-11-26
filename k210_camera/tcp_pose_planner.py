@@ -1,11 +1,13 @@
 """Bounded nominal TCP/pitch planner; physical progress needs visual feedback."""
 import math
+from itertools import product
 import numpy as np
 from fit_grasp_handeye import robot_frame
 from plan_fixed_box_grasp import ik
 
 
-def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimum_height,*,joint_bias=None,previous_joint_delta=None):
+def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimum_height,*,
+              joint_bias=None,previous_joint_delta=None,horizontal_pitch_range=None):
     current=robot_frame(joints,model,'pitch_tool')
     offset=np.array(tcp_offset,np.float64)
     tcp=current[:3,:3]@offset+current[:3,3]
@@ -20,8 +22,14 @@ def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimu
         lo,hi=limits[int(j)]
         if not lo-10<=start[j]<=hi+10:raise ValueError('实际反馈偏离关节边界超过10单位，需要检查状态')
     choices=[]
-    for solution in ik(tool,target_pitch,model.to_config()):
-        target=solution['illustrative_joint_positions_not_for_execution']
+    solutions=ik(tool,target_pitch,model.to_config())
+    targets=[solution['illustrative_joint_positions_not_for_execution'] for solution in solutions]
+    if horizontal_pitch_range is not None:
+        # Nearby integer targets can preserve clearance where the nearest IK
+        # rounding dips at an intermediate point.
+        targets=[{**target,'3':target['3']+a,'4':target['4']+b,'5':target['5']+c}
+                 for target in targets for a,b,c in product(range(-2,3),repeat=3)]
+    for target in targets:
         if any(not limits[int(j)][0]<=v<=limits[int(j)][1] for j,v in target.items()):continue
         bias=dict(joint_bias or {})
         if previous_joint_delta is not None:
@@ -32,12 +40,18 @@ def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimu
         if any(not limits[int(j)][0]<=v<=limits[int(j)][1] for j,v in command.items()):continue
         maximum=max(abs(command[j]-start[j]) for j in command)
         if maximum>90 or max(abs(target[j]-start[j]) for j in target)>90:continue
+        if horizontal_pitch_range is not None and maximum<6:continue
         end={**start,**target};T=robot_frame(end,model,'pitch_tool')
-        model.check_nominal({int(j):v for j,v in end.items()})
+        end_positions={int(j):v for j,v in end.items()}
+        model.check_nominal(end_positions)
         end_tcp=T[:3,:3]@offset+T[:3,3]
         error=float(np.linalg.norm(end_tcp-desired))
         if error>.15:continue
+        if horizontal_pitch_range is not None:
+            pitch=model.forward(end_positions)['pitch_deg']
+            if not horizontal_pitch_range[0]<=pitch<=horizontal_pitch_range[1]:continue
         min_height=height
+        max_height=height
         # Both the uncorrected response to the command and the endpoint
         # predicted with the last measured bias must clear the support.
         for endpoint in (target,command) if bias else (target,):
@@ -46,8 +60,10 @@ def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimu
                 if any(not min(limits[int(j)][0],start[j])<=mid[j]<=max(limits[int(j)][1],start[j]) for j in endpoint):
                     raise ValueError('路径扩大了起始反馈越界')
                 M=robot_frame(mid,model,'pitch_tool');point=M[:3,:3]@offset+M[:3,3]
-                min_height=min(min_height,height+float((point-tcp)@up))
-        if min_height<minimum_height:continue
+                sample_height=height+float((point-tcp)@up)
+                min_height=min(min_height,sample_height)
+                max_height=max(max_height,sample_height)
+        if min_height<minimum_height or (horizontal_pitch_range is not None and max_height>height+.15):continue
         choices.append((sum((target[j]-start[j])**2 for j in target),{
             'planner':'client_nominal_tcp_and_fixed_pitch','targets':command,
             'expected_joint_positions':target,'observed_joint_bias_used':bias,
@@ -57,20 +73,26 @@ def plan_step(model,joints,delta,target_pitch,tcp_offset,limits,height,up,minimu
             'joint_limit_margin':min(min(v-limits[int(j)][0],limits[int(j)][1]-v)
                                      for endpoint in (target,command) for j,v in endpoint.items()),
             'physical_accuracy_verified':False}))
+        if horizontal_pitch_range is not None:
+            choices[-1][1]['nominal_maximum_tcp_height_cm']=max_height
     if not choices:raise ValueError('本步固定俯仰TCP规划无可用受限逆解')
     return min(choices,key=lambda c:c[0])[1]
 
-def choose_step(model,joints,delta,tcp_offset,limits,height,up,minimum_height,preferred_pitch=-70,pitch_range=(-85,-55),*,joint_bias=None,previous_joint_delta=None):
+def choose_step(model,joints,delta,tcp_offset,limits,height,up,minimum_height,preferred_pitch=-70,pitch_range=(-85,-55),*,
+                joint_bias=None,previous_joint_delta=None,horizontal_only=False):
     """Prefer a feasible pitch with reserve, instead of the first legal pitch."""
     pitch=model.forward({int(j):v for j,v in joints.items()})['pitch_deg']
     angles=[pitch+float(np.clip(preferred_pitch-pitch,-6,6)),pitch,pitch-3,pitch+3,pitch-6,pitch+6]
+    if horizontal_only:
+        angles.extend(pitch+offset for offset in (-4.5,-1.5,1.5,4.5))
     angles=list(dict.fromkeys(round(float(v),2) for v in angles if pitch_range[0]<=v<=pitch_range[1]))
     failures=[]
-    for scale in (1.,.5):
+    for scale in ((1.,.75,.5) if horizontal_only else (1.,.5)):
         feasible=[]
         for theta in angles:
             try:plan=plan_step(model,joints,np.array(delta)*scale,theta,tcp_offset,limits,height,up,minimum_height,
-                               joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)
+                               joint_bias=joint_bias,previous_joint_delta=previous_joint_delta,
+                               horizontal_pitch_range=pitch_range if horizontal_only else None)
             except ValueError as error:failures.append(str(error));continue
             if not plan['feedback_detectable']:continue
             margin=plan['joint_limit_margin']

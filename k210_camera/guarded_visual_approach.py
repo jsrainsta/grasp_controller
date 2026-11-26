@@ -208,9 +208,22 @@ def main(argv=None, camera_session=None):
                     minimum_height=motion['minimum_nominal_pad_height_cm']
                     if decision['phase']=='horizontal_alignment_at_clearance':
                         minimum_height=max(minimum_height,min(3.0,height))
-                    planned=choose_step(model,positions,delta,observer.tcp['offset_tool_cm'],limits,height,-observer.Y[:3,2],
-                        minimum_height,motion['preferred_nominal_pitch_deg'],motion['nominal_pitch_range_deg'],
-                        joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)
+                    try:
+                        planned=choose_step(model,positions,delta,observer.tcp['offset_tool_cm'],limits,height,up,
+                            minimum_height,motion['preferred_nominal_pitch_deg'],motion['nominal_pitch_range_deg'],
+                            joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)
+                    except ValueError as alignment_error:
+                        if decision['phase']!='horizontal_alignment_at_clearance' or height>3.5:
+                            raise
+                        horizontal_delta=observer.Y[:3,:2]@np.array(decision['delta_board_cm'][:2])
+                        try:
+                            planned=choose_step(model,positions,horizontal_delta,observer.tcp['offset_tool_cm'],
+                                limits,height,up,height,motion['preferred_nominal_pitch_deg'],
+                                motion['nominal_pitch_range_deg'],horizontal_only=True)
+                        except ValueError as horizontal_error:
+                            raise ValueError('低位同高度横移候选也无解：'+str(horizontal_error)) from alignment_error
+                        planned['horizontal_alignment_fallback']=True
+                        print('常规横移无解，选用同高度横移候选。',flush=True)
                     preview={'status':'client_preview','coordinate_plan':planned}
                     delta=np.array(planned['predicted_delta_cm'])
                 for scale in (1.,.5):
