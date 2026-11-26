@@ -189,7 +189,7 @@ def associated(corners, identity_polygons):
                for polygon in identity_polygons)
 
 
-def refine_grounded_rim(evidence, nominal, *, allow_cropped=False):
+def refine_grounded_rim(evidence, nominal, *, allow_cropped=False, prior_pose=None):
     """Use the previous pose only to bound the search for current edge evidence."""
     accepted=[]
     for along in (-.6,-.4,-.2,0.,.2,.4,.6):
@@ -216,7 +216,19 @@ def refine_grounded_rim(evidence, nominal, *, allow_cropped=False):
     score,along,across,angle,pose,rim=min(accepted,key=lambda row:row[0])
     if any(other<=score+.12 and (math.hypot(a-along,b-across)>=.28 or abs(yaw-angle)>=5)
            for other,a,b,yaw,*_ in accepted):
-        return None
+        if prior_pose is None:
+            return None
+        close=[row for row in accepted if row[0]<=score+.12]
+        def continuity(row):
+            candidate=row[4]
+            shift=float(np.linalg.norm(candidate[:3,3]-prior_pose[:3,3]))
+            cosine=float(np.clip(candidate[:3,0]@prior_pose[:3,0],-1.,1.))
+            angle_deg=math.degrees(math.acos(cosine))
+            return (shift/.28+angle_deg/5.,row[0])
+        score,along,across,angle,pose,rim=min(close,key=continuity)
+        rim={**rim,'candidate_selection':'previous_confirmed_pose_tiebreak',
+             'near_tied_candidate_count':len(close),
+             'prior_translation_delta_cm':float(np.linalg.norm(pose[:3,3]-prior_pose[:3,3]))}
     return pose,{**rim,'mean_edge_distance_px':score}
 
 

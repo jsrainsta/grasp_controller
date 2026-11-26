@@ -254,13 +254,19 @@ class GraspVisualObserver:
             tracked={'status':'visible_rim_measured','method':'free_box_rim_lines'}
             pose_estimator='free_box_rim_lines'
         else:
-            fit=refine_grounded_rim(evidence,inverse(camera)@self.template,allow_cropped=True)
+            prior_world=(self.last_camera@self.last_object
+                         if self.last_camera is not None and self.last_object is not None else self.template)
+            fit=refine_grounded_rim(evidence,inverse(camera)@self.template,allow_cropped=True,
+                                    prior_pose=inverse(camera)@prior_world)
             if fit is None:
                 raise ValueError('近图可见盒边证据不足或存在多个相近候选，无法可靠定位药盒')
             C,rim=fit
             obj_rmse=rim['mean_edge_distance_px']
             tracked={'status':'visible_rim_measured','edge_coverage':rim['coverage'],
-                     'edge_mean_distance_px':rim['distances']}
+                     'edge_mean_distance_px':rim['distances'],
+                     'candidate_selection':rim.get('candidate_selection','lowest_edge_distance'),
+                     'prior_translation_delta_cm':rim.get('prior_translation_delta_cm'),
+                     'near_tied_candidate_count':rim.get('near_tied_candidate_count',0)}
             pose_estimator='independent_camera_and_visible_box_rim'
         world=camera@C;obj_board=inverse(self.Y)@world
         tcp_camera=np.array(self.tcp['center_camera_cm']);tcp_base=camera[:3,:3]@tcp_camera+camera[:3,3]
