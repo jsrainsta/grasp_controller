@@ -31,7 +31,7 @@ MAX_PHOTO_BYTES = 512 * 1024
 MAX_COMMAND_BYTES = 256
 READ_CHUNK_BYTES = 64
 COMMAND_PREFIX = b"@K210:"
-TEST_BUILD = "command_photo_230400_gap5_exposure_1"
+TEST_BUILD = "command_photo_230400_gap5_exposure_2"
 TRANSFER_BAUDRATE = 230400
 ID_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 
@@ -217,7 +217,7 @@ def prepare_photo_directory():
 
 def send_jpeg_file(filename, seq, emit_packet=None, sleep_fn=None,
                    image_width=IMAGE_WIDTH, image_height=IMAGE_HEIGHT,
-                   request_id=None, service_fn=None):
+                   request_id=None, service_fn=None, applied_exposure_scale=None):
     """Send one saved JPEG. Optional callbacks allow PC protocol tests.
 
     emit_packet receives a dictionary; sleep_fn receives milliseconds.
@@ -250,7 +250,7 @@ def send_jpeg_file(filename, seq, emit_packet=None, sleep_fn=None,
     adler_b = 0
 
     with open(filename, "rb") as stream:
-        emit_photo({
+        begin = {
             "type": "photo_begin",
             "version": 1,
             "seq": seq,
@@ -259,7 +259,10 @@ def send_jpeg_file(filename, seq, emit_packet=None, sleep_fn=None,
             "size": size,
             "chunk_size": CHUNK_SIZE,
             "chunks": chunks,
-        })
+        }
+        if applied_exposure_scale is not None:
+            begin["applied_exposure_scale"] = applied_exposure_scale
+        emit_photo(begin)
         for index in range(chunks):
             if service_fn is not None:
                 service_fn()
@@ -316,6 +319,7 @@ def capture_vga_photo(exposure_scale=1.0):
     import sensor
 
     photo = None
+    applied_exposure_scale = 1.0
     gc.collect()
     try:
         sensor.set_framesize(sensor.VGA)
@@ -324,10 +328,13 @@ def capture_vga_photo(exposure_scale=1.0):
         sensor.skip_frames(time=600)
         if exposure_scale != 1.0:
             current = sensor.get_exposure_us()
-            if current <= 0:
-                raise RuntimeError("Invalid sensor exposure readback")
-            sensor.set_auto_exposure(False, exposure_us=max(1, int(current * exposure_scale)))
-            sensor.skip_frames(time=250)
+            if not isinstance(current, int) or current <= 0:
+                sensor.skip_frames(time=250)
+                current = sensor.get_exposure_us()
+            if isinstance(current, int) and current > 0:
+                sensor.set_auto_exposure(False, exposure_us=max(1, int(current * exposure_scale)))
+                applied_exposure_scale = exposure_scale
+                sensor.skip_frames(time=250)
         photo = sensor.snapshot()
         width = photo.width()
         height = photo.height()
@@ -336,7 +343,7 @@ def capture_vga_photo(exposure_scale=1.0):
         # Save before adding any display text. The quality argument was
         # confirmed on this board by the independent VGA probe.
         photo.save(PHOTO_PATH, quality=JPEG_QUALITY)
-        return width, height
+        return width, height, applied_exposure_scale
     finally:
         # Reconfiguring the sensor invalidates the old framebuffer image.
         # Release the VGA reference before returning to QVGA; do not resize
@@ -404,7 +411,7 @@ def main():
                 show_status(image, "Capturing 640x480...")
                 image = None
                 gc.collect()
-                width, height = capture_vga_photo(commands.active_exposure)
+                width, height, applied_exposure_scale = capture_vga_photo(commands.active_exposure)
                 # Commands received during sensor switching are handled as busy.
                 commands.poll()
                 # Take a new QVGA frame after the sensor switches back.
@@ -412,7 +419,8 @@ def main():
                 show_status(image, "Sending photo {}...".format(seq))
                 size = send_jpeg_file(PHOTO_PATH, seq,
                                       image_width=width, image_height=height,
-                                      request_id=request_id, service_fn=commands.poll)
+                                      request_id=request_id, service_fn=commands.poll,
+                                      applied_exposure_scale=applied_exposure_scale)
             except Exception as error:
                 packet = {
                     "type": "photo_error", "seq": seq, "message": str(error)

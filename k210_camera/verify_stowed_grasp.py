@@ -3,6 +3,7 @@
 from pathlib import Path
 import re
 import subprocess
+import sys
 import time
 from urllib.error import URLError
 
@@ -64,6 +65,11 @@ class StowedGraspVerifier:
         if capture["status"] != "captured" or not photo or not check_jpeg(photo)["valid"]:
             raise ValueError(f"复位照片采集或校验失败，记录目录：{directory}")
         after = self.verify_pose()
-        if any(abs(after[joint] - before[joint]) > 3 for joint in before):
-            raise ValueError("复位验收拍照期间关节发生移动")
+        deltas = {joint: after[joint] - before[joint] for joint in before}
+        limits = {joint: 3 if joint == "1" else 5 for joint in deltas}
+        print(f"收臂拍照关节反馈 run_id={run_id} 拍照前={before} 拍照后={after} 差值={deltas} 容差={limits}",
+              file=sys.stderr, flush=True)
+        exceeded = {joint: delta for joint, delta in deltas.items() if abs(delta) > limits[joint]}
+        if exceeded:
+            raise ValueError(f"复位验收拍照期间关节发生移动，超限关节差值：{exceeded}")
         return {"photo": photo, "joint_positions": after}

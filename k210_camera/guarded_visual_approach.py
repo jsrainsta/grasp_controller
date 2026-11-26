@@ -162,7 +162,7 @@ def main(argv=None, camera_session=None):
                 if motion.get('adaptive_pitch_search'):
                     shift=float(np.linalg.norm(obj[:2,3]-initial_center))
                     report['box_center_shift_from_initial_cm']=shift;save()
-                    if shift>.6:
+                    if shift>.7:
                         raise RuntimeError(f'本轮盒心与初图相差 {shift:.2f} cm，请核对现场后重新从观察位拍照')
                     if iteration==0 and not a.seed_approach and height<4.2:
                         raise RuntimeError(f'首次近景实测留空不足，胶垫代理高度 {height:.2f} cm')

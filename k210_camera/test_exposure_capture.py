@@ -42,6 +42,30 @@ class ExposureTests(unittest.TestCase):
         self.assertIn(((True,), {}), events)
         self.assertEqual(events[-1], sensor.QVGA)
 
+    def test_invalid_exposure_readback_retries_once_then_uses_auto(self):
+        for readbacks, expected_scale in [([0, 10000], .5), ([-1, None], 1.0)]:
+            with self.subTest(readbacks=readbacks):
+                events = []
+                values = iter(readbacks)
+                photo = SimpleNamespace(width=lambda: 640, height=lambda: 480,
+                                        save=lambda *_args, **_kwargs: None)
+
+                def read_exposure():
+                    events.append("read")
+                    return next(values)
+
+                sensor = SimpleNamespace(
+                    VGA=1, QVGA=2, set_framesize=lambda size: events.append(size),
+                    set_vflip=lambda value: None, set_hmirror=lambda value: None,
+                    skip_frames=lambda **kwargs: events.append(kwargs["time"]),
+                    snapshot=lambda: photo, get_exposure_us=read_exposure,
+                    set_auto_exposure=lambda enabled, **kwargs: events.append((enabled, kwargs)))
+                with patch.dict(sys.modules, sensor=sensor):
+                    self.assertEqual(self.firmware.capture_vga_photo(.5), (640, 480, expected_scale))
+                self.assertEqual(events[:5], [sensor.VGA, 600, "read", 250, "read"])
+                self.assertEqual((False, {"exposure_us": 5000}) in events, expected_scale == .5)
+                self.assertEqual(events[-3:], [(True, {}), sensor.QVGA, 300])
+
     def test_host_negotiates_new_and_old_firmware(self):
         class Sent(Exception):
             pass
