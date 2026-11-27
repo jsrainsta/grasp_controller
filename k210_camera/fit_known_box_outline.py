@@ -4,6 +4,7 @@ Not a general object detector. Fits a metric rectangle to measured image edges
 and requires blue-mask support; a checkerboard edge alone cannot satisfy it.
 """
 from functools import partial
+from medicine_match import name_matches
 import math
 import cv2
 import numpy as np
@@ -53,12 +54,23 @@ def fit_outline(image, ocr, K, D, T_base_camera, T_base_board, *, instance_mask=
                 return {**best,'image_geometry_supported':True,
                         'acceptance_basis':'consistent_grayscale_rim_with_lower_common_edge_error'}
             return {**fit,'rejection_reason':'edge_fits_disagree_on_box_corners'}
+        if not fits:
+            combined=fit_one(image,ocr,K,D,T_base_camera,T_base_board,
+                                  min_component_area=200,use_color_and_side_geometry=True)
+            # This fit requires a complete in-frame outline, so a fourth edge
+            # with weak support cannot pass via the color tolerance alone.
+            if (combined and combined['edge_median_px']<1.5
+                    and max(combined['edge_p90_by_side_px'])<=2
+                    and combined['blue_fraction_inside']>=.895
+                    and combined['raw_blue_fraction_inside_top']>.8):
+                return {**combined,'image_geometry_supported':True,
+                        'acceptance_basis':'sharp_edges_with_filtered_blue_and_side_geometry'}
     return fit
 
 
 def _fit_outline(image, ocr, K, D, T_base_camera, T_base_board,
                  min_component_area=20, *, use_color_and_side_geometry=False, instance_mask=None):
-    seed_rows = [r for r in ocr.get('lines',[]) if r.get('text')=='阿昔洛韦乳膏' and r.get('confidence',0)>=.8]
+    seed_rows = [r for r in ocr.get('lines',[]) if name_matches(r.get('text',''), '阿昔洛韦乳膏') and r.get('confidence',0)>=.8]
     if not seed_rows:
         return None
     seed = np.array(seed_rows[0]['polygon'],np.float32)

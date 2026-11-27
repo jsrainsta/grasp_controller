@@ -28,7 +28,7 @@ def compare(source, journal, temp):
     confirmed=[]
     mismatch={}
     class Camera:
-        def capture(self, _):
+        def capture(self, _, **kwargs):
             return next(captures)["capture"]
     def recorded_reply(url, endpoint, request):
         expected=next(commands)

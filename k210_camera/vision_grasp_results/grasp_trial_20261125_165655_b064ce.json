@@ -1,0 +1,3741 @@
+{
+  "type": "same_box_commissioning_grasp_trial",
+  "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\visual_approach_20261125_165621_ceed5e.json",
+  "production_ready": false,
+  "grasp_confirmed": true,
+  "force_measured": false,
+  "grasp_quality_validated": false,
+  "jaw_target": 520,
+  "coarse_position_tolerance": 40,
+  "loaded_observation_band": [
+    480,
+    505
+  ],
+  "commands": [
+    {
+      "purpose": "single authorized empirical closure; coarse position completion is not grasp confirmation",
+      "request": {
+        "request_id": "grasp_trial_4f23cab7bbe044cbb2ceede850716ff4",
+        "targets": [
+          {
+            "id": 1,
+            "position": 520
+          }
+        ],
+        "duration_ms": 20,
+        "position_tolerance": 40
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "3722d0326bb54cca8ac1af0f833c668e",
+          "request_id": "grasp_trial_4f23cab7bbe044cbb2ceede850716ff4",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-25T08:56:58.216+00:00",
+          "updated_at": "2026-11-25T08:56:58.216+00:00",
+          "targets": {
+            "1": 520
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 40,
+            "required_samples": 2
+          },
+          "feedback_delay_s": 0.5
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "grasp_trial_4f23cab7bbe044cbb2ceede850716ff4",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "3722d0326bb54cca8ac1af0f833c668e",
+        "request_id": "grasp_trial_4f23cab7bbe044cbb2ceede850716ff4",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-25T08:56:58.216+00:00",
+        "updated_at": "2026-11-25T08:56:59.527+00:00",
+        "targets": {
+          "1": 520
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 40,
+          "required_samples": 2
+        },
+        "feedback_delay_s": 0.5,
+        "position_feedback": {
+          "observed_at": "2026-11-25T08:56:59.527+00:00",
+          "joint_positions": {
+            "1": 486,
+            "2": 497,
+            "3": 170,
+            "4": 305,
+            "5": 636,
+            "6": 480
+          },
+          "target_errors": {
+            "1": -34
+          },
+          "within_tolerance": true,
+          "position_tolerance": 40,
+          "required_samples": 2
+        }
+      }
+    },
+    {
+      "purpose": "single 2cm lift with bounded pitch change",
+      "request": {
+        "request_id": "grasp_trial_ad26cafb460d4779802ccb5d8c5077df",
+        "targets": [
+          {
+            "id": 3,
+            "position": 148
+          },
+          {
+            "id": 4,
+            "position": 334
+          },
+          {
+            "id": 5,
+            "position": 619
+          },
+          {
+            "id": 6,
+            "position": 480
+          }
+        ],
+        "duration_ms": 20,
+        "position_tolerance": 10
+      },
+      "response": {
+        "status": "sent",
+        "task": {
+          "task_id": "b12a0d73062240a687da909c2ed5aae4",
+          "request_id": "grasp_trial_ad26cafb460d4779802ccb5d8c5077df",
+          "type": "move",
+          "status": "sent",
+          "created_at": "2026-11-25T08:57:02.006+00:00",
+          "updated_at": "2026-11-25T08:57:02.006+00:00",
+          "targets": {
+            "3": 148,
+            "4": 334,
+            "5": 619,
+            "6": 480
+          },
+          "feedback_confirmed": false,
+          "physically_stopped": null,
+          "consecutive_samples": 0,
+          "message": "命令已发送，尚未确认到位",
+          "acceptance": {
+            "position_tolerance": 10,
+            "required_samples": 2
+          },
+          "feedback_delay_s": 0.5
+        },
+        "duration_ms": 20,
+        "duration_guaranteed": false,
+        "request_id": "grasp_trial_ad26cafb460d4779802ccb5d8c5077df",
+        "deduplicated": false
+      },
+      "task": {
+        "task_id": "b12a0d73062240a687da909c2ed5aae4",
+        "request_id": "grasp_trial_ad26cafb460d4779802ccb5d8c5077df",
+        "type": "move",
+        "status": "reached",
+        "created_at": "2026-11-25T08:57:02.006+00:00",
+        "updated_at": "2026-11-25T08:57:03.317+00:00",
+        "targets": {
+          "3": 148,
+          "4": 334,
+          "5": 619,
+          "6": 480
+        },
+        "feedback_confirmed": true,
+        "physically_stopped": null,
+        "consecutive_samples": 2,
+        "message": "连续位置反馈处于目标容差内；不代表夹持成功或末端 XYZ 精度保证",
+        "acceptance": {
+          "position_tolerance": 10,
+          "required_samples": 2
+        },
+        "feedback_delay_s": 0.5,
+        "position_feedback": {
+          "observed_at": "2026-11-25T08:57:03.317+00:00",
+          "joint_positions": {
+            "1": 486,
+            "2": 498,
+            "3": 153,
+            "4": 328,
+            "5": 626,
+            "6": 480
+          },
+          "target_errors": {
+            "3": 5,
+            "4": -6,
+            "5": 7,
+            "6": 0
+          },
+          "within_tolerance": true,
+          "position_tolerance": 10,
+          "required_samples": 2
+        }
+      }
+    }
+  ],
+  "observations": [
+    {
+      "before": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "move_feedback_delay_s": 0.5,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 20.755297645840486,
+            "y_cm": -1.7428710387671353,
+            "z_cm": -3.2169431492231375,
+            "pitch_deg": -68.63999999999999,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-25T08:56:47.671+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 385
+              },
+              {
+                "id": 2,
+                "position": 498
+              },
+              {
+                "id": 3,
+                "position": 171
+              },
+              {
+                "id": 4,
+                "position": 304
+              },
+              {
+                "id": 5,
+                "position": 636
+              },
+              {
+                "id": 6,
+                "position": 480
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:46.797+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 499
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:47.014+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.755297645840486,
+              "y_cm": -1.7428710387671353,
+              "z_cm": -3.2169431492231375,
+              "pitch_deg": -68.63999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:47.236+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 304
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:47.454+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.755297645840486,
+              "y_cm": -1.7428710387671353,
+              "z_cm": -3.2169431492231375,
+              "pitch_deg": -68.63999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:47.671+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 304
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 385,
+          "2": 497,
+          "3": 171,
+          "4": 305,
+          "5": 636,
+          "6": 480
+        },
+        "joint_span": {
+          "1": 0,
+          "2": 2,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-25T08:56:47.640289+00:00"
+      },
+      "after": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "move_feedback_delay_s": 0.5,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 20.81731605016813,
+            "y_cm": -1.7480788696842153,
+            "z_cm": -3.153131228352187,
+            "pitch_deg": -68.39999999999999,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-25T08:56:53.994+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 385
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 171
+              },
+              {
+                "id": 4,
+                "position": 305
+              },
+              {
+                "id": 5,
+                "position": 636
+              },
+              {
+                "id": 6,
+                "position": 480
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:53.107+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:53.337+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:53.552+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:53.773+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:53.994+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 385,
+          "2": 498,
+          "3": 171,
+          "4": 305,
+          "5": 636,
+          "6": 480
+        },
+        "joint_span": {
+          "1": 0,
+          "2": 1,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-25T08:56:53.964342+00:00"
+      },
+      "visual": {
+        "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261125\\photo_20261125_085652_876024_seq10_15e0715d.jpg",
+        "jpeg_integrity": {
+          "valid": true,
+          "reason": "decoded_without_reported_warning",
+          "shape": [
+            480,
+            640,
+            3
+          ]
+        },
+        "board": {
+          "marker_ids": [
+            78,
+            69,
+            77,
+            84,
+            83,
+            74,
+            81,
+            80,
+            95,
+            96,
+            86,
+            93,
+            92
+          ],
+          "marker_count": 13,
+          "pose_support": "decoded_marker_centers_with_outer_corner_check",
+          "layout_inlier_count": 12,
+          "layout_inlier_ratio": 0.9230769230769231,
+          "layout_hull_area_cm2": 53.91358282699599,
+          "rejected_marker_ids": [
+            78
+          ],
+          "candidate_errors": [
+            {
+              "center_rmse_px": 0.5680643759546,
+              "outer_corner_max_px": 2.3736361287312246
+            },
+            {
+              "center_rmse_px": 0.5680643759039755,
+              "outer_corner_max_px": 2.3736295135584236
+            }
+          ],
+          "decoded_pose_accepted": true,
+          "measured_points_board_cm": [
+            [
+              3.5999999046325684,
+              5.0400004386901855,
+              0.0
+            ],
+            [
+              10.799999237060547,
+              6.4800004959106445,
+              0.0
+            ],
+            [
+              12.239999771118164,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              9.360000610351562,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              2.1600000858306885,
+              6.4800004959106445,
+              0.0
+            ],
+            [
+              3.5999999046325684,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              0.7200000286102295,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              9.360000610351562,
+              10.799999237060547,
+              0.0
+            ],
+            [
+              12.239999771118164,
+              10.799999237060547,
+              0.0
+            ],
+            [
+              2.1600000858306885,
+              9.360000610351562,
+              0.0
+            ],
+            [
+              3.5999999046325684,
+              10.799999237060547,
+              0.0
+            ],
+            [
+              0.7200000286102295,
+              10.799999237060547,
+              0.0
+            ]
+          ],
+          "measured_points_pixel": [
+            [
+              465.7801513671875,
+              368.1846923828125
+            ],
+            [
+              153.50282287597656,
+              353.4205627441406
+            ],
+            [
+              88.81002807617188,
+              303.2286376953125
+            ],
+            [
+              207.62367248535156,
+              285.8873596191406
+            ],
+            [
+              510.4601135253906,
+              299.2932434082031
+            ],
+            [
+              440.05621337890625,
+              251.856689453125
+            ],
+            [
+              550.7643432617188,
+              236.3160858154297
+            ],
+            [
+              198.01690673828125,
+              177.96328735351562
+            ],
+            [
+              85.2578353881836,
+              193.45314025878906
+            ],
+            [
+              483.1204528808594,
+              190.83999633789062
+            ],
+            [
+              417.1080322265625,
+              147.8412628173828
+            ],
+            [
+              522.6421508789062,
+              135.55340576171875
+            ]
+          ],
+          "measurement_weight": 16,
+          "weight_basis": "decoded center versus object texture uncertainty; separate residual gates retained",
+          "image_preprocessing": "clahe",
+          "raw_marker_rejection": null
+        },
+        "board_rmse_px": 0.5680643759546,
+        "object_rmse_px": 1.1617069045702617,
+        "tracking": {
+          "status": "visible_rim_measured",
+          "edge_coverage": [
+            1.0,
+            1.0,
+            1.0,
+            null
+          ],
+          "edge_mean_distance_px": [
+            0.8695651888847351,
+            1.0555555820465088,
+            1.559999942779541,
+            null
+          ]
+        },
+        "reference_used": null,
+        "T_base_camera": [
+          [
+            -0.10283665007692494,
+            -0.9565329604977576,
+            0.27289067203250167,
+            20.18012682816491
+          ],
+          [
+            -0.9946662673766818,
+            0.09668751512761349,
+            -0.03592410000801131,
+            -2.3396081701529505
+          ],
+          [
+            0.007977464753553357,
+            -0.2751294602543352,
+            -0.9613740896010586,
+            8.666343898698967
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_camera_object": [
+          [
+            -0.14761690017043413,
+            0.9889877471269974,
+            -0.01060598023475208,
+            0.4382685191661272
+          ],
+          [
+            -0.9510733330136617,
+            -0.1389986480588165,
+            0.275932765484831,
+            2.2930705940998806
+          ],
+          [
+            0.27141990718139575,
+            0.05081940446806867,
+            0.9611184225240684,
+            10.121610451201516
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_board_object": [
+          [
+            -0.003399595573717751,
+            -0.9999942213582724,
+            -5.250927907826094e-18,
+            6.683191842379774
+          ],
+          [
+            0.9999942213582718,
+            -0.0033995955737177674,
+            5.050919199745988e-17,
+            5.03774622426649
+          ],
+          [
+            -1.7369723562768479e-16,
+            -1.464370879738161e-16,
+            1.0,
+            -2.5000000000000027
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "tcp_base_cm": [
+          19.509511017782568,
+          -2.6132268105934915,
+          -2.544115559637314
+        ],
+        "tcp_board_cm": [
+          7.042660294742056,
+          3.8600430071116563,
+          -1.646092896572862
+        ],
+        "top_center_base_cm": [
+          20.70375223589455,
+          -2.917437530556006,
+          -1.6917051373369976
+        ],
+        "top_height_cm": 2.5000000000000027,
+        "minimum_box_bottom_height_cm": 1.3322676295501878e-15,
+        "tcp_estimate_is_approximate": true,
+        "for_accuracy_claim": false,
+        "quality_policy": {
+          "version": "independent_box_rim_v1",
+          "board_refined_rmse_px": 1.0
+        },
+        "pose_estimator": "independent_camera_and_visible_box_rim",
+        "object_error_metric": "mean_visible_rim_pixel_distance",
+        "final_board_fit_rmse_px": 0.5680643759546017,
+        "object_pose_basis": "known_stationary_support_plane"
+      },
+      "reused_from_approach": true,
+      "reuse_validation_read": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "move_feedback_delay_s": 0.5,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 20.81731605016813,
+            "y_cm": -1.7480788696842153,
+            "z_cm": -3.153131228352187,
+            "pitch_deg": -68.39999999999999,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-25T08:56:57.025+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 385
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 171
+              },
+              {
+                "id": 4,
+                "position": 305
+              },
+              {
+                "id": 5,
+                "position": 636
+              },
+              {
+                "id": 6,
+                "position": 480
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.679703130811177,
+              "y_cm": -1.7365231899825804,
+              "z_cm": -3.207139760662251,
+              "pitch_deg": -68.88,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:56.122+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 169
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.88595222557249,
+              "y_cm": -1.7538424103650192,
+              "z_cm": -3.1256935926223868,
+              "pitch_deg": -68.16,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:56.337+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 172
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.88595222557249,
+              "y_cm": -1.7538424103650192,
+              "z_cm": -3.1256935926223868,
+              "pitch_deg": -68.16,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:56.575+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 172
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:56.800+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 20.81731605016813,
+              "y_cm": -1.7480788696842153,
+              "z_cm": -3.153131228352187,
+              "pitch_deg": -68.39999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:56:57.025+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 385
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 171
+                },
+                {
+                  "id": 4,
+                  "position": 305
+                },
+                {
+                  "id": 5,
+                  "position": 636
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 385,
+          "2": 497,
+          "3": 171,
+          "4": 305,
+          "5": 636,
+          "6": 480
+        },
+        "joint_span": {
+          "1": 0,
+          "2": 1,
+          "3": 3,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-25T08:56:56.991391+00:00"
+      }
+    },
+    {
+      "before": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "move_feedback_delay_s": 0.5,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 21.155692115306756,
+            "y_cm": -1.7764931017615027,
+            "z_cm": -1.293652461198839,
+            "pitch_deg": -64.79999999999998,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-25T08:57:05.603+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 486
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 153
+              },
+              {
+                "id": 4,
+                "position": 328
+              },
+              {
+                "id": 5,
+                "position": 626
+              },
+              {
+                "id": 6,
+                "position": 480
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.082551055329606,
+              "y_cm": -1.7703512753538988,
+              "z_cm": -1.44912131571461,
+              "pitch_deg": -65.28,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:04.708+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 327
+                },
+                {
+                  "id": 5,
+                  "position": 627
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.155692115306756,
+              "y_cm": -1.7764931017615027,
+              "z_cm": -1.293652461198839,
+              "pitch_deg": -64.79999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:04.932+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.155692115306756,
+              "y_cm": -1.7764931017615027,
+              "z_cm": -1.293652461198839,
+              "pitch_deg": -64.79999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:05.176+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 485
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.070997268945337,
+              "y_cm": -1.7693810768040708,
+              "z_cm": -1.4136899389119666,
+              "pitch_deg": -65.27999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:05.390+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 152
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 627
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.155692115306756,
+              "y_cm": -1.7764931017615027,
+              "z_cm": -1.293652461198839,
+              "pitch_deg": -64.79999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:05.603+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 486,
+          "2": 497,
+          "3": 153,
+          "4": 328,
+          "5": 626,
+          "6": 480
+        },
+        "joint_span": {
+          "1": 1,
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 0
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-25T08:57:05.569060+00:00"
+      },
+      "after": {
+        "status": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "mode": "serial",
+            "connection": "connected",
+            "active_task_id": null,
+            "motion_state": "target_feedback_reached",
+            "upload_in_progress": false,
+            "last_error": null,
+            "coordinate_reference": "joint_feedback_model",
+            "limits_require_recheck": false,
+            "capabilities": {
+              "hardware_verified": false,
+              "writes_enabled": true,
+              "enabled_features": [
+                "coordinate"
+              ],
+              "direct_duration_ms": 20,
+              "absolute_xyz": false,
+              "coordinate_hardware_supported": true,
+              "coordinate_backend": "host_ik",
+              "coordinate_preview_supported": true,
+              "cartesian_feedback": false,
+              "coordinate_model_calibrated": false,
+              "coordinate_feedback_validation": true,
+              "coordinate_correction_supported": true,
+              "gripper_close_supported": true,
+              "gripper_force_control": false,
+              "gripper_contact_feedback": false,
+              "gripper_grasp_detection": false,
+              "host_deduplication_only": true,
+              "stop_all_joints_confirmed": false,
+              "group_completion_feedback": false
+            },
+            "servo_limits": [
+              {
+                "id": 1,
+                "min": 178,
+                "max": 700
+              },
+              {
+                "id": 2,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 3,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 4,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 5,
+                "min": 125,
+                "max": 875
+              },
+              {
+                "id": 6,
+                "min": 125,
+                "max": 875
+              }
+            ],
+            "feedback_settings": {
+              "poll_interval_s": 0.25,
+              "move_feedback_delay_s": 0.5,
+              "position_tolerance": 10,
+              "reached_samples": 2
+            },
+            "gripper_settings": {
+              "max_target_gap": 30,
+              "goal_tolerance": 2,
+              "min_closing_delta": 6,
+              "settle_s": 0.5,
+              "stable_s": 1.0,
+              "stable_samples": 4,
+              "stability_tolerance": 2,
+              "timeout_s": 5.0,
+              "poll_interval_s": 0.25
+            },
+            "coordinate_settings": {
+              "max_step_cm": 5.0,
+              "max_joint_step": 100,
+              "min_joint_delta": 6,
+              "max_rounding_error_cm": 0.1,
+              "position_tolerance_cm": 0.2,
+              "pitch_tolerance_deg": 1.0,
+              "correction": {
+                "enabled": true,
+                "max_attempts": 3,
+                "max_step": 5,
+                "max_offset": 10,
+                "deadband": 1,
+                "settle_s": 0.8,
+                "stable_samples": 3,
+                "stability_tolerance": 2,
+                "min_progress": 0.1
+              },
+              "frame": "base_link",
+              "pitch_policy": "keep_current",
+              "model": {
+                "base_height_cm": 2.89,
+                "upper_arm_cm": 10.43,
+                "forearm_cm": 8.9,
+                "tool_length_cm": 17.7,
+                "units_per_degree": 4.166666666666667,
+                "zero_positions": {
+                  "3": 500.0,
+                  "4": 500.0,
+                  "5": 500.0,
+                  "6": 500.0
+                }
+              }
+            }
+          }
+        },
+        "pose": {
+          "ok": true,
+          "mode": "serial",
+          "data": {
+            "x_cm": 21.277277923014665,
+            "y_cm": -1.7867029472956473,
+            "z_cm": -1.1946222847841366,
+            "pitch_deg": -64.32,
+            "frame": "base_link",
+            "estimated": true,
+            "calibrated": false,
+            "source": "serial",
+            "observed_at": "2026-11-25T08:57:11.760+00:00",
+            "age_ms": 0,
+            "fresh": true,
+            "joint_positions": [
+              {
+                "id": 1,
+                "position": 486
+              },
+              {
+                "id": 2,
+                "position": 497
+              },
+              {
+                "id": 3,
+                "position": 154
+              },
+              {
+                "id": 4,
+                "position": 329
+              },
+              {
+                "id": 5,
+                "position": 626
+              },
+              {
+                "id": 6,
+                "position": 480
+              }
+            ]
+          }
+        },
+        "pose_samples": [
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.13804358638254,
+              "y_cm": -1.7750111133812967,
+              "z_cm": -1.3825441392592541,
+              "pitch_deg": -65.03999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:10.876+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 627
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.210626906010955,
+              "y_cm": -1.781106105023264,
+              "z_cm": -1.2266110971833015,
+              "pitch_deg": -64.56,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:11.091+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 329
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.155692115306756,
+              "y_cm": -1.7764931017615027,
+              "z_cm": -1.293652461198839,
+              "pitch_deg": -64.79999999999998,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:11.329+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 498
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.13804358638254,
+              "y_cm": -1.7750111133812967,
+              "z_cm": -1.3825441392592541,
+              "pitch_deg": -65.03999999999999,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:11.544+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 153
+                },
+                {
+                  "id": 4,
+                  "position": 328
+                },
+                {
+                  "id": 5,
+                  "position": 627
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          },
+          {
+            "ok": true,
+            "mode": "serial",
+            "data": {
+              "x_cm": 21.277277923014665,
+              "y_cm": -1.7867029472956473,
+              "z_cm": -1.1946222847841366,
+              "pitch_deg": -64.32,
+              "frame": "base_link",
+              "estimated": true,
+              "calibrated": false,
+              "source": "serial",
+              "observed_at": "2026-11-25T08:57:11.760+00:00",
+              "age_ms": 0,
+              "fresh": true,
+              "joint_positions": [
+                {
+                  "id": 1,
+                  "position": 486
+                },
+                {
+                  "id": 2,
+                  "position": 497
+                },
+                {
+                  "id": 3,
+                  "position": 154
+                },
+                {
+                  "id": 4,
+                  "position": 329
+                },
+                {
+                  "id": 5,
+                  "position": 626
+                },
+                {
+                  "id": 6,
+                  "position": 480
+                }
+              ]
+            }
+          }
+        ],
+        "joint_median": {
+          "1": 486,
+          "2": 498,
+          "3": 153,
+          "4": 328,
+          "5": 626,
+          "6": 480
+        },
+        "joint_span": {
+          "1": 0,
+          "2": 1,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 0
+        },
+        "joint_mad": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "received_at": "2026-11-25T08:57:11.728268+00:00"
+      },
+      "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261125\\photo_20261125_085710_670144_seq11_65a18ff8.jpg",
+      "visual": {
+        "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261125\\photo_20261125_085710_670144_seq11_65a18ff8.jpg",
+        "jpeg_integrity": {
+          "valid": true,
+          "reason": "decoded_without_reported_warning",
+          "shape": [
+            480,
+            640,
+            3
+          ]
+        },
+        "board": {
+          "marker_ids": [
+            62,
+            77,
+            68,
+            74,
+            83,
+            81,
+            90,
+            89,
+            80,
+            95,
+            96,
+            86
+          ],
+          "marker_count": 12,
+          "pose_support": "decoded_marker_centers_with_outer_corner_check",
+          "layout_inlier_count": 12,
+          "layout_inlier_ratio": 1.0,
+          "layout_hull_area_cm2": 58.060792426300225,
+          "rejected_marker_ids": [],
+          "candidate_errors": [
+            {
+              "center_rmse_px": 0.5671516563757806,
+              "outer_corner_max_px": 2.3908951298340635
+            },
+            {
+              "center_rmse_px": 0.567151656361971,
+              "outer_corner_max_px": 2.3909097520632088
+            }
+          ],
+          "decoded_pose_accepted": true,
+          "measured_points_board_cm": [
+            [
+              2.1600000858306885,
+              3.5999999046325684,
+              0.0
+            ],
+            [
+              10.799999237060547,
+              6.4800004959106445,
+              0.0
+            ],
+            [
+              0.7200000286102295,
+              5.0400004386901855,
+              0.0
+            ],
+            [
+              2.1600000858306885,
+              6.4800004959106445,
+              0.0
+            ],
+            [
+              9.360000610351562,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              3.5999999046325684,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              13.680000305175781,
+              9.360000610351562,
+              0.0
+            ],
+            [
+              10.799999237060547,
+              9.360000610351562,
+              0.0
+            ],
+            [
+              0.7200000286102295,
+              7.920001029968262,
+              0.0
+            ],
+            [
+              9.360000610351562,
+              10.799999237060547,
+              0.0
+            ],
+            [
+              12.239999771118164,
+              10.799999237060547,
+              0.0
+            ],
+            [
+              2.1600000858306885,
+              9.360000610351562,
+              0.0
+            ]
+          ],
+          "measured_points_pixel": [
+            [
+              514.7960815429688,
+              451.23028564453125
+            ],
+            [
+              173.32090759277344,
+              390.1845397949219
+            ],
+            [
+              550.9041748046875,
+              385.97186279296875
+            ],
+            [
+              486.8309631347656,
+              342.333984375
+            ],
+            [
+              221.77662658691406,
+              330.8540954589844
+            ],
+            [
+              426.0087890625,
+              299.9433898925781
+            ],
+            [
+              66.3729019165039,
+              303.2685241699219
+            ],
+            [
+              167.7392120361328,
+              288.8388671875
+            ],
+            [
+              521.6945190429688,
+              286.045166015625
+            ],
+            [
+              214.4658203125,
+              236.4058837890625
+            ],
+            [
+              116.1351318359375,
+              249.35134887695312
+            ],
+            [
+              462.35162353515625,
+              247.39974975585938
+            ]
+          ],
+          "measurement_weight": 16,
+          "weight_basis": "decoded center versus object texture uncertainty; separate residual gates retained"
+        },
+        "board_rmse_px": 0.5671516563757806,
+        "object_rmse_px": 0.9718760283278952,
+        "tracking": {
+          "status": "visible_rim_measured",
+          "method": "free_box_rim_lines"
+        },
+        "reference_used": null,
+        "T_base_camera": [
+          [
+            -0.10283454118903051,
+            -0.929452125993883,
+            0.35432160902757753,
+            19.650600219400825
+          ],
+          [
+            -0.9946868126185523,
+            0.09436312401804318,
+            -0.041155140970468906,
+            -2.309221023346784
+          ],
+          [
+            0.004816839335638261,
+            -0.35667120196478624,
+            -0.9342175612499527,
+            10.61289493289293
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_camera_object": [
+          [
+            -0.14622796714750136,
+            0.9892509164280826,
+            -7.726647218315313e-05,
+            0.4747069188834633
+          ],
+          [
+            -0.9090215735920447,
+            -0.13433790425633108,
+            0.39450362003948664,
+            2.725024274947026
+          ],
+          [
+            0.390252687842316,
+            0.05775769928083425,
+            0.9188943833790869,
+            10.695909860931009
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "T_board_object": [
+          [
+            -0.00498093010590303,
+            -0.9999868219107513,
+            -0.0012435192461873387,
+            6.632366757982309
+          ],
+          [
+            0.9991624846282394,
+            -0.0049263104988932025,
+            -0.04062094012196027,
+            5.18974094424682
+          ],
+          [
+            0.0406142788536678,
+            -0.0014448078432871324,
+            0.9991738551841172,
+            -3.842852086705813
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "tcp_base_cm": [
+          19.94368174653491,
+          -2.6469149144088235,
+          -0.6120353585131042
+        ],
+        "tcp_board_cm": [
+          6.993213802175847,
+          4.291225281769091,
+          -3.5785032836320694
+        ],
+        "top_center_base_cm": [
+          20.85879633740274,
+          -2.9644556099439896,
+          -0.3490629893041568
+        ],
+        "top_height_cm": 3.842852086705813,
+        "minimum_box_bottom_height_cm": 1.129236311430176,
+        "tcp_estimate_is_approximate": true,
+        "for_accuracy_claim": false,
+        "quality_policy": {
+          "version": "independent_box_rim_v1",
+          "board_refined_rmse_px": 1.0
+        },
+        "pose_estimator": "free_box_rim_lines",
+        "object_error_metric": "observed_rim_line_residual_px",
+        "final_board_fit_rmse_px": 0.5671516563757925,
+        "object_pose_basis": "free_pose_of_measured_rim"
+      }
+    }
+  ],
+  "phase": "held_verified",
+  "grasp_region": {
+    "version": "same-box-lower-contact-v03",
+    "along_length_cm": 1.5,
+    "across_width_cm": 0.45,
+    "tcp_height_range_cm": [
+      1.0,
+      2.25
+    ],
+    "tcp_height_target_cm": 2.0,
+    "basis": "Same low contact proxy as v0.3. The physical contact point needs field verification."
+  },
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_far_placement_trial.json",
+  "preclosure_nominal_alignment_deg": 7.387755662104843,
+  "preclosure_wrist_alignment_preview": {
+    "for_motion": false,
+    "requires_wrist_calibration": true,
+    "status": "nominal_roll_preview",
+    "relative_roll_deg": -7.938572726581959,
+    "closing_axis_slope_to_support_deg": 3.0703855188091635
+  },
+  "preclosure_lift_preview": {
+    "planner": "client_nominal_tcp_and_fixed_pitch",
+    "targets": {
+      "3": 148,
+      "4": 334,
+      "5": 619,
+      "6": 480
+    },
+    "expected_joint_positions": {
+      "3": 142,
+      "4": 335,
+      "5": 624,
+      "6": 480
+    },
+    "observed_joint_bias_used": {
+      "3": -6,
+      "4": 1,
+      "5": 5,
+      "6": 0
+    },
+    "max_joint_delta": 29,
+    "feedback_detectable": true,
+    "predicted_delta_cm": [
+      0.016142340084506657,
+      -0.0013555101695619243,
+      2.0425470444103686
+    ],
+    "rounding_error_cm": 0.0453042875553138,
+    "pitch_goal_deg": -65.39999999999999,
+    "nominal_minimum_tcp_height_cm": 1.646092896572862,
+    "joint_limit_margin": 17,
+    "physical_accuracy_verified": false
+  },
+  "jaw_samples": [
+    486,
+    486,
+    486,
+    486,
+    486
+  ],
+  "lift_baseline_source": "preclosure_accepted_support_observation",
+  "postclosure_feedback": {
+    "status": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "mode": "serial",
+        "connection": "connected",
+        "active_task_id": null,
+        "motion_state": "target_feedback_reached",
+        "upload_in_progress": false,
+        "last_error": null,
+        "coordinate_reference": "joint_feedback_model",
+        "limits_require_recheck": false,
+        "capabilities": {
+          "hardware_verified": false,
+          "writes_enabled": true,
+          "enabled_features": [
+            "coordinate"
+          ],
+          "direct_duration_ms": 20,
+          "absolute_xyz": false,
+          "coordinate_hardware_supported": true,
+          "coordinate_backend": "host_ik",
+          "coordinate_preview_supported": true,
+          "cartesian_feedback": false,
+          "coordinate_model_calibrated": false,
+          "coordinate_feedback_validation": true,
+          "coordinate_correction_supported": true,
+          "gripper_close_supported": true,
+          "gripper_force_control": false,
+          "gripper_contact_feedback": false,
+          "gripper_grasp_detection": false,
+          "host_deduplication_only": true,
+          "stop_all_joints_confirmed": false,
+          "group_completion_feedback": false
+        },
+        "servo_limits": [
+          {
+            "id": 1,
+            "min": 178,
+            "max": 700
+          },
+          {
+            "id": 2,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 3,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 4,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 5,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 6,
+            "min": 125,
+            "max": 875
+          }
+        ],
+        "feedback_settings": {
+          "poll_interval_s": 0.25,
+          "move_feedback_delay_s": 0.5,
+          "position_tolerance": 10,
+          "reached_samples": 2
+        },
+        "gripper_settings": {
+          "max_target_gap": 30,
+          "goal_tolerance": 2,
+          "min_closing_delta": 6,
+          "settle_s": 0.5,
+          "stable_s": 1.0,
+          "stable_samples": 4,
+          "stability_tolerance": 2,
+          "timeout_s": 5.0,
+          "poll_interval_s": 0.25
+        },
+        "coordinate_settings": {
+          "max_step_cm": 5.0,
+          "max_joint_step": 100,
+          "min_joint_delta": 6,
+          "max_rounding_error_cm": 0.1,
+          "position_tolerance_cm": 0.2,
+          "pitch_tolerance_deg": 1.0,
+          "correction": {
+            "enabled": true,
+            "max_attempts": 3,
+            "max_step": 5,
+            "max_offset": 10,
+            "deadband": 1,
+            "settle_s": 0.8,
+            "stable_samples": 3,
+            "stability_tolerance": 2,
+            "min_progress": 0.1
+          },
+          "frame": "base_link",
+          "pitch_policy": "keep_current",
+          "model": {
+            "base_height_cm": 2.89,
+            "upper_arm_cm": 10.43,
+            "forearm_cm": 8.9,
+            "tool_length_cm": 17.7,
+            "units_per_degree": 4.166666666666667,
+            "zero_positions": {
+              "3": 500.0,
+              "4": 500.0,
+              "5": 500.0,
+              "6": 500.0
+            }
+          }
+        }
+      }
+    },
+    "pose": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "x_cm": 20.81731605016813,
+        "y_cm": -1.7480788696842153,
+        "z_cm": -3.153131228352187,
+        "pitch_deg": -68.39999999999999,
+        "frame": "base_link",
+        "estimated": true,
+        "calibrated": false,
+        "source": "serial",
+        "observed_at": "2026-11-25T08:57:00.753+00:00",
+        "age_ms": 0,
+        "fresh": true,
+        "joint_positions": [
+          {
+            "id": 1,
+            "position": 486
+          },
+          {
+            "id": 2,
+            "position": 497
+          },
+          {
+            "id": 3,
+            "position": 171
+          },
+          {
+            "id": 4,
+            "position": 305
+          },
+          {
+            "id": 5,
+            "position": 636
+          },
+          {
+            "id": 6,
+            "position": 480
+          }
+        ]
+      }
+    },
+    "pose_samples": [
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 20.81731605016813,
+          "y_cm": -1.7480788696842153,
+          "z_cm": -3.153131228352187,
+          "pitch_deg": -68.39999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:56:59.840+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 171
+            },
+            {
+              "id": 4,
+              "position": 305
+            },
+            {
+              "id": 5,
+              "position": 636
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 20.81731605016813,
+          "y_cm": -1.7480788696842153,
+          "z_cm": -3.153131228352187,
+          "pitch_deg": -68.39999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:00.057+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 171
+            },
+            {
+              "id": 4,
+              "position": 305
+            },
+            {
+              "id": 5,
+              "position": 636
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 20.81731605016813,
+          "y_cm": -1.7480788696842153,
+          "z_cm": -3.153131228352187,
+          "pitch_deg": -68.39999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:00.275+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 171
+            },
+            {
+              "id": 4,
+              "position": 305
+            },
+            {
+              "id": 5,
+              "position": 636
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 20.954473271746394,
+          "y_cm": -1.7595962833742296,
+          "z_cm": -3.0979676840459867,
+          "pitch_deg": -67.91999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:00.505+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 173
+            },
+            {
+              "id": 4,
+              "position": 305
+            },
+            {
+              "id": 5,
+              "position": 636
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 20.81731605016813,
+          "y_cm": -1.7480788696842153,
+          "z_cm": -3.153131228352187,
+          "pitch_deg": -68.39999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:00.753+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 171
+            },
+            {
+              "id": 4,
+              "position": 305
+            },
+            {
+              "id": 5,
+              "position": 636
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      }
+    ],
+    "joint_median": {
+      "1": 486,
+      "2": 498,
+      "3": 171,
+      "4": 305,
+      "5": 636,
+      "6": 480
+    },
+    "joint_span": {
+      "1": 0,
+      "2": 1,
+      "3": 2,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "joint_mad": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "received_at": "2026-11-25T08:57:00.718487+00:00"
+  },
+  "lift_plan": {
+    "planner": "client_nominal_tcp_and_fixed_pitch",
+    "targets": {
+      "3": 148,
+      "4": 334,
+      "5": 619,
+      "6": 480
+    },
+    "expected_joint_positions": {
+      "3": 142,
+      "4": 335,
+      "5": 624,
+      "6": 480
+    },
+    "observed_joint_bias_used": {
+      "3": -6,
+      "4": 1,
+      "5": 5,
+      "6": 0
+    },
+    "max_joint_delta": 29,
+    "feedback_detectable": true,
+    "predicted_delta_cm": [
+      0.016142340084506657,
+      -0.0013555101695619243,
+      2.0425470444103686
+    ],
+    "rounding_error_cm": 0.0453042875553138,
+    "pitch_goal_deg": -65.39999999999999,
+    "nominal_minimum_tcp_height_cm": 1.646092896572862,
+    "joint_limit_margin": 17,
+    "physical_accuracy_verified": false
+  },
+  "lift_joint_feedback": [
+    {
+      "command": {
+        "3": 148,
+        "4": 334,
+        "5": 619,
+        "6": 480
+      },
+      "expected": {
+        "3": 142,
+        "4": 335,
+        "5": 624,
+        "6": 480
+      },
+      "actual": {
+        "3": 153,
+        "4": 328,
+        "5": 626,
+        "6": 480
+      },
+      "model_total_rise_cm": 1.7279868489166292,
+      "model_planned_step_rise_cm": 2.042552090677466
+    }
+  ],
+  "visual_lift_bottom": {
+    "before_cm": 1.3322676295501878e-15,
+    "after_cm": 1.129236311430176,
+    "rise_cm": 1.1292363114301747,
+    "passed": true
+  },
+  "verification_method": "visual_lift_and_stable_joint_feedback",
+  "hold_feedback": {
+    "status": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "mode": "serial",
+        "connection": "connected",
+        "active_task_id": null,
+        "motion_state": "target_feedback_reached",
+        "upload_in_progress": false,
+        "last_error": null,
+        "coordinate_reference": "joint_feedback_model",
+        "limits_require_recheck": false,
+        "capabilities": {
+          "hardware_verified": false,
+          "writes_enabled": true,
+          "enabled_features": [
+            "coordinate"
+          ],
+          "direct_duration_ms": 20,
+          "absolute_xyz": false,
+          "coordinate_hardware_supported": true,
+          "coordinate_backend": "host_ik",
+          "coordinate_preview_supported": true,
+          "cartesian_feedback": false,
+          "coordinate_model_calibrated": false,
+          "coordinate_feedback_validation": true,
+          "coordinate_correction_supported": true,
+          "gripper_close_supported": true,
+          "gripper_force_control": false,
+          "gripper_contact_feedback": false,
+          "gripper_grasp_detection": false,
+          "host_deduplication_only": true,
+          "stop_all_joints_confirmed": false,
+          "group_completion_feedback": false
+        },
+        "servo_limits": [
+          {
+            "id": 1,
+            "min": 178,
+            "max": 700
+          },
+          {
+            "id": 2,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 3,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 4,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 5,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 6,
+            "min": 125,
+            "max": 875
+          }
+        ],
+        "feedback_settings": {
+          "poll_interval_s": 0.25,
+          "move_feedback_delay_s": 0.5,
+          "position_tolerance": 10,
+          "reached_samples": 2
+        },
+        "gripper_settings": {
+          "max_target_gap": 30,
+          "goal_tolerance": 2,
+          "min_closing_delta": 6,
+          "settle_s": 0.5,
+          "stable_s": 1.0,
+          "stable_samples": 4,
+          "stability_tolerance": 2,
+          "timeout_s": 5.0,
+          "poll_interval_s": 0.25
+        },
+        "coordinate_settings": {
+          "max_step_cm": 5.0,
+          "max_joint_step": 100,
+          "min_joint_delta": 6,
+          "max_rounding_error_cm": 0.1,
+          "position_tolerance_cm": 0.2,
+          "pitch_tolerance_deg": 1.0,
+          "correction": {
+            "enabled": true,
+            "max_attempts": 3,
+            "max_step": 5,
+            "max_offset": 10,
+            "deadband": 1,
+            "settle_s": 0.8,
+            "stable_samples": 3,
+            "stability_tolerance": 2,
+            "min_progress": 0.1
+          },
+          "frame": "base_link",
+          "pitch_policy": "keep_current",
+          "model": {
+            "base_height_cm": 2.89,
+            "upper_arm_cm": 10.43,
+            "forearm_cm": 8.9,
+            "tool_length_cm": 17.7,
+            "units_per_degree": 4.166666666666667,
+            "zero_positions": {
+              "3": 500.0,
+              "4": 500.0,
+              "5": 500.0,
+              "6": 500.0
+            }
+          }
+        }
+      }
+    },
+    "pose": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "x_cm": 21.155692115306756,
+        "y_cm": -1.7764931017615027,
+        "z_cm": -1.293652461198839,
+        "pitch_deg": -64.79999999999998,
+        "frame": "base_link",
+        "estimated": true,
+        "calibrated": false,
+        "source": "serial",
+        "observed_at": "2026-11-25T08:57:17.419+00:00",
+        "age_ms": 0,
+        "fresh": true,
+        "joint_positions": [
+          {
+            "id": 1,
+            "position": 486
+          },
+          {
+            "id": 2,
+            "position": 498
+          },
+          {
+            "id": 3,
+            "position": 153
+          },
+          {
+            "id": 4,
+            "position": 328
+          },
+          {
+            "id": 5,
+            "position": 626
+          },
+          {
+            "id": 6,
+            "position": 480
+          }
+        ]
+      }
+    },
+    "pose_samples": [
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 21.155692115306756,
+          "y_cm": -1.7764931017615027,
+          "z_cm": -1.293652461198839,
+          "pitch_deg": -64.79999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:16.542+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 153
+            },
+            {
+              "id": 4,
+              "position": 328
+            },
+            {
+              "id": 5,
+              "position": 626
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 21.210626906010955,
+          "y_cm": -1.781106105023264,
+          "z_cm": -1.2266110971833015,
+          "pitch_deg": -64.56,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:16.760+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 496
+            },
+            {
+              "id": 3,
+              "position": 153
+            },
+            {
+              "id": 4,
+              "position": 329
+            },
+            {
+              "id": 5,
+              "position": 626
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 21.155692115306756,
+          "y_cm": -1.7764931017615027,
+          "z_cm": -1.293652461198839,
+          "pitch_deg": -64.79999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:16.974+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 153
+            },
+            {
+              "id": 4,
+              "position": 328
+            },
+            {
+              "id": 5,
+              "position": 626
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 21.155692115306756,
+          "y_cm": -1.7764931017615027,
+          "z_cm": -1.293652461198839,
+          "pitch_deg": -64.79999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:17.188+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 153
+            },
+            {
+              "id": 4,
+              "position": 328
+            },
+            {
+              "id": 5,
+              "position": 626
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 21.155692115306756,
+          "y_cm": -1.7764931017615027,
+          "z_cm": -1.293652461198839,
+          "pitch_deg": -64.79999999999998,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-25T08:57:17.419+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 486
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 153
+            },
+            {
+              "id": 4,
+              "position": 328
+            },
+            {
+              "id": 5,
+              "position": 626
+            },
+            {
+              "id": 6,
+              "position": 480
+            }
+          ]
+        }
+      }
+    ],
+    "joint_median": {
+      "1": 486,
+      "2": 498,
+      "3": 153,
+      "4": 328,
+      "5": 626,
+      "6": 480
+    },
+    "joint_span": {
+      "1": 0,
+      "2": 2,
+      "3": 0,
+      "4": 1,
+      "5": 0,
+      "6": 0
+    },
+    "joint_mad": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "received_at": "2026-11-25T08:57:17.389500+00:00"
+  },
+  "object_rise_cm": 1.3428520867058102,
+  "relative_pose_drift_cm_deg": null,
+  "verification_checks": {
+    "lift_bottom_clearance": true,
+    "positive_object_rise": true,
+    "stable_loaded_joint_feedback": true
+  }
+}

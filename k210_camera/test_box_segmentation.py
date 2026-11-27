@@ -22,6 +22,10 @@ class SegmentationTests(unittest.TestCase):
         self.assertIsNone(overview_mask([self.mask], self.mask.shape, {"lines":[]}))
         self.assertIsNone(overview_mask([], self.mask.shape, self.ocr))
 
+    def test_name_normalization_matches_overview_ocr(self):
+        self.ocr["lines"][0]["text"]="阿昔洛 韦乳膏"
+        self.assertIs(overview_mask([self.mask],self.mask.shape,self.ocr),self.mask)
+
     @patch("track_box_reference._track")
     def test_near_rejects_wrong_or_ambiguous_instances(self, run):
         for masks in ([], [255-self.mask], [self.mask, self.mask]):

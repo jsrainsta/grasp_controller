@@ -41,7 +41,7 @@ def save(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf8")
 
 
-def replay(raw, journal, folder):
+def replay(raw, journal, folder, *, check_commands=False):
     row = {"image":Path(raw["image"]).name,"frames":[]}
     src = Path(raw["image"])
     if not check_jpeg(src)["valid"] or raw["ocr"]["target_selection"]["status"] != "target_found":
@@ -102,14 +102,15 @@ def replay(raw, journal, folder):
                                          grasp_offset_board=journal.get("grasp_offset_board_cm"))
             fr.update(phase=decision["phase"],delta=decision["delta_board_cm"],
                       segmentation=v["tracking"].get("segmentation"),
-                      center=v["top_center_base_cm"],inliers=v["tracking"]["inlier_count"])
+                      retried=v["tracking"].get("segmentation_candidate_retry"),
+                      center=v["top_center_base_cm"],edge_coverage=v["tracking"].get("edge_coverage"))
             last_image = path
         except ValueError as error:
             fr["error"] = str(error)
     # Run the actual guarded controller up to its first new command preview.
     packets = iter(journal["observations"])
     class Camera:
-        def capture(self, _):
+        def capture(self, _, **kwargs):
             packet = next(packets)
             return {"status":"captured", **packet["capture"]}
     camera = Camera()
@@ -138,6 +139,11 @@ def replay(raw, journal, folder):
         report = load(reports[0])
         row["first_guard"] = report["phase"]
         row["first_step"] = report.get("next_preview",{}).get("coordinate_plan",{}).get("targets")
+    if check_commands and hover_data:
+        from replay_commands import compare
+        audit=folder/"command_audit"
+        audit.mkdir()
+        row["command_audit"]=compare(source,journal,audit)
     return row
 
 
@@ -145,21 +151,25 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--interpreter",required=True)
     p.add_argument("--day",default="20261112")
+    p.add_argument("--journals",action="store_true",help="Replay each recorded run using its exact overview and saved OCR")
     p.add_argument("--seq",nargs="+",type=int,default=[2,4,9,17,21,33,45,51,62,79,94,104,39,76])
     args = p.parse_args()
     cv2.setNumThreads(2)
-    runner = OCRRunner(target_id="med_003")
+    runner = None if args.journals else OCRRunner(target_id="med_003")
     reports = sorted(ARCHIVE.glob(f"visual_approach_{args.day}*.json"))
     by_source = {Path(j["source"]).name.replace("_registered.json",".json"):j for j in map(load,reports)}
     result = []
     with TemporaryDirectory() as temp:
         work = Path(temp)
-        for seq in args.seq:
-            paths = sorted(ARCHIVE.glob(f"photo_{args.day}_*_seq{seq}_*_commissioning.json"))
-            if not paths:
-                continue
-            raw = load(paths[0])
-            raw["ocr"] = runner.run(Path(raw["image"]),work/"ocr",known_box_focus=True)
+        if args.journals:
+            paths = [ARCHIVE / name for name in by_source]
+        else:
+            paths = [path for seq in args.seq for path in
+                     sorted(ARCHIVE.glob(f"photo_{args.day}_*_seq{seq}_*_commissioning.json"))[:1]]
+        for seq, path in enumerate(paths,1):
+            raw = load(path)
+            if runner is not None:
+                raw["ocr"] = runner.run(Path(raw["image"]),work/"ocr",known_box_focus=True)
             case = {}
             for variant in ("legacy","fusion"):
                 folder = work/f"{seq}_{variant}"
@@ -170,7 +180,7 @@ def main():
                     os.environ.pop("GRASP_YOLO_PYTHON",None)
                 cv2.setRNGSeed(42)
                 with redirect_stdout(io.StringIO()):
-                    case[variant]=replay(raw,by_source.get(paths[0].name),folder)
+                    case[variant]=replay(raw,by_source.get(path.name),folder,check_commands=args.journals)
             result.append(case)
             name = "replay_results.json" if args.day == "20261112" else f"replay_{args.day}.json"
             save(HERE/name,result)

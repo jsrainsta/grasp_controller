@@ -1,0 +1,161 @@
+--- original/Hiwonder/Portings/Src/app_porting.c
++++ modified/Hiwonder/Portings/Src/app_porting.c
+@@ -516,18 +516,39 @@
+ 			app.status = CMD_FUNC_NULL;
+ 			break;
+ 		
+-		case CMD_ANGLE_BACK_READING:
+-			for(uint8_t i = 0; i < 6; i++)
+-			{
+-				int current_duty = robot_arm_get_knot_current_duty(i + 1);
+-				send_data[i * 3] = i + 1;
+-				send_data[(i * 3) + 1] = GET_LOW_BYTE(current_duty);
+-				send_data[i * 3 + 2] = GET_HIGH_BYTE(current_duty);
+-			}
+-			HAL_Delay(5);
+-			packet_transmit(&app, CMD_ANGLE_BACK_READING, send_data, 18);
+-			app.status = CMD_FUNC_NULL;
+-			break;
++        case CMD_ANGLE_BACK_READING:
++        {
++            bool complete = true;
++            for (uint8_t i = 0; i < 6; i++)
++            {
++                int current_duty;
++                if (arm_select == 2)
++                {
++                    if (!serial_servo_read_position_bounded(
++                            &serial_servo_controller, i + 1, &current_duty, 100))
++                    {
++                        complete = false;
++                        continue;
++                    }
++                }
++                else
++                {
++                    current_duty = robot_arm_get_knot_current_duty(i + 1);
++                }
++                send_data[i * 3] = i + 1;
++                send_data[i * 3 + 1] = GET_LOW_BYTE(current_duty);
++                send_data[i * 3 + 2] = GET_HIGH_BYTE(current_duty);
++            }
++            /* Existing host protocol requires all six real positions.
++             * Silence on failure lets its bounded requery run next time. */
++            if (complete)
++            {
++                HAL_Delay(5);
++                packet_transmit(&app, CMD_ANGLE_BACK_READING, send_data, 18);
++            }
++            app.status = CMD_FUNC_NULL;
++            break;
++        }
+ 		
+         case CMD_ACTION_DOWNLOAD:
+             app.packet.action_group_index = app.packet.buffer[0];
+--- original/Hiwonder/Peripherals/Inc/serial_servo.h
++++ modified/Hiwonder/Peripherals/Inc/serial_servo.h
+@@ -75,7 +75,7 @@
+ 
+ typedef struct SerialServoControllerTypeDef SerialServoControllerTypeDef;
+ struct SerialServoControllerTypeDef {
+-	SerialServoITState it_state; 
++	volatile SerialServoITState it_state; 
+     SerialServoRecvState rx_state;
+     SerialServoCmdTypeDef rx_frame;
+     uint32_t rx_args_index;
+@@ -99,6 +99,11 @@
+  * @return None
+  */
+ void serial_servo_init(void);
++
++/* Bounded position query used by the host 0x0D handler only. */
++bool serial_servo_read_position_bounded(SerialServoControllerTypeDef *self,
++                                      uint8_t servo_id, int *position,
++                                      uint32_t timeout_ms);
+ 
+ /**
+  * @brief 舵机ID设置函数
+--- original/Hiwonder/Peripherals/Src/serial_servo.c
++++ modified/Hiwonder/Peripherals/Src/serial_servo.c
+@@ -170,6 +170,81 @@
+     return false;
+ }
+ 
++/* Cancel only the local USART2 transaction. No servo motion is sent. */
++static void position_query_clear(SerialServoControllerTypeDef *self)
++{
++    uint32_t primask = __get_PRIMASK();
++    __disable_irq();
++    __HAL_UART_DISABLE_IT(&huart2, UART_IT_TXE);
++    __HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
++    __HAL_UART_DISABLE_IT(&huart2, UART_IT_RXNE);
++    __HAL_UART_CLEAR_OREFLAG(&huart2);
++    __HAL_UART_CLEAR_FLAG(&huart2, UART_FLAG_TC);
++    self->write_pin(1);
++    memset(&self->rx_frame, 0, sizeof(self->rx_frame));
++    memset(&self->tx_frame, 0, sizeof(self->tx_frame));
++    self->rx_args_index = 0;
++    self->tx_byte_index = 0;
++    self->rx_state = SERIAL_SERVO_RECV_STARTBYTE_1;
++    self->it_state = SERIAL_SERVO_WRITE_DATA_READY;
++    __set_PRIMASK(primask);
++}
++
++bool serial_servo_read_position_bounded(SerialServoControllerTypeDef *self,
++                                      uint8_t servo_id, int *position,
++                                      uint32_t timeout_ms)
++{
++    SerialServoCmdTypeDef frame;
++    uint32_t started;
++    bool valid;
++    int value = 0;
++
++    if (position == NULL || servo_id < 1 || servo_id > 6 || timeout_ms == 0)
++        return false;
++    /* Do not interrupt a pending motion write on the shared servo bus. */
++    started = HAL_GetTick();
++    while (self->it_state != SERIAL_SERVO_WRITE_DATA_READY)
++    {
++        if ((uint32_t)(HAL_GetTick() - started) >= timeout_ms)
++            return false;
++        HAL_Delay(1);
++    }
++    position_query_clear(self);
++    /* Allow a previous servo's late bytes to drain before starting a new ID. */
++    HAL_Delay(3);
++    position_query_clear(self);
++    memset(&frame, 0, sizeof(frame));
++    cmd_frame_init(&frame, servo_id, SERIAL_SERVO_POS_READ);
++    cmd_frame_complete(&frame, 0);
++    if ((uint32_t)(HAL_GetTick() - started) >= timeout_ms)
++        return false;
++    self->serial_write_and_read(self, &frame, false);
++    while ((uint32_t)(HAL_GetTick() - started) < timeout_ms)
++    {
++        if (self->it_state == SERIAL_SERVO_READ_DATA_FINISH)
++        {
++            valid = self->rx_frame.elements.servo_id == servo_id
++                 && self->rx_frame.elements.command == SERIAL_SERVO_POS_READ
++                 && self->rx_frame.elements.length == 5;
++            if (valid)
++            {
++                value = (int)(int16_t)((uint16_t)self->rx_frame.elements.args[0]
++                        | ((uint16_t)self->rx_frame.elements.args[1] << 8));
++                valid = value >= 0 && value <= 1000;
++            }
++            position_query_clear(self);
++            if (valid)
++                *position = value;
++            return valid;
++        }
++        if (self->it_state == SERIAL_SERVO_READ_DATA_ERROR)
++            break;
++        HAL_Delay(1);
++    }
++    position_query_clear(self);
++    return false;
++}
++
+ void serial_servo_set_deviation(SerialServoControllerTypeDef *self, uint8_t servo_id, int new_deviation)
+ {
+     SerialServoCmdTypeDef frame;

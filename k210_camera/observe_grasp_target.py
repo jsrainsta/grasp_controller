@@ -1,4 +1,5 @@
 """Current-box observation using commissioned camera candidate; no arm writes."""
+from medicine_match import name_matches
 import argparse
 from contextlib import nullcontext
 from datetime import datetime
@@ -10,14 +11,42 @@ import uuid
 import cv2
 import numpy as np
 
-from box_segmentation import image_masks, overview_mask, coverage, polygon_mask
 from check_grasp_board import ROOT
+from box_rim_geometry import overview_rim
+from box_segmentation import coverage, image_masks, overview_mask, polygon_mask
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
 from fit_grasp_handeye import robot_frame
 from jpeg_integrity import check_jpeg
 from sample_grasp_handeye import nominal_model
 from vision_task import VisionTaskSession
+
+
+def clipped_box_top(image, ocr):
+    """Return observed frame intersections for a target-associated blue face.
+
+    This only requests a better view; these points are not box corners and
+    must never be used to authorize grasping from an incomplete outline.
+    """
+    identity = [np.asarray(row['polygon'], float) for row in ocr.get('lines', [])
+                if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence', 0) >= .8]
+    if not identity:
+        return None
+    mask = cv2.inRange(cv2.cvtColor(image, cv2.COLOR_BGR2HSV),
+                       np.array([84, 65, 45], np.uint8), np.array([135, 255, 255], np.uint8))
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(mask)
+    for polygon in identity:
+        center = polygon.mean(axis=0)
+        for index in range(1, count):
+            x, y, width, height, area = stats[index]
+            if (area < 200 or y > 5 or not x - 20 <= center[0] <= x + width + 20
+                    or not y - 20 <= center[1] <= y + height + 180):
+                continue
+            rows, columns = np.nonzero(labels[:6] == index)
+            if len(columns) >= 8:
+                return [[float(columns.min()), float(rows.min())],
+                        [float(columns.max()), float(rows.min())]]
+    return None
 
 
 def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
@@ -30,27 +59,38 @@ def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
     normal = board[:3,2]
     surface = board[:3,3]-normal*2.5
     outline = detect(im,ocr,'阿昔洛韦乳膏')
-    masks = image_masks(image_path) if image_path is not None else None
-    box = None
+    masks = image_masks(image_path)
+    box = None if masks is None else overview_mask(masks, im.shape[:2], ocr)
+    def inside_target(corners):
+        return masks is None or (box is not None and coverage(box, polygon_mask(box.shape, corners)) >= .85)
     if masks is not None:
-        box = overview_mask(masks, im.shape[:2], ocr)
         outline['segmentation'] = {'model':'expv4s','instances':len(masks),'associated':box is not None}
+        outline['candidates'] = [c for c in outline['candidates'] if inside_target(c['corners_pixel'])]
         if box is None:
-            outline.update(candidates=[], reason='target_text_without_unique_box_mask')
-        else:
-            outline['candidates'] = [c for c in outline['candidates']
-                if coverage(box, polygon_mask(box.shape, c['corners_pixel'])) >= .85]
+            outline['reason'] = '药名未对应到唯一的 YOLO 药盒区域'
     if not outline['candidates'] and (masks is None or box is not None):
-        from fit_known_box_outline import fit_outline
-        fitted = fit_outline(im,ocr,K,D,camera,board)
-        if box is not None and (not fitted or not fitted['image_geometry_supported']
-                or coverage(box, polygon_mask(box.shape, fitted['corners_pixel'])) < .85):
-            fitted = fit_outline(im,ocr,K,D,camera,board,instance_mask=box)
-            outline['segmentation']['retried_fit_inside_mask'] = True
-        outline['metric_edge_fit'] = fitted
-        if (fitted and fitted['image_geometry_supported'] and
-                (box is None or coverage(box, polygon_mask(box.shape, fitted['corners_pixel'])) >= .85)):
-            outline['candidates'] = [fitted]
+        identity=[row['polygon'] for row in ocr.get('lines',[])
+                  if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence',0)>=.8]
+        fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
+                            np.linalg.solve(camera,board),(10.5,3.4,2.5),identity,
+                            accept_face=inside_target if box is not None else None)
+        if fitted is not None:
+            _,rim=fitted
+            pixels=rim['corners_pixel']
+            h,w=im.shape[:2]
+            complete=bool(np.all(pixels[:,0]>=6) and np.all(pixels[:,0]<w-6)
+                          and np.all(pixels[:,1]>=6) and np.all(pixels[:,1]<h-8)
+                          and all(value is not None for value in rim['coverage']))
+            candidate={'corners_pixel':pixels.tolist(),'center_pixel':pixels.mean(0).tolist(),
+                       'edge_coverage':rim['coverage'],'mean_edge_distance_px':rim['mean_edge_distance_px'],
+                       'image_geometry_supported':complete,'method':'metric_visible_rim_fit'}
+            outline['metric_edge_fit']=candidate
+            if complete:
+                outline['candidates']=[candidate]
+            elif pixels[:,1].min()<6:
+                outline['frame_edge']='upper'
+            elif pixels[:,1].max()>=h-8:
+                outline['frame_edge']='lower'
     supported = []
     for candidate in outline['candidates']:
         pixel = np.array(candidate['corners_pixel'],np.float64)
@@ -79,8 +119,8 @@ def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
             'length_axis_base':axis_long.tolist(),'width_axis_base':axis_short.tolist(),
             'measured_length_cm':long,'measured_width_cm':short,
             'dimensional_error':dimensional_error,'orthogonality_error':orthogonality,
-            'dimensions_independently_measured':candidate.get('method')!='known_blue_white_box_metric_rectangle_edge_fit',
-            'dimension_note':'Metric edge fit imposes the known size; its dimensional residual is not independent validation.' if candidate.get('method')=='known_blue_white_box_metric_rectangle_edge_fit' else 'Ray-plane estimate; depends on plane and assumed height.',
+            'dimensions_independently_measured':candidate.get('method')!='metric_visible_rim_fit',
+            'dimension_note':'Metric edge fit imposes the known size; its dimensional residual is not independent validation.' if candidate.get('method')=='metric_visible_rim_fit' else 'Ray-plane estimate; depends on plane and assumed height.',
             'geometry_supported':bool(abs(long/10.5-1)<=.18 and abs(short/3.4-1)<=.18 and orthogonality<.18)}
         supported.append(row)
     supported.sort(key=lambda row:row['dimensional_error']+row['orthogonality_error'])
@@ -96,6 +136,7 @@ def main(argv=None, camera=None):
     parser.add_argument('--arm-url',default='http://127.0.0.1:18000/v1/arm')
     parser.add_argument('--port',default='COM5')
     parser.add_argument('--calibration',type=Path,required=True)
+    parser.add_argument('--exposure-scale',type=float,choices=(.5,.75))
     args = parser.parse_args(argv)
     cal = json.loads(args.calibration.read_text(encoding='utf-8'))
     best = next(r for r in cal['candidates'] if r['mount_hypothesis']=='pitch_tool')
@@ -108,7 +149,7 @@ def main(argv=None, camera=None):
             before = read_arm(args.arm_url)
             if abs(before['joint_median']['2']-496)>3:
                 raise RuntimeError('腕轴状态与本次安装标定基准不符')
-            captured = session.capture('observe_'+uuid.uuid4().hex)
+            captured = session.capture('observe_'+uuid.uuid4().hex, **({'exposure_scale': args.exposure_scale} if args.exposure_scale is not None else {}))
             if captured['status']!='captured':
                 raise RuntimeError(str(captured))
             after = read_arm(args.arm_url)

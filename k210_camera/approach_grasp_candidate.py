@@ -15,8 +15,6 @@ from jpeg_integrity import check_jpeg
 from plan_fixed_box_grasp import ik
 from receive_photo import receive_photos
 from sample_grasp_handeye import call,nominal_model
-from box_segmentation import image_masks
-from track_box_reference import track
 from grasp_start_state import require_start_state,start_state_error
 from grasp_motion_profile import load_motion_profile
 from tcp_pose_planner import plan_step
@@ -128,6 +126,11 @@ def build_pregrasp_plan(model,start,center,up,limits,tcp_offset,motion):
     if adaptive:
         heights.extend(h for h in (preferred-.5,preferred+.5,preferred+1.)
                        if 4.2<=h<=8.5 and h-2.5>=motion['pregrasp_min_top_clearance_cm'])
+        # Search the whole observation-to-hover band, including heights well
+        # above the old 7 cm ceiling. IK and full-path checks decide feasibility.
+        minimum_height=max(4.2,2.5+motion['pregrasp_min_top_clearance_cm'])
+        heights.extend(step/4 for step in range(math.ceil(minimum_height*4),49))
+        heights=list(dict.fromkeys(heights))
     rejections={}
     plans=[]
     for height in heights:
@@ -239,7 +242,7 @@ def split_pregrasp_segment(start,waypoint,model,center,up,limits,tcp_offset,mini
     return max(choices,key=lambda item:item[0])[1] if choices else None
 
 
-def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,record,save):
+def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,record,save,*,upper_edge_pixels=None):
     reading=read_arm(arm_url)
     start=reading['joint_median']
     require_start_state(start,tcp_profile['jaw_position'],tcp_profile['roll_position'],motion=motion)
@@ -268,23 +271,64 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
     direction=outward/radial_distance
     pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
     minimum=min(gap,clearance)
+    if upper_edge_pixels is not None:
+        intrinsics=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
+        K,D=np.asarray(intrinsics['camera_matrix_px']),np.asarray(intrinsics['distortion_coefficients'])
+        camera=np.asarray(observation['geometry']['T_base_camera_cm'])
+        mount_camera=np.linalg.solve(frame,camera)
+        normal=board[:3,2]
+        uv=cv2.undistortPoints(np.asarray(upper_edge_pixels,np.float64).reshape(-1,1,2),K,D).reshape(-1,2)
+        rays=np.column_stack((uv,np.ones(len(uv))))@camera[:3,:3].T
+        incidence=rays@normal
+        if np.any(np.abs(incidence)<.05):
+            raise ValueError('无法估计画面上边缘对应的台面方向')
+        depth=((top-camera[:3,3])@normal)/incidence
+        if np.any(depth<=0):
+            raise ValueError('画面上边缘在药盒顶面的投影无效')
+        rim_points=camera[:3,3]+rays*depth[:,None]
     # Prefer the established viewing change, then trade pitch for clearance
     # when the same retraction distance is near a joint limit.
-    candidates=((.5,4),(.5,3.5),(.5,3),(.5,2.5),(.5,2),
-                (.65,1),(.8,1),(.5,0),(.65,0),(.8,0))
-    for rise,angle in candidates:
+    if upper_edge_pixels is None:
+        candidates=[(1.85,rise,angle) for rise,angle in ((.5,4),(.5,3.5),(.5,3),(.5,2.5),(.5,2),
+                                                        (.65,1),(.8,1),(.5,0),(.65,0),(.8,0))]
+    else:
+        candidates=[(retreat,rise,angle) for retreat in (0.,.65,1.25,1.85)
+                    for rise,angle in ((3.,-10),(2.5,-8),(2.,-6),(1.5,-6),(1.3,-4),
+                                       (1.,-4),(1.,-2),(1.,0),(.8,-2),(.8,0),(.5,0),(.8,2),(1.,4))]
+    upper_choices=[]
+    for retreat,rise,angle in candidates:
         try:
-            plan=plan_step(model,start,-1.85*direction+rise*up,pitch-angle,offset,limits,gap,up,minimum)
+            plan=plan_step(model,start,-retreat*direction+rise*up,pitch-angle,offset,limits,gap,up,minimum)
             targets=plan['targets']
             retraction=float(-np.asarray(plan['predicted_delta_cm'])@direction)
-            if retraction<1.8 or not 6<=plan['max_joint_delta']<=min(50,motion['maximum_coarse_joint_delta']):
+            if retraction<retreat-(.05 if upper_edge_pixels is None else .1) or not 6<=plan['max_joint_delta']<=min(50,motion['maximum_coarse_joint_delta']):
                 continue
             path_margin(start,{**start,**targets},model,top,up,limits,offset,minimum)
+            if upper_edge_pixels is not None:
+                to_camera=np.linalg.inv(robot_frame({**start,**targets},model,'pitch_tool')@mount_camera)
+                if np.any((rim_points@to_camera[:3,:3].T+to_camera[:3,3])[:,2]<=0):
+                    continue
+                projected=cv2.projectPoints(rim_points,cv2.Rodrigues(to_camera[:3,:3])[0],to_camera[:3,3],K,D)[0].reshape(-1,2)
+                if (np.any(projected[:,0]<8) or np.any(projected[:,0]>631)
+                        or np.any(projected[:,1]<24) or np.any(projected[:,1]>467)):
+                    continue
+                # Prefer useful framing over the first barely in-frame candidate.
+                # A 100 px inset leaves room for the unseen end and actuation error.
+                inset=float(np.min(projected[:,1]))
+                score=-abs(inset-100.)
+                upper_choices.append((score,plan,targets,retraction,rise,angle,projected))
+                continue
         except ValueError:
             continue
         break
     else:
-        raise RuntimeError('当前关节限位和净空下，找不到可执行的观察位回收路径')
+        if upper_edge_pixels is None or not upper_choices:
+            raise RuntimeError('当前关节限位、净空和视野要求下，找不到可执行的观察位调整路径')
+    if upper_edge_pixels is not None:
+        _,plan,targets,retraction,rise,angle,projected=max(upper_choices,key=lambda item:item[0])
+        record.update(projected_box_upper_edge_px=projected.tolist(),
+                      head_up_candidate_count=len(upper_choices),
+                      head_up_target_inset_px=100.)
     body={'request_id':'observation_retract_'+uuid.uuid4().hex,
           'targets':[{'id':int(j),'position':v} for j,v in targets.items()],
           'duration_ms':20}
@@ -567,20 +611,17 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
                 print('近图校验或关节反馈未通过，原地等候后重拍一次。',flush=True)
                 time.sleep(.8)
         else:raise RuntimeError('两次近图均未通过图像完整性和关节稳定检查')
-        reference=cv2.imdecode(np.frombuffer(Path(obs['image']).read_bytes(),np.uint8),0)
-        frame=cv2.imdecode(np.frombuffer(Path(image).read_bytes(),np.uint8),0)
-        cal=json.loads(Path(obs['calibration']).read_text(encoding='utf-8'))['candidates'][0]
-        camera=robot_frame(after['joint_median'],model,'pitch_tool')@np.array(cal['T_mount_camera_cm'])
-        inv=np.linalg.inv(camera)
-        intrinsic=json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
-        corners=np.array(target['top_corners_base_cm'])
-        predicted=cv2.projectPoints(corners,cv2.Rodrigues(inv[:3,:3])[0],inv[:3,3],np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients']))[0].reshape(-1,2)
-        expected_scale=abs(cv2.contourArea(predicted.astype(np.float32)))/abs(cv2.contourArea(np.array(target['corners_pixel'],np.float32)))
-        tracked=track(reference,frame,target['corners_pixel'],scale_bounds=(expected_scale*.6,expected_scale*1.6),coverage_basis='common_visible',current_face_hint=predicted,instance_masks=image_masks(image))
-        report.update(completed=True,hover_motion_completed=True,
-                      near_tracking_accepted=tracked['status']=='tracked_face_for_review',
-                      final=after,tracking=tracked,predicted_corners_pixel=predicted.tolist(),expected_scale=expected_scale)
-        print('近端跟踪：',tracked,flush=True)
+        from grasp_visual_observer import GraspVisualObserver
+        observer=GraspVisualObserver(args.observation,args.tcp_profile)
+        report.update(completed=True,hover_motion_completed=True,final=after)
+        try:
+            visual=observer.estimate(image,after['joint_median'])
+        except ValueError as error:
+            report.update(near_tracking_accepted=False,near_geometry_error=str(error))
+            print('悬停近图定位未通过：',error,flush=True)
+        else:
+            report.update(near_tracking_accepted=True,tracking=visual['tracking'])
+            print('悬停近图盒边：',visual['tracking'],flush=True)
     except BaseException as error:
         report['error']=str(error);raise
     finally:save();print('预接近记录：',output,flush=True)

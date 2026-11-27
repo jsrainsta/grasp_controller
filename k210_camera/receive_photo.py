@@ -335,7 +335,7 @@ def _check_capture_pong(pong):
 
 def _receive_requested_photo(connection, output, show=False, on_photo=None,
                              boot_wait=CAPTURE_BOOT_WAIT, on_state=None,
-                             on_requested_photo=None):
+                             on_requested_photo=None, exposure_scale=None):
     # Finish PING before sending capture, so PING cannot consume photo packets.
     # A persistent session passes zero: no reopening or boot delay per photo.
     if boot_wait:
@@ -348,9 +348,17 @@ def _receive_requested_photo(connection, output, show=False, on_photo=None,
                            "先单独运行 ping_k210.py 检查通信。".format(error)) from error
     _check_capture_pong(pong)
     request_id = uuid.uuid4().hex[:16]
+    command = {"type": "capture", "version": 1, "request_id": request_id}
+    applied_exposure = 1.0
+    if exposure_scale is not None:
+        if "exposure_scale" in pong.get("capabilities", []):
+            command["exposure_scale"] = exposure_scale
+            applied_exposure = exposure_scale
+            print("本次补拍曝光比例：", exposure_scale, flush=True)
+        else:
+            print("当前 K210 固件不支持曝光补拍，继续普通拍照。", flush=True)
     payload = COMMAND_PREFIX + (json.dumps(
-        {"type": "capture", "version": 1, "request_id": request_id},
-        separators=(",", ":"), ensure_ascii=True) + "\n").encode("ascii")
+        command, separators=(",", ":"), ensure_ascii=True) + "\n").encode("ascii")
     request_started = time.perf_counter()
     if connection.write(payload) != len(payload):
         raise CaptureError("capture 没有完整写入串口，本次请求是否执行未知；请勿自动重发。")
@@ -424,8 +432,10 @@ def _receive_requested_photo(connection, output, show=False, on_photo=None,
             print("  保存照片：{:.2f} 秒".format(saved_at - transfer_finished), flush=True)
             print("  发出拍照指令到保存完成：{:.2f} 秒".format(saved_at - request_started), flush=True)
             if on_requested_photo is not None:
-                on_requested_photo(path, {key: photo[key] for key in (
-                    "request_id", "seq", "size", "image_width", "image_height")})
+                metadata = {key: photo[key] for key in (
+                    "request_id", "seq", "size", "image_width", "image_height")}
+                metadata["exposure_scale"] = applied_exposure
+                on_requested_photo(path, metadata)
             if on_photo is not None:
                 try:
                     on_photo(path)
@@ -494,7 +504,7 @@ def receive_photos(port, baudrate, output, show=False, once=False, on_photo=None
             if (capture_requests is not None and assembler.meta is None
                     and not buffer and not discarding):
                 try:
-                    capture_requests.get_nowait()
+                    capture_options = capture_requests.get_nowait()
                 except Empty:
                     pass
                 else:
@@ -504,7 +514,8 @@ def receive_photos(port, baudrate, output, show=False, once=False, on_photo=None
                     try:
                         _receive_requested_photo(command_connection, output, show, on_photo,
                                                  boot_wait=0, on_state=on_state,
-                                                 on_requested_photo=on_requested_photo)
+                                                 on_requested_photo=on_requested_photo,
+                                                 exposure_scale=capture_options.get("exposure_scale") if isinstance(capture_options, dict) else None)
                     except ReceiveCancelled:
                         return None
                     except CaptureError as error:

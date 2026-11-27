@@ -4,6 +4,20 @@ import numpy as np
 from grasp_approach_policy import approach_decision
 
 class PolicyTests(unittest.TestCase):
+    def test_recorded_near_pose_aligns_without_retreat_or_descent(self):
+        from pathlib import Path
+        from grasp_motion_profile import load_motion_profile
+        motion=load_motion_profile(Path(__file__).parent/'grasp_motion_far_placement_trial.json')
+        obj=np.eye(4)
+        obj[:2,:2]=[[.0231623738526265,-.9997317162306659],
+                    [.9997317162306654,.02316237385262645]]
+        obj[:3,3]=[9.248322121234494,2.7434445233300693,-2.5]
+        tcp=[9.81978251306415,2.8944912439615145,-2.9359122636921464]
+        result=approach_decision(tcp,obj,motion)
+        self.assertFalse(result['ready'])
+        self.assertEqual(result['phase'],'horizontal_alignment_at_clearance')
+        np.testing.assert_allclose(result['delta_board_cm'],[-.571460391829656,-.1510467206314452,0.])
+
     def scene(self,height,along=1.6,across=.3):
         obj=np.eye(4);obj[2,3]=-2.5
         return np.array([-along,-across,-height]),obj

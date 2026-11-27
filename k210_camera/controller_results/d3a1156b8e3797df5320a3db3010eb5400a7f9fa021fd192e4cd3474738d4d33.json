@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "wrist_probe_556_7593",
+  "run_id": "b4ec2732766843a5a387c3eb48e34163",
+  "target_id": "med_003",
+  "started_at": "2026-11-23T13:19:20.212164+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于approach_grasp_candidate.py；原因：RuntimeError: 高台面抬升未确认到位：{'task_id': '5ca42b71229643a191b917d5aa32f674', 'request_id': 'high_start_90204baf6022443793010bda50a4ed29', 'type': 'move', 'status': 'outcome_unknown', 'created_at': '2026-11-23T13:19:46.174+00:00', 'updated_at': '2026-11-23T13:19:47.531+00:00', 'targets': {'3': 155, '4': 152, '5': 421, '6': 495}, 'feedback_confirmed': False, 'physically_stopped': None, 'consecutive_samples': 0, 'message': '通信失败，无法确认此前运动结果', 'acceptance': {'position_tolerance': 10, 'required_samples': 2}, 'position_feedback': {'observed_at': '2026-11-23T13:19:46.278+00:00', 'joint_positions': {'1': 375, '2': 498, '3': 171, '4': 130, '5': 414, '6': 495}, 'target_errors': {'3': 16, '4': -22, '5': -7, '6': 0}, 'within_tolerance': False, 'position_tolerance': 10, 'required_samples': 2}}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\b4ec2732766843a5a387c3eb48e34163.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-23T13:19:47.667951+00:00"
+}

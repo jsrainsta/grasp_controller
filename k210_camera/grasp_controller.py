@@ -41,6 +41,10 @@ def load_config(path):
         raise ValueError('本版只实现med_003、10.5×3.4×2.5cm和520；不能仅改配置就声称支持新药瓶')
     for name in ('calibration','results_dir'):
         c[name]=str((path.parent/c[name]).resolve())
+    if c.get('board_profile'):
+        board_profile=(path.parent/c['board_profile']).resolve()
+        if not board_profile.is_file():raise ValueError('找不到所选的标定板配置文件')
+        c['board_profile']=str(board_profile)
     for name in ('motion_profile','fallback_motion_profile'):
         if c.get(name):
             c[name]=str((path.parent/c[name]).resolve())
@@ -64,7 +68,8 @@ def check_environment(config):
     modules=('numpy','cv2','serial','PIL','rapidocr','onnxruntime')
     missing=[m for m in modules if importlib.util.find_spec(m) is None]
     files=[ROOT/'run_current_box_trial.py',ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json',
-           ROOT/'calibration_boards/charuco_7x5_print96_v1.json',ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
+           ROOT/'calibration_boards/charuco_7x5_print96_v1.json',ROOT/'calibration_boards/charuco_12x8_14p4mm_v1.json',
+           ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
            ROOT.parent/'arm_service_review/received_20261105/arm_service/kinematics.py',
            ROOT.parent/'arm_service_review/received_20261105/config.serial.integration.json']
     inference_python=os.environ.get('GRASP_YOLO_PYTHON')
@@ -78,9 +83,19 @@ def check_environment(config):
         if not hasattr(cv2,'solvePnPRefineLM'):missing_features.append('cv2.solvePnPRefineLM')
         for attr in ('CharucoBoard','CharucoDetector','ArucoDetector'):
             if not hasattr(getattr(cv2,'aruco',None),attr):missing_features.append('cv2.aruco.'+attr)
+    inference_error=None
+    if inference_python and not absent:
+        try:
+            probe=subprocess.run([inference_python,'-B','-X','utf8',str(ROOT/'box_segmentation.py'),'--self-check'],
+                                 capture_output=True,encoding='utf-8',errors='replace',timeout=45)
+            if probe.returncode:
+                inference_error=(probe.stderr.strip().splitlines() or ['YOLO 自检失败'])[-1]
+        except (OSError,subprocess.TimeoutExpired) as error:
+            inference_error=str(error)
     return {'type':'controller_environment_check','missing_modules':missing,'missing_files':absent,
             'missing_opencv_features':missing_features,'box_segmentation':'expv4s' if inference_python else 'legacy',
-            'ready_for_connection_check':not missing and not absent and not missing_features,'hardware_commands_sent':False,
+            'yolo_inference_error':inference_error,
+            'ready_for_connection_check':not missing and not absent and not missing_features and inference_error is None,'hardware_commands_sent':False,
             'independent_full_run_validated':False,'pi_hardware_validated':False}
 
 class Coordinator:
@@ -110,6 +125,8 @@ class Coordinator:
             command.extend(['--motion-profile',self.config['motion_profile']])
         if self.config.get('fallback_motion_profile'):
             command.extend(['--fallback-motion-profile',self.config['fallback_motion_profile']])
+        if self.config.get('board_profile'):
+            command.extend(['--board-profile',self.config['board_profile']])
         close_only=self.config.get('close_only') is True
         if close_only and not preview:
             command.append('--close-only')

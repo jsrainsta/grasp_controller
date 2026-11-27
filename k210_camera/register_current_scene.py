@@ -7,14 +7,15 @@ import argparse,copy,json
 from pathlib import Path
 import numpy as np
 import cv2
-from check_grasp_board import ROOT,GRASP_BOARD_PROFILE,inspect,make_board
+from check_grasp_board import LARGE_GRASP_BOARD_PROFILE,ROOT,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
-from box_segmentation import image_masks
-from observe_grasp_target import locate
+from observe_grasp_target import clipped_box_top,locate
+from box_segmentation import coverage, image_masks, overview_mask, polygon_mask
+from box_rim_geometry import RimEvidence,face_corners,refine_grounded_rim
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
 
-def robust_board_pose_candidates(board,K,D):
+def robust_board_pose_candidates(board,K,D,*,minimum_hull_fraction=None):
     """Use the RANSAC-supported corner set consistently in metric PnP.
 
     The visibility stage permits <=10% rejected interpolation points; those
@@ -23,13 +24,22 @@ def robust_board_pose_candidates(board,K,D):
     """
     ids=np.array(board['corner_ids']).reshape(-1)
     img=np.array(board['corners_px'],np.float64)
-    size=board['profile']['square_length'];columns=board['profile']['squares_x']-1
+    profile=board['profile']
+    size=profile['square_length'];columns=profile['squares_x']-1
     obj=np.array([[(int(i)%columns+1)*size,(int(i)//columns+1)*size,0] for i in ids],np.float64)
     undistorted=cv2.undistortPoints(img.reshape(-1,1,2),K,D,P=K).reshape(-1,2)
     H,mask=cv2.findHomography(obj[:,:2],undistorted,cv2.RANSAC,1.5)
     if H is None or mask is None:raise ValueError('板角点稳健拟合失败')
     keep=mask.ravel().astype(bool)
     if keep.sum()<12 or keep.mean()<.9:raise ValueError('板位姿有效角点比例不足')
+    coverage={}
+    if minimum_hull_fraction is not None:
+        hull=cv2.convexHull(obj[keep,:2].astype(np.float32))
+        full_area=(columns-1)*(profile['squares_y']-2)*size**2
+        fraction=float(cv2.contourArea(hull))/full_area
+        if fraction<minimum_hull_fraction:
+            raise ValueError(f'板位姿有效角点覆盖不足：{fraction:.1%}，要求 {minimum_hull_fraction:.0%}')
+        coverage={'pose_inlier_hull_fraction':fraction}
     filtered={**board,'corner_ids':ids[keep].tolist(),'corners_px':img[keep].tolist()}
     solutions=[]
     for C,_ in camera_candidates(filtered,K,D):
@@ -42,22 +52,21 @@ def robust_board_pose_candidates(board,K,D):
         solutions.append((T,error))
     metadata={'raw_corner_count':len(ids),'pose_inlier_count':int(keep.sum()),
               'rejected_corner_ids':ids[~keep].tolist(),'inlier_ratio':float(keep.mean()),
-              'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True}
+              'ransac_threshold_px':1.5,'pose_rmse_limit_px':.6,'raw_evidence_retained':True,**coverage}
     return sorted(solutions,key=lambda row:row[1]),metadata
 
 class BoardPoseAmbiguous(ValueError):
     pass
 
 
-class LowerBoxEdgeUnclear(ValueError):
-    def __init__(self,message,board_pose):
+class ObservationBoxEdgeUnclear(ValueError):
+    def __init__(self,message,board_pose,upper_edge_pixels=None):
         super().__init__(message)
         self.board_pose=board_pose
+        self.upper_edge_pixels=upper_edge_pixels
 
 
-def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, instance_masks=None):
-    from track_box_reference import read_image, track
-
+def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, instance_mask=None):
     old_cal=json.loads(Path(previous['calibration']).read_text(encoding='utf-8'))
     old_board=np.asarray(next(c for c in old_cal['candidates']
                               if c['mount_hypothesis']=='pitch_tool')['T_base_board_cm'])
@@ -65,44 +74,32 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, 
     if translation>.5 or rotation>3:
         raise ValueError(f'抬高后标定板位置不一致（{translation:.2f} cm，{rotation:.2f}°）')
     geometry=previous['geometry']
-    old_camera=np.asarray(geometry['T_base_camera_cm'])
-    # Register the new camera to the same board frame as the saved box.
-    new_camera=old_board@np.linalg.inv(board_pose)@camera
-    world_to_camera=np.linalg.inv(new_camera)
     target=geometry['selected']
-    corners=np.asarray(target['corners_pixel'],dtype=np.float32)
-    top_corners=np.asarray(target['top_corners_base_cm'])
-    rvec=cv2.Rodrigues(world_to_camera[:3,:3])[0]
-    tvec=world_to_camera[:3,3]
-    projected=cv2.projectPoints(top_corners,rvec,tvec,K,D)[0].reshape(-1,2)
-    tracked=track(read_image(previous['image'],cv2.IMREAD_GRAYSCALE),current_image,corners,
-                  current_face_hint=projected,coverage_basis='common_visible',instance_masks=instance_masks)
-    if tracked['status']!='tracked_face_for_review' or tracked['inlier_count']<16:
-        raise ValueError('抬高后盒面纹理不足，无法确认药盒仍在原位')
-
-    source=np.asarray(tracked['inlier_source_pixel'],dtype=np.float64)
-    rays_camera=cv2.undistortPoints(source.reshape(-1,1,2),K,D).reshape(-1,2)
-    rays=np.column_stack((rays_camera,np.ones(len(source))))@old_camera[:3,:3].T
+    axis=np.asarray(target['length_axis_base'])
     normal=old_board[:3,2]
-    origin=old_camera[:3,3]
-    denominators=rays@normal
-    if np.any(abs(denominators)<1e-8):
-        raise ValueError('抬高前盒面匹配点无法投影')
-    depth=((top_corners[0]-origin)@normal)/denominators
-    if np.any(depth<=0):
-        raise ValueError('抬高前盒面匹配点深度无效')
-    world=origin+rays*depth[:,None]
-    expected=cv2.projectPoints(world,rvec,tvec,K,D)[0].reshape(-1,2)
-    errors=np.linalg.norm(expected-np.asarray(tracked['inlier_current_pixel']),axis=1)
-    p90=float(np.quantile(errors,.9))
-    if not np.isfinite(p90) or p90>3:
-        raise ValueError(f'抬高后盒面与原位的投影误差过大（P90 {p90:.2f}px）')
+    box=np.eye(4)
+    box[:3,:3]=np.column_stack((axis,np.cross(normal,axis),normal))
+    box[:3,3]=target['top_center_base_cm']
+    current_camera=old_board@np.linalg.solve(board_pose,camera)
+    nominal=np.linalg.solve(current_camera,box)
+    evidence=RimEvidence(current_image,K,D,face_corners(geometry['assumed_box_dimensions_cm']))
+    fit=refine_grounded_rim(evidence,nominal,allow_cropped=True)
+    if fit is None:
+        raise ValueError('抬高后可见盒边不足，无法确认药盒仍在原位')
+    pose,rim=fit
+    if instance_mask is not None and coverage(instance_mask, polygon_mask(current_image.shape, rim['corners_pixel'])) < .85:
+        raise ValueError('抬高后复核的盒面超出药名对应的 YOLO 区域')
+    shift,yaw=discrepancy(nominal,pose)
+    if shift>.3 or yaw>3:
+        raise ValueError(f'抬高后药盒轮廓位置改变（{shift:.2f} cm，{yaw:.2f}°）')
     return {'board_shift_cm':translation,'board_rotation_deg':rotation,
-            'box_inliers':tracked['inlier_count'],'box_projection_p90_px':p90}
+            'box_shift_cm':shift,'box_rotation_deg':yaw,'box_edge_coverage':rim['coverage']}
 
 
-def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None):
+def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None,
+             board_profile=None):
     o=json.loads(path.read_text(encoding='utf-8'))
+    previous=None
     if saved_plane:
         cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
         if cal.get('scene_registration',{}).get('basis')!='decoded_current_board_and_nominal_robot_camera_mount':
@@ -113,19 +110,29 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         cal['scene_registration']={**cal['scene_registration'],'basis':'saved_support_plane_preview',
                                    'saved_calibration':o['calibration'],'board_pnp_rmse_px':None}
     else:
-        b=inspect(Path(o['image']),GRASP_BOARD_PROFILE)
+        b=inspect(Path(o['image']),board_profile)
+        if previous_registration is not None:
+            previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
+            previous_profile=previous['scene_registration'].get('board_profile')
+            if previous_profile is not None and previous_profile != b['profile']:
+                raise ValueError('同一次抓取的标定板发生变化，请从观察位重新开始')
         k=json.loads((ROOT/'camera_calibration_results/diagnostic_20261026_58dc9618/intrinsics_candidate.json').read_text(encoding='utf-8'))
         K,D=np.array(k['camera_matrix_px']),np.array(k['distortion_coefficients'])
         image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
         board=make_board(b['profile'])
+        large_board=b['profile'].get('board_id')==LARGE_GRASP_BOARD_PROFILE.stem
         parameters=cv2.aruco.DetectorParameters();parameters.cornerRefinementMethod=cv2.aruco.CORNER_REFINE_SUBPIX
         solutions,pose_validation=marker_plane_candidates_with_contrast(
             cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),K,D,board,cv2.aruco.ArucoDetector(board.getDictionary(),parameters),
-            allow_isolated_outlier=True)
+            allow_isolated_outlier=True,allow_wide_inlier_support=large_board)
         method='decoded_marker_centers'
-        if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and b['reference_candidate']:
+        # The visibility check fits distorted pixels. For the large board let
+        # the pose solver assess coverage on its own undistorted inlier set.
+        fallback_available=b['reference_candidate'] or (large_board and b['corner_count']>=12)
+        if (not solutions or (len(solutions)>1 and solutions[1][1]-solutions[0][1]<.5)) and fallback_available:
             try:
-                alternate,corner_validation=robust_board_pose_candidates(b,K,D)
+                alternate,corner_validation=robust_board_pose_candidates(
+                    b,K,D,minimum_hull_fraction=1/3 if large_board else None)
                 if alternate and alternate[0][1]<=.6 and (len(alternate)==1 or alternate[1][1]-alternate[0][1]>=.5):
                     solutions,pose_validation=alternate,{'method':'robust_charuco_fallback','marker_diagnostics':pose_validation,'corner_diagnostics':corner_validation}
                     method='robust_charuco_fallback'
@@ -152,16 +159,22 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         fit=outline.get('metric_edge_fit')
         detail=outline['reason']
         if fit:
-            reason='拟合得到的盒顶角点不一致，' if fit.get('rejection_reason')=='edge_fits_disagree_on_box_corners' else ''
-            detail=(f"{reason}边缘中位误差 {fit['edge_median_px']:.2f}px，"
-                    f"P90 {fit['edge_p90_px']:.2f}px，蓝色覆盖 {fit['blue_fraction_inside']:.1%}")
+            detail=f"可见边覆盖 {fit['edge_coverage']}，边缘平均偏差 {fit['mean_edge_distance_px']:.2f}px"
         message='新场景中药盒边界拟合失败，'+detail
-        if (previous_registration is not None and not saved_plane
-                and outline.get('segmentation', {}).get('associated', True)):
-            previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
+        if not saved_plane:
+            frame_points=clipped_box_top(image,o['ocr'])
+            if frame_points is not None:
+                raise ObservationBoxEdgeUnclear(
+                    f'{message}；已确认药名对应盒面接触画面顶部，先抬头补拍',
+                    best['T_base_board_cm'],frame_points)
+        if previous is not None:
             try:
+                masks=image_masks(o['image'])
+                box=None if masks is None else overview_mask(masks,image.shape[:2],o['ocr'])
+                if masks is not None and box is None:
+                    raise ValueError('抬高后未确认药名对应的唯一药盒')
                 evidence=verify_stationary_box(previous,cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),
-                                               np.asarray(best['T_base_board_cm']),camera,K,D,instance_masks=image_masks(o['image']))
+                                               np.asarray(best['T_base_board_cm']),camera,K,D,instance_mask=box)
             except ValueError as error:
                 raise ValueError(f'{message}。{error}') from error
             # Preserve the proven image and its matching pixel coordinates.
@@ -176,20 +189,13 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             out.write_text(json.dumps(o,ensure_ascii=False,indent=2),encoding='utf-8')
             print('抬高后已核对板和盒面，沿用抬高前定位：',out,flush=True)
             return out
-        if not saved_plane and fit and not fit['image_geometry_supported'] and not fit.get('rejection_reason'):
+        if not saved_plane and outline.get('frame_edge')=='upper':
             corners=np.asarray(fit['corners_pixel'])
-            edges=np.asarray(fit['edge_p90_by_side_px'])
-            edge_rows=(corners[:,1]+np.roll(corners[:,1],-1))/2
-            lower=int(np.argmax(edge_rows))
-            other_edges=np.delete(edges,lower)
-            isolated_lower_failure=np.all(other_edges<3)
-            # Occlusion at a lower corner can pull the whole fitted
-            # rectangle off the true outline, including its opposite edge.
-            near_gripper=edge_rows[lower]>=.85*image.shape[0]
-            lower_corner_failure=near_gripper and np.count_nonzero(other_edges<=20)>=2
-            if (edges[lower]>=3 and fit['blue_fraction_inside']>.9
-                    and (isolated_lower_failure or lower_corner_failure)):
-                raise LowerBoxEdgeUnclear(message,best['T_base_board_cm'])
+            edge=int(np.argmin((corners[:,1]+np.roll(corners[:,1],-1))/2))
+            pixels=corners[[edge,(edge+1)%4]].tolist()
+            raise ObservationBoxEdgeUnclear(f'{message}；疑似药盒上沿出框',best['T_base_board_cm'],pixels)
+        if not saved_plane and outline.get('frame_edge')=='lower':
+            raise ObservationBoxEdgeUnclear(f'{message}；药盒下沿证据不足',best['T_base_board_cm'])
         raise ValueError(message)
     # Wrist-roll alignment has not been calibrated for arbitrary orientations.
     # Reject unsupported yaw before any movement, rather than claiming that
@@ -226,5 +232,6 @@ def undirected_angle_deg(axis,reference):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('observation',type=Path)
     p.add_argument('--motion-profile',type=Path)
+    p.add_argument('--board-profile',type=Path)
     a=p.parse_args()
-    register(a.observation,motion=load_motion_profile(a.motion_profile))
+    register(a.observation,motion=load_motion_profile(a.motion_profile),board_profile=a.board_profile)

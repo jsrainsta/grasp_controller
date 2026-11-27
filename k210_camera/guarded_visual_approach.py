@@ -112,6 +112,7 @@ def main(argv=None, camera_session=None):
         with session_context as camera:
             def observe():
                 errors=[]
+                lower_exposure=False
                 for attempt in range(2):
                     for settle in range(3):
                         before=read_arm(a.arm_url)
@@ -120,7 +121,7 @@ def main(argv=None, camera_session=None):
                         except RuntimeError:
                             if settle==2:raise
                             time.sleep(.5)
-                    c=camera.capture('guarded_obs_'+uuid.uuid4().hex)
+                    c=camera.capture('guarded_obs_'+uuid.uuid4().hex, **({'exposure_scale': .5} if lower_exposure else {}))
                     if c['status']!='captured':raise RuntimeError('采传失败：'+str(c))
                     after=read_arm(a.arm_url);check_pose(after)
                     if any(abs(before['joint_median'][j]-after['joint_median'][j])>2 for j in before['joint_median']):
@@ -138,7 +139,8 @@ def main(argv=None, camera_session=None):
                     except ValueError as error:
                         errors.append(str(error))
                         packet['visual_error']=str(error);save()
-                        if attempt==0:print('近图定位失败，原地重拍一次。',flush=True)
+                        lower_exposure=True
+                        if attempt==0:print('近图定位失败，尝试半曝光原地补拍一次。',flush=True)
                         continue
                     packet['visual']=visual;save()
                     return visual,after
@@ -160,7 +162,7 @@ def main(argv=None, camera_session=None):
                 if motion.get('adaptive_pitch_search'):
                     shift=float(np.linalg.norm(obj[:2,3]-initial_center))
                     report['box_center_shift_from_initial_cm']=shift;save()
-                    if shift>.6:
+                    if shift>.7:
                         raise RuntimeError(f'本轮盒心与初图相差 {shift:.2f} cm，请核对现场后重新从观察位拍照')
                     if iteration==0 and not a.seed_approach and height<4.2:
                         raise RuntimeError(f'首次近景实测留空不足，胶垫代理高度 {height:.2f} cm')
@@ -205,10 +207,23 @@ def main(argv=None, camera_session=None):
                                                   for v in last_targets}
                     minimum_height=motion['minimum_nominal_pad_height_cm']
                     if decision['phase']=='horizontal_alignment_at_clearance':
-                        minimum_height=max(minimum_height,3.0)
-                    planned=choose_step(model,positions,delta,observer.tcp['offset_tool_cm'],limits,height,-observer.Y[:3,2],
-                        minimum_height,motion['preferred_nominal_pitch_deg'],motion['nominal_pitch_range_deg'],
-                        joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)
+                        minimum_height=max(minimum_height,min(3.0,height))
+                    try:
+                        planned=choose_step(model,positions,delta,observer.tcp['offset_tool_cm'],limits,height,up,
+                            minimum_height,motion['preferred_nominal_pitch_deg'],motion['nominal_pitch_range_deg'],
+                            joint_bias=joint_bias,previous_joint_delta=previous_joint_delta)
+                    except ValueError as alignment_error:
+                        if decision['phase']!='horizontal_alignment_at_clearance' or height>3.5:
+                            raise
+                        horizontal_delta=observer.Y[:3,:2]@np.array(decision['delta_board_cm'][:2])
+                        try:
+                            planned=choose_step(model,positions,horizontal_delta,observer.tcp['offset_tool_cm'],
+                                limits,height,up,height,motion['preferred_nominal_pitch_deg'],
+                                motion['nominal_pitch_range_deg'],horizontal_only=True)
+                        except ValueError as horizontal_error:
+                            raise ValueError('低位同高度横移候选也无解：'+str(horizontal_error)) from alignment_error
+                        planned['horizontal_alignment_fallback']=True
+                        print('常规横移无解，选用同高度横移候选。',flush=True)
                     preview={'status':'client_preview','coordinate_plan':planned}
                     delta=np.array(planned['predicted_delta_cm'])
                 for scale in (1.,.5):

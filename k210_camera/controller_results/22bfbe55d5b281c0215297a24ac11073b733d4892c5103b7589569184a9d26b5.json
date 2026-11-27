@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "wrist_probe_12543_22611",
+  "run_id": "e5ef9f9b6afb44b0bd11bdad1af95aea",
+  "target_id": "med_003",
+  "started_at": "2026-11-25T09:10:23.705300+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于guarded_visual_approach.py；原因：RuntimeError: 采传失败：{'type': 'vision_capture_result', 'version': 1, 'task_id': 'guarded_obs_8f3a9f58c9174db7943335f2fd590cb3', 'location_id': None, 'target_id': 'med_003', 'target_name': '阿昔洛韦乳膏', 'status': 'error', 'recognized_id': None, 'recognized_name': None, 'capture': None, 'image_path': None, 'ocr_result_path': None, 'started_at': '2026-11-25T09:11:56.622599+00:00', 'completed_at': '2026-11-25T09:11:57.955441+00:00', 'elapsed_s': 1.3328626999864355, 'error': {'stage': 'capture', 'message': '本次拍照未完成：K210 拍照或发送失败：Invalid sensor exposure readback；拍照请求已接受，但照片未完整接收，板端结果未知。请勿自动重发。；请等预览恢复后再手动拍照。'}}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\e5ef9f9b6afb44b0bd11bdad1af95aea.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-25T09:11:58.404002+00:00"
+}

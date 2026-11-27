@@ -12,6 +12,7 @@ from tempfile import TemporaryDirectory
 
 import cv2
 import numpy as np
+from medicine_match import name_matches
 
 WORKSPACE = Path(__file__).resolve().parents[1]
 _executor = None
@@ -77,13 +78,13 @@ def match_region(masks, region, minimum):
 def overview_mask(masks, shape, ocr):
     matched = set()
     for line in ocr.get("lines", []):
-        if line["text"] == "阿昔洛韦乳膏" and line["confidence"] >= .8:
+        if name_matches(line.get("text", ""), "阿昔洛韦乳膏") and line.get("confidence", 0) >= .8:
             region = polygon_mask(shape, line["polygon"])
             matched.update(i for i, mask in enumerate(masks) if coverage(mask, region) >= .85)
     return masks[matched.pop()] if len(matched) == 1 else None
 
 
-def serve():
+def serve(*, self_check=False):
     # Keep the protocol stream separate from Ultralytics startup messages.
     protocol = sys.stdout
     sys.stdout = sys.stderr
@@ -98,6 +99,10 @@ def serve():
     from ultralytics import YOLO
     torch.set_num_threads(min(6, torch.get_num_threads()))
     model = YOLO(str(WORKSPACE / "yolo/expv4s.pt"))
+    if self_check:
+        model.predict(np.zeros((480, 640, 3), np.uint8), imgsz=640, conf=.65,
+                      retina_masks=True, device="cpu", verbose=False)
+        return
     for line in sys.stdin:
         try:
             image = cv2.imdecode(np.fromfile(json.loads(line), dtype=np.uint8), cv2.IMREAD_COLOR)
@@ -112,4 +117,4 @@ def serve():
 
 
 if __name__ == "__main__":
-    serve()
+    serve(self_check="--self-check" in sys.argv)

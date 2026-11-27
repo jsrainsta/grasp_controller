@@ -1,0 +1,2532 @@
+{
+  "type": "commissioning_box_observation",
+  "image": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261124\\photo_20261124_074857_930449_seq60_60c7867f.jpg",
+  "sha256": "9ceab8544dc404bedbb61795372ae160f8a768d6058ebbbdbd3ecc20eb9e4c92",
+  "before": {
+    "status": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "mode": "serial",
+        "connection": "connected",
+        "active_task_id": null,
+        "motion_state": "target_feedback_reached",
+        "upload_in_progress": false,
+        "last_error": null,
+        "coordinate_reference": "joint_feedback_model",
+        "limits_require_recheck": false,
+        "capabilities": {
+          "hardware_verified": false,
+          "writes_enabled": true,
+          "enabled_features": [
+            "coordinate"
+          ],
+          "direct_duration_ms": 20,
+          "absolute_xyz": false,
+          "coordinate_hardware_supported": true,
+          "coordinate_backend": "host_ik",
+          "coordinate_preview_supported": true,
+          "cartesian_feedback": false,
+          "coordinate_model_calibrated": false,
+          "coordinate_feedback_validation": true,
+          "coordinate_correction_supported": true,
+          "gripper_close_supported": true,
+          "gripper_force_control": false,
+          "gripper_contact_feedback": false,
+          "gripper_grasp_detection": false,
+          "host_deduplication_only": true,
+          "stop_all_joints_confirmed": false,
+          "group_completion_feedback": false
+        },
+        "servo_limits": [
+          {
+            "id": 1,
+            "min": 178,
+            "max": 700
+          },
+          {
+            "id": 2,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 3,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 4,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 5,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 6,
+            "min": 125,
+            "max": 875
+          }
+        ],
+        "feedback_settings": {
+          "poll_interval_s": 0.25,
+          "move_feedback_delay_s": 0.5,
+          "position_tolerance": 10,
+          "reached_samples": 2
+        },
+        "gripper_settings": {
+          "max_target_gap": 30,
+          "goal_tolerance": 2,
+          "min_closing_delta": 6,
+          "settle_s": 0.5,
+          "stable_s": 1.0,
+          "stable_samples": 4,
+          "stability_tolerance": 2,
+          "timeout_s": 5.0,
+          "poll_interval_s": 0.25
+        },
+        "coordinate_settings": {
+          "max_step_cm": 5.0,
+          "max_joint_step": 100,
+          "min_joint_delta": 6,
+          "max_rounding_error_cm": 0.1,
+          "position_tolerance_cm": 0.2,
+          "pitch_tolerance_deg": 1.0,
+          "correction": {
+            "enabled": true,
+            "max_attempts": 3,
+            "max_step": 5,
+            "max_offset": 10,
+            "deadband": 1,
+            "settle_s": 0.8,
+            "stable_samples": 3,
+            "stability_tolerance": 2,
+            "min_progress": 0.1
+          },
+          "frame": "base_link",
+          "pitch_policy": "keep_current",
+          "model": {
+            "base_height_cm": 2.89,
+            "upper_arm_cm": 10.43,
+            "forearm_cm": 8.9,
+            "tool_length_cm": 17.7,
+            "units_per_degree": 4.166666666666667,
+            "zero_positions": {
+              "3": 500.0,
+              "4": 500.0,
+              "5": 500.0,
+              "6": 500.0
+            }
+          }
+        }
+      }
+    },
+    "pose": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "x_cm": 13.612921110048806,
+        "y_cm": -0.1710740168830153,
+        "z_cm": 3.689661317136352,
+        "pitch_deg": -49.44,
+        "frame": "base_link",
+        "estimated": true,
+        "calibrated": false,
+        "source": "serial",
+        "observed_at": "2026-11-24T07:48:50.673+00:00",
+        "age_ms": 0,
+        "fresh": true,
+        "joint_positions": [
+          {
+            "id": 1,
+            "position": 385
+          },
+          {
+            "id": 2,
+            "position": 498
+          },
+          {
+            "id": 3,
+            "position": 146
+          },
+          {
+            "id": 4,
+            "position": 150
+          },
+          {
+            "id": 5,
+            "position": 377
+          },
+          {
+            "id": 6,
+            "position": 497
+          }
+        ]
+      }
+    },
+    "pose_samples": [
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.577257647335841,
+          "y_cm": -0.22751042584042344,
+          "z_cm": 3.6111811767587056,
+          "pitch_deg": -49.67999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:49.699+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 149
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 496
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.542101817227532,
+          "y_cm": -0.22692132912542634,
+          "z_cm": 3.5328476298024203,
+          "pitch_deg": -49.91999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:49.919+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 497
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 148
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 496
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.612085093245119,
+          "y_cm": -0.22809401991041658,
+          "z_cm": 3.689661317136352,
+          "pitch_deg": -49.44,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:50.161+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 496
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.578091525133651,
+          "y_cm": -0.17063631237054255,
+          "z_cm": 3.6111811767587056,
+          "pitch_deg": -49.67999999999999,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:50.447+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 149
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 497
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.612921110048806,
+          "y_cm": -0.1710740168830153,
+          "z_cm": 3.689661317136352,
+          "pitch_deg": -49.44,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:50.673+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 497
+            }
+          ]
+        }
+      }
+    ],
+    "joint_median": {
+      "1": 385,
+      "2": 498,
+      "3": 146,
+      "4": 149,
+      "5": 377,
+      "6": 496
+    },
+    "joint_span": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 2,
+      "5": 0,
+      "6": 1
+    },
+    "joint_mad": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 1,
+      "5": 0,
+      "6": 0
+    },
+    "received_at": "2026-11-24T07:48:50.253585+00:00"
+  },
+  "after": {
+    "status": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "mode": "serial",
+        "connection": "connected",
+        "active_task_id": null,
+        "motion_state": "target_feedback_reached",
+        "upload_in_progress": false,
+        "last_error": null,
+        "coordinate_reference": "joint_feedback_model",
+        "limits_require_recheck": false,
+        "capabilities": {
+          "hardware_verified": false,
+          "writes_enabled": true,
+          "enabled_features": [
+            "coordinate"
+          ],
+          "direct_duration_ms": 20,
+          "absolute_xyz": false,
+          "coordinate_hardware_supported": true,
+          "coordinate_backend": "host_ik",
+          "coordinate_preview_supported": true,
+          "cartesian_feedback": false,
+          "coordinate_model_calibrated": false,
+          "coordinate_feedback_validation": true,
+          "coordinate_correction_supported": true,
+          "gripper_close_supported": true,
+          "gripper_force_control": false,
+          "gripper_contact_feedback": false,
+          "gripper_grasp_detection": false,
+          "host_deduplication_only": true,
+          "stop_all_joints_confirmed": false,
+          "group_completion_feedback": false
+        },
+        "servo_limits": [
+          {
+            "id": 1,
+            "min": 178,
+            "max": 700
+          },
+          {
+            "id": 2,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 3,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 4,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 5,
+            "min": 125,
+            "max": 875
+          },
+          {
+            "id": 6,
+            "min": 125,
+            "max": 875
+          }
+        ],
+        "feedback_settings": {
+          "poll_interval_s": 0.25,
+          "move_feedback_delay_s": 0.5,
+          "position_tolerance": 10,
+          "reached_samples": 2
+        },
+        "gripper_settings": {
+          "max_target_gap": 30,
+          "goal_tolerance": 2,
+          "min_closing_delta": 6,
+          "settle_s": 0.5,
+          "stable_s": 1.0,
+          "stable_samples": 4,
+          "stability_tolerance": 2,
+          "timeout_s": 5.0,
+          "poll_interval_s": 0.25
+        },
+        "coordinate_settings": {
+          "max_step_cm": 5.0,
+          "max_joint_step": 100,
+          "min_joint_delta": 6,
+          "max_rounding_error_cm": 0.1,
+          "position_tolerance_cm": 0.2,
+          "pitch_tolerance_deg": 1.0,
+          "correction": {
+            "enabled": true,
+            "max_attempts": 3,
+            "max_step": 5,
+            "max_offset": 10,
+            "deadband": 1,
+            "settle_s": 0.8,
+            "stable_samples": 3,
+            "stability_tolerance": 2,
+            "min_progress": 0.1
+          },
+          "frame": "base_link",
+          "pitch_policy": "keep_current",
+          "model": {
+            "base_height_cm": 2.89,
+            "upper_arm_cm": 10.43,
+            "forearm_cm": 8.9,
+            "tool_length_cm": 17.7,
+            "units_per_degree": 4.166666666666667,
+            "zero_positions": {
+              "3": 500.0,
+              "4": 500.0,
+              "5": 500.0,
+              "6": 500.0
+            }
+          }
+        }
+      }
+    },
+    "pose": {
+      "ok": true,
+      "mode": "serial",
+      "data": {
+        "x_cm": 13.6094523450894,
+        "y_cm": -0.17103042480234198,
+        "z_cm": 3.746680308120675,
+        "pitch_deg": -49.2,
+        "frame": "base_link",
+        "estimated": true,
+        "calibrated": false,
+        "source": "serial",
+        "observed_at": "2026-11-24T07:48:59.405+00:00",
+        "age_ms": 0,
+        "fresh": true,
+        "joint_positions": [
+          {
+            "id": 1,
+            "position": 385
+          },
+          {
+            "id": 2,
+            "position": 498
+          },
+          {
+            "id": 3,
+            "position": 146
+          },
+          {
+            "id": 4,
+            "position": 150
+          },
+          {
+            "id": 5,
+            "position": 376
+          },
+          {
+            "id": 6,
+            "position": 497
+          }
+        ]
+      }
+    },
+    "pose_samples": [
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.612921110048806,
+          "y_cm": -0.1710740168830153,
+          "z_cm": 3.689661317136352,
+          "pitch_deg": -49.44,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:58.537+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 497
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.613876578780207,
+          "y_cm": 0.05702600638816212,
+          "z_cm": 3.689661317136352,
+          "pitch_deg": -49.44,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:58.753+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 501
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.612085093245119,
+          "y_cm": -0.22809401991041658,
+          "z_cm": 3.689661317136352,
+          "pitch_deg": -49.44,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:58.967+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 377
+            },
+            {
+              "id": 6,
+              "position": 496
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.608616541314627,
+          "y_cm": -0.2280358983259808,
+          "z_cm": 3.746680308120675,
+          "pitch_deg": -49.2,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:59.189+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 376
+            },
+            {
+              "id": 6,
+              "position": 496
+            }
+          ]
+        }
+      },
+      {
+        "ok": true,
+        "mode": "serial",
+        "data": {
+          "x_cm": 13.6094523450894,
+          "y_cm": -0.17103042480234198,
+          "z_cm": 3.746680308120675,
+          "pitch_deg": -49.2,
+          "frame": "base_link",
+          "estimated": true,
+          "calibrated": false,
+          "source": "serial",
+          "observed_at": "2026-11-24T07:48:59.405+00:00",
+          "age_ms": 0,
+          "fresh": true,
+          "joint_positions": [
+            {
+              "id": 1,
+              "position": 385
+            },
+            {
+              "id": 2,
+              "position": 498
+            },
+            {
+              "id": 3,
+              "position": 146
+            },
+            {
+              "id": 4,
+              "position": 150
+            },
+            {
+              "id": 5,
+              "position": 376
+            },
+            {
+              "id": 6,
+              "position": 497
+            }
+          ]
+        }
+      }
+    ],
+    "joint_median": {
+      "1": 385,
+      "2": 498,
+      "3": 146,
+      "4": 150,
+      "5": 377,
+      "6": 497
+    },
+    "joint_span": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 1,
+      "6": 5
+    },
+    "joint_mad": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 1
+    },
+    "received_at": "2026-11-24T07:48:58.983949+00:00"
+  },
+  "ocr": {
+    "type": "ocr_result",
+    "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261124\\photo_20261124_074857_930449_seq60_60c7867f.jpg",
+    "image_width": 640,
+    "image_height": 480,
+    "created_at": "2026-11-24T07:49:03.187272+00:00",
+    "engine": "RapidOCR / ONNX Runtime CPU",
+    "versions": {
+      "rapidocr": "3.10.0",
+      "onnxruntime": "1.31.0"
+    },
+    "status": "text_found",
+    "elapsed_s": 3.8047743999923114,
+    "model_prepare_s": 2.5000044843181968e-06,
+    "lines": [
+      {
+        "text": "B",
+        "confidence": 0.51308,
+        "polygon": [
+          [
+            497.0,
+            149.0
+          ],
+          [
+            523.0,
+            149.0
+          ],
+          [
+            523.0,
+            170.0
+          ],
+          [
+            497.0,
+            170.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "国",
+        "confidence": 0.86365,
+        "polygon": [
+          [
+            395.0,
+            178.0
+          ],
+          [
+            427.0,
+            176.0
+          ],
+          [
+            428.0,
+            203.0
+          ],
+          [
+            396.0,
+            205.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "正",
+        "confidence": 0.50684,
+        "polygon": [
+          [
+            434.0,
+            205.0
+          ],
+          [
+            461.0,
+            205.0
+          ],
+          [
+            461.0,
+            231.0
+          ],
+          [
+            434.0,
+            231.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "国",
+        "confidence": 0.90256,
+        "polygon": [
+          [
+            181.0,
+            237.0
+          ],
+          [
+            216.0,
+            237.0
+          ],
+          [
+            216.0,
+            267.0
+          ],
+          [
+            181.0,
+            267.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "田",
+        "confidence": 0.65303,
+        "polygon": [
+          [
+            216.0,
+            268.0
+          ],
+          [
+            251.0,
+            270.0
+          ],
+          [
+            249.0,
+            300.0
+          ],
+          [
+            214.0,
+            298.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "G",
+        "confidence": 0.59736,
+        "polygon": [
+          [
+            371.0,
+            266.0
+          ],
+          [
+            402.0,
+            269.0
+          ],
+          [
+            399.0,
+            297.0
+          ],
+          [
+            368.0,
+            294.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "E",
+        "confidence": 0.69547,
+        "polygon": [
+          [
+            520.0,
+            263.0
+          ],
+          [
+            555.0,
+            263.0
+          ],
+          [
+            555.0,
+            292.0
+          ],
+          [
+            520.0,
+            292.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "国",
+        "confidence": 0.62382,
+        "polygon": [
+          [
+            409.0,
+            297.0
+          ],
+          [
+            445.0,
+            297.0
+          ],
+          [
+            445.0,
+            331.0
+          ],
+          [
+            409.0,
+            331.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "日",
+        "confidence": 0.93126,
+        "polygon": [
+          [
+            128.0,
+            342.0
+          ],
+          [
+            159.0,
+            342.0
+          ],
+          [
+            159.0,
+            371.0
+          ],
+          [
+            128.0,
+            371.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "E",
+        "confidence": 0.78674,
+        "polygon": [
+          [
+            459.0,
+            337.0
+          ],
+          [
+            488.0,
+            337.0
+          ],
+          [
+            488.0,
+            367.0
+          ],
+          [
+            459.0,
+            367.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "日",
+        "confidence": 0.70241,
+        "polygon": [
+          [
+            81.0,
+            383.0
+          ],
+          [
+            114.0,
+            383.0
+          ],
+          [
+            114.0,
+            415.0
+          ],
+          [
+            81.0,
+            415.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 0
+      },
+      {
+        "text": "E",
+        "confidence": 0.53807,
+        "polygon": [
+          [
+            112.0,
+            266.0
+          ],
+          [
+            112.0,
+            239.0
+          ],
+          [
+            142.0,
+            239.0
+          ],
+          [
+            142.0,
+            266.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "田",
+        "confidence": 0.5744,
+        "polygon": [
+          [
+            219.0,
+            296.0
+          ],
+          [
+            219.0,
+            270.0
+          ],
+          [
+            246.0,
+            270.0
+          ],
+          [
+            246.0,
+            296.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "日",
+        "confidence": 0.53655,
+        "polygon": [
+          [
+            225.0,
+            234.0
+          ],
+          [
+            225.0,
+            209.0
+          ],
+          [
+            253.0,
+            209.0
+          ],
+          [
+            253.0,
+            234.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "日",
+        "confidence": 0.94566,
+        "polygon": [
+          [
+            230.0,
+            180.0
+          ],
+          [
+            230.0,
+            156.0
+          ],
+          [
+            257.0,
+            156.0
+          ],
+          [
+            257.0,
+            180.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "L",
+        "confidence": 0.99144,
+        "polygon": [
+          [
+            294.0,
+            299.0
+          ],
+          [
+            294.0,
+            275.0
+          ],
+          [
+            326.0,
+            275.0
+          ],
+          [
+            326.0,
+            299.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "阿昔洛韦乳膏",
+        "confidence": 0.99144,
+        "polygon": [
+          [
+            301.0,
+            189.0
+          ],
+          [
+            296.0,
+            100.0
+          ],
+          [
+            325.0,
+            98.0
+          ],
+          [
+            330.0,
+            187.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "福元业",
+        "confidence": 0.90789,
+        "polygon": [
+          [
+            360.0,
+            229.0
+          ],
+          [
+            353.0,
+            188.0
+          ],
+          [
+            369.0,
+            185.0
+          ],
+          [
+            376.0,
+            226.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "E",
+        "confidence": 0.74913,
+        "polygon": [
+          [
+            368.0,
+            178.0
+          ],
+          [
+            368.0,
+            154.0
+          ],
+          [
+            390.0,
+            154.0
+          ],
+          [
+            390.0,
+            178.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "E",
+        "confidence": 0.57248,
+        "polygon": [
+          [
+            468.0,
+            201.0
+          ],
+          [
+            468.0,
+            176.0
+          ],
+          [
+            494.0,
+            176.0
+          ],
+          [
+            494.0,
+            201.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "日",
+        "confidence": 0.96641,
+        "polygon": [
+          [
+            492.0,
+            325.0
+          ],
+          [
+            492.0,
+            303.0
+          ],
+          [
+            518.0,
+            303.0
+          ],
+          [
+            518.0,
+            325.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "E",
+        "confidence": 0.63139,
+        "polygon": [
+          [
+            511.0,
+            226.0
+          ],
+          [
+            511.0,
+            204.0
+          ],
+          [
+            535.0,
+            204.0
+          ],
+          [
+            535.0,
+            226.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "四",
+        "confidence": 0.83244,
+        "polygon": [
+          [
+            522.0,
+            290.0
+          ],
+          [
+            522.0,
+            262.0
+          ],
+          [
+            552.0,
+            262.0
+          ],
+          [
+            552.0,
+            290.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 270
+      },
+      {
+        "text": "国",
+        "confidence": 0.68476,
+        "polygon": [
+          [
+            554.0,
+            257.0
+          ],
+          [
+            557.0,
+            291.0
+          ],
+          [
+            522.0,
+            295.0
+          ],
+          [
+            518.0,
+            261.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "日",
+        "confidence": 0.91871,
+        "polygon": [
+          [
+            521.0,
+            299.0
+          ],
+          [
+            521.0,
+            327.0
+          ],
+          [
+            489.0,
+            327.0
+          ],
+          [
+            489.0,
+            299.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "国",
+        "confidence": 0.62451,
+        "polygon": [
+          [
+            456.0,
+            151.0
+          ],
+          [
+            456.0,
+            175.0
+          ],
+          [
+            427.0,
+            175.0
+          ],
+          [
+            427.0,
+            151.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "à",
+        "confidence": 0.84725,
+        "polygon": [
+          [
+            459.0,
+            205.0
+          ],
+          [
+            459.0,
+            230.0
+          ],
+          [
+            435.0,
+            230.0
+          ],
+          [
+            435.0,
+            205.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "国",
+        "confidence": 0.5765,
+        "polygon": [
+          [
+            424.0,
+            180.0
+          ],
+          [
+            424.0,
+            202.0
+          ],
+          [
+            399.0,
+            202.0
+          ],
+          [
+            399.0,
+            180.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "E",
+        "confidence": 0.53352,
+        "polygon": [
+          [
+            390.0,
+            151.0
+          ],
+          [
+            394.0,
+            179.0
+          ],
+          [
+            370.0,
+            183.0
+          ],
+          [
+            365.0,
+            155.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "吉洛韦乳",
+        "confidence": 0.88808,
+        "polygon": [
+          [
+            321.0,
+            115.0
+          ],
+          [
+            321.0,
+            162.0
+          ],
+          [
+            300.0,
+            162.0
+          ],
+          [
+            300.0,
+            115.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "1",
+        "confidence": 0.89033,
+        "polygon": [
+          [
+            322.0,
+            275.0
+          ],
+          [
+            322.0,
+            299.0
+          ],
+          [
+            293.0,
+            299.0
+          ],
+          [
+            293.0,
+            275.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "E",
+        "confidence": 0.65391,
+        "polygon": [
+          [
+            285.0,
+            238.0
+          ],
+          [
+            285.0,
+            264.0
+          ],
+          [
+            257.0,
+            264.0
+          ],
+          [
+            257.0,
+            238.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "日",
+        "confidence": 0.96297,
+        "polygon": [
+          [
+            258.0,
+            157.0
+          ],
+          [
+            258.0,
+            181.0
+          ],
+          [
+            229.0,
+            181.0
+          ],
+          [
+            229.0,
+            157.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "G9",
+        "confidence": 0.50821,
+        "polygon": [
+          [
+            241.0,
+            341.0
+          ],
+          [
+            241.0,
+            370.0
+          ],
+          [
+            211.0,
+            370.0
+          ],
+          [
+            211.0,
+            341.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "四",
+        "confidence": 0.83394,
+        "polygon": [
+          [
+            215.0,
+            239.0
+          ],
+          [
+            214.0,
+            266.0
+          ],
+          [
+            184.0,
+            264.0
+          ],
+          [
+            185.0,
+            237.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "园",
+        "confidence": 0.74466,
+        "polygon": [
+          [
+            189.0,
+            159.0
+          ],
+          [
+            189.0,
+            181.0
+          ],
+          [
+            165.0,
+            181.0
+          ],
+          [
+            165.0,
+            159.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "G",
+        "confidence": 0.68249,
+        "polygon": [
+          [
+            151.0,
+            346.0
+          ],
+          [
+            151.0,
+            370.0
+          ],
+          [
+            129.0,
+            370.0
+          ],
+          [
+            129.0,
+            346.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 90
+      },
+      {
+        "text": "国",
+        "confidence": 0.92237,
+        "polygon": [
+          [
+            282.0,
+            411.0
+          ],
+          [
+            247.0,
+            411.0
+          ],
+          [
+            247.0,
+            377.0
+          ],
+          [
+            282.0,
+            377.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "日",
+        "confidence": 0.7699,
+        "polygon": [
+          [
+            489.0,
+            366.0
+          ],
+          [
+            457.0,
+            366.0
+          ],
+          [
+            457.0,
+            334.0
+          ],
+          [
+            489.0,
+            334.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "H",
+        "confidence": 0.76316,
+        "polygon": [
+          [
+            327.0,
+            369.0
+          ],
+          [
+            293.0,
+            369.0
+          ],
+          [
+            293.0,
+            339.0
+          ],
+          [
+            327.0,
+            339.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "日",
+        "confidence": 0.50989,
+        "polygon": [
+          [
+            556.0,
+            292.0
+          ],
+          [
+            520.0,
+            292.0
+          ],
+          [
+            520.0,
+            262.0
+          ],
+          [
+            556.0,
+            262.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "国",
+        "confidence": 0.88886,
+        "polygon": [
+          [
+            480.0,
+            293.0
+          ],
+          [
+            444.0,
+            296.0
+          ],
+          [
+            442.0,
+            265.0
+          ],
+          [
+            477.0,
+            262.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "日",
+        "confidence": 0.58702,
+        "polygon": [
+          [
+            288.0,
+            264.0
+          ],
+          [
+            256.0,
+            264.0
+          ],
+          [
+            256.0,
+            236.0
+          ],
+          [
+            288.0,
+            236.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "国",
+        "confidence": 0.96461,
+        "polygon": [
+          [
+            144.0,
+            267.0
+          ],
+          [
+            111.0,
+            267.0
+          ],
+          [
+            111.0,
+            240.0
+          ],
+          [
+            144.0,
+            240.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "福元业",
+        "confidence": 0.96506,
+        "polygon": [
+          [
+            379.0,
+            229.0
+          ],
+          [
+            360.0,
+            233.0
+          ],
+          [
+            352.0,
+            189.0
+          ],
+          [
+            370.0,
+            185.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "国",
+        "confidence": 0.72181,
+        "polygon": [
+          [
+            287.0,
+            207.0
+          ],
+          [
+            260.0,
+            207.0
+          ],
+          [
+            260.0,
+            181.0
+          ],
+          [
+            287.0,
+            181.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "日",
+        "confidence": 0.95451,
+        "polygon": [
+          [
+            524.0,
+            171.0
+          ],
+          [
+            494.0,
+            171.0
+          ],
+          [
+            494.0,
+            147.0
+          ],
+          [
+            524.0,
+            147.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "匠",
+        "confidence": 0.94127,
+        "polygon": [
+          [
+            395.0,
+            178.0
+          ],
+          [
+            369.0,
+            183.0
+          ],
+          [
+            364.0,
+            155.0
+          ],
+          [
+            390.0,
+            151.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "阿昔洛",
+        "confidence": 0.9951,
+        "polygon": [
+          [
+            328.0,
+            187.0
+          ],
+          [
+            300.0,
+            187.0
+          ],
+          [
+            300.0,
+            135.0
+          ],
+          [
+            328.0,
+            135.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      },
+      {
+        "text": "国",
+        "confidence": 0.95697,
+        "polygon": [
+          [
+            195.0,
+            181.0
+          ],
+          [
+            166.0,
+            183.0
+          ],
+          [
+            164.0,
+            158.0
+          ],
+          [
+            194.0,
+            157.0
+          ]
+        ],
+        "ocr_rotation_ccw_deg": 180
+      }
+    ],
+    "orientation_attempts": [
+      {
+        "rotation_ccw_deg": 0,
+        "line_count": 11,
+        "match_status": "unknown",
+        "medicine_id": null
+      },
+      {
+        "rotation_ccw_deg": 270,
+        "line_count": 12,
+        "match_status": "matched",
+        "medicine_id": "med_003"
+      },
+      {
+        "rotation_ccw_deg": 90,
+        "line_count": 14,
+        "match_status": "unknown",
+        "medicine_id": null
+      },
+      {
+        "rotation_ccw_deg": 180,
+        "line_count": 13,
+        "match_status": "unknown",
+        "medicine_id": null
+      }
+    ],
+    "known_box_focus": null,
+    "polygon_coordinate_frame": "original_exif_transposed_image_pixels",
+    "orientation_fallback_policy": "retry_unconfirmed_names_at_right_angles_keep_all_evidence",
+    "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
+    "min_name_score": 0.8,
+    "medicine_match": {
+      "status": "matched",
+      "medicine_id": "med_003",
+      "name": "阿昔洛韦乳膏",
+      "ocr_confidence": 0.99144,
+      "source_line_index": 16,
+      "source_line_indices": [
+        16
+      ],
+      "min_score": 0.8,
+      "candidates": [
+        {
+          "medicine_id": "med_003",
+          "name": "阿昔洛韦乳膏",
+          "ocr_confidence": 0.99144,
+          "source_line_indices": [
+            16
+          ],
+          "evidence": [
+            {
+              "line_index": 16,
+              "text": "阿昔洛韦乳膏",
+              "ocr_confidence": 0.99144,
+              "meets_threshold": true
+            }
+          ],
+          "meets_threshold": true
+        }
+      ],
+      "reason": "完整药名与目录一致，OCR 置信度达到阈值。"
+    },
+    "target_selection": {
+      "status": "target_found",
+      "target_id": "med_003",
+      "target_name": "阿昔洛韦乳膏",
+      "recognized_id": "med_003",
+      "recognized_name": "阿昔洛韦乳膏",
+      "name_match_status": "matched",
+      "reason": "本张照片唯一完整匹配且达到阈值的药名与指定目标一致。"
+    }
+  },
+  "calibration": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_074857_930449_seq60_60c7867f_0f344eaa_commissioning_scene_calibration.json",
+  "jpeg_integrity": {
+    "valid": true,
+    "reason": "decoded_without_reported_warning",
+    "shape": [
+      480,
+      640,
+      3
+    ]
+  },
+  "arm_motion_commands_sent": false,
+  "geometry": {
+    "outline": {
+      "status": "needs_observation",
+      "reason": "no_complete_supported_quad",
+      "candidates": [
+        {
+          "corners_pixel": [
+            [
+              352.0986633300781,
+              42.06934356689453
+            ],
+            [
+              384.3489074707031,
+              234.57041931152344
+            ],
+            [
+              285.10498046875,
+              242.38291931152344
+            ],
+            [
+              276.36627197265625,
+              47.75486755371094
+            ]
+          ],
+          "center_pixel": [
+            324.4797058105469,
+            141.69439697265625
+          ],
+          "edge_coverage": [
+            0.8333333333333334,
+            1.0,
+            0.8611111111111112,
+            0.9722222222222222
+          ],
+          "mean_edge_distance_px": 1.1875000149011612,
+          "image_geometry_supported": true,
+          "method": "metric_visible_rim_fit"
+        }
+      ],
+      "for_motion": false,
+      "robot_target": null,
+      "method": "ocr_seeded_edge_hull_prototype",
+      "image_size": [
+        640,
+        480
+      ],
+      "metric_edge_fit": {
+        "corners_pixel": [
+          [
+            352.0986633300781,
+            42.06934356689453
+          ],
+          [
+            384.3489074707031,
+            234.57041931152344
+          ],
+          [
+            285.10498046875,
+            242.38291931152344
+          ],
+          [
+            276.36627197265625,
+            47.75486755371094
+          ]
+        ],
+        "center_pixel": [
+          324.4797058105469,
+          141.69439697265625
+        ],
+        "edge_coverage": [
+          0.8333333333333334,
+          1.0,
+          0.8611111111111112,
+          0.9722222222222222
+        ],
+        "mean_edge_distance_px": 1.1875000149011612,
+        "image_geometry_supported": true,
+        "method": "metric_visible_rim_fit"
+      }
+    },
+    "metric_candidates": [
+      {
+        "corners_pixel": [
+          [
+            352.0986633300781,
+            42.06934356689453
+          ],
+          [
+            384.3489074707031,
+            234.57041931152344
+          ],
+          [
+            285.10498046875,
+            242.38291931152344
+          ],
+          [
+            276.36627197265625,
+            47.75486755371094
+          ]
+        ],
+        "center_pixel": [
+          324.4797058105469,
+          141.69439697265625
+        ],
+        "edge_coverage": [
+          0.8333333333333334,
+          1.0,
+          0.8611111111111112,
+          0.9722222222222222
+        ],
+        "mean_edge_distance_px": 1.1875000149011612,
+        "image_geometry_supported": true,
+        "method": "metric_visible_rim_fit",
+        "top_corners_base_cm": [
+          [
+            30.022197418028952,
+            -3.146391281998386,
+            -1.6918662446268282
+          ],
+          [
+            19.529951133268398,
+            -3.517540422732302,
+            -1.5337106048005253
+          ],
+          [
+            19.408151423207375,
+            -0.12152978027993,
+            -1.6445166001483749
+          ],
+          [
+            29.90039799244095,
+            0.24961837321037383,
+            -1.8026722112250582
+          ]
+        ],
+        "top_center_base_cm": [
+          24.71517449173642,
+          -1.6339607779500611,
+          -1.6681914152001966
+        ],
+        "geometric_center_base_cm": [
+          24.69780850215927,
+          -1.6753426773740283,
+          -2.917385539748528
+        ],
+        "length_axis_base": [
+          -0.9992615662662081,
+          -0.035347490264482605,
+          0.01506244054617599
+        ],
+        "width_axis_base": [
+          -0.035823405352046804,
+          0.9988265994219632,
+          -0.032589997179198034
+        ],
+        "measured_length_cm": 10.499999981188001,
+        "measured_width_cm": 3.399999710456142,
+        "dimensional_error": 8.695157716065438e-08,
+        "orthogonality_error": 5.374718973079913e-08,
+        "dimensions_independently_measured": false,
+        "dimension_note": "Metric edge fit imposes the known size; its dimensional residual is not independent validation.",
+        "geometry_supported": true
+      }
+    ],
+    "selected": {
+      "corners_pixel": [
+        [
+          352.0986633300781,
+          42.06934356689453
+        ],
+        [
+          384.3489074707031,
+          234.57041931152344
+        ],
+        [
+          285.10498046875,
+          242.38291931152344
+        ],
+        [
+          276.36627197265625,
+          47.75486755371094
+        ]
+      ],
+      "center_pixel": [
+        324.4797058105469,
+        141.69439697265625
+      ],
+      "edge_coverage": [
+        0.8333333333333334,
+        1.0,
+        0.8611111111111112,
+        0.9722222222222222
+      ],
+      "mean_edge_distance_px": 1.1875000149011612,
+      "image_geometry_supported": true,
+      "method": "metric_visible_rim_fit",
+      "top_corners_base_cm": [
+        [
+          30.022197418028952,
+          -3.146391281998386,
+          -1.6918662446268282
+        ],
+        [
+          19.529951133268398,
+          -3.517540422732302,
+          -1.5337106048005253
+        ],
+        [
+          19.408151423207375,
+          -0.12152978027993,
+          -1.6445166001483749
+        ],
+        [
+          29.90039799244095,
+          0.24961837321037383,
+          -1.8026722112250582
+        ]
+      ],
+      "top_center_base_cm": [
+        24.71517449173642,
+        -1.6339607779500611,
+        -1.6681914152001966
+      ],
+      "geometric_center_base_cm": [
+        24.69780850215927,
+        -1.6753426773740283,
+        -2.917385539748528
+      ],
+      "length_axis_base": [
+        -0.9992615662662081,
+        -0.035347490264482605,
+        0.01506244054617599
+      ],
+      "width_axis_base": [
+        -0.035823405352046804,
+        0.9988265994219632,
+        -0.032589997179198034
+      ],
+      "measured_length_cm": 10.499999981188001,
+      "measured_width_cm": 3.399999710456142,
+      "dimensional_error": 8.695157716065438e-08,
+      "orthogonality_error": 5.374718973079913e-08,
+      "dimensions_independently_measured": false,
+      "dimension_note": "Metric edge fit imposes the known size; its dimensional residual is not independent validation.",
+      "geometry_supported": true
+    },
+    "T_base_camera_cm": [
+      [
+        -0.03540058954792701,
+        -0.8564377674125351,
+        0.5150350947353888,
+        9.266614946780512
+      ],
+      [
+        -0.999370192080005,
+        0.031602316695157014,
+        -0.016140407723213582,
+        -0.9365994584314787
+      ],
+      [
+        -0.0024530474173510082,
+        -0.5152821015025953,
+        -0.8570171167657258,
+        14.003750539189221
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "table_down_normal_base": [
+      -0.013892791661721377,
+      -0.03310551953917383,
+      -0.9993552996386649
+    ],
+    "assumed_box_dimensions_cm": [
+      10.5,
+      3.4,
+      2.5
+    ],
+    "for_motion": false,
+    "grasp_tcp_validated": false
+  },
+  "scene_registration": {
+    "source": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_results\\photo_20261124_074857_930449_seq60_60c7867f_0f344eaa_commissioning.json",
+    "basis": "decoded_current_board_and_nominal_robot_camera_mount",
+    "measurement_method": "robust_charuco_fallback",
+    "board_pnp_rmse_px": 0.4452135196357292,
+    "board_pose_validation": {
+      "method": "robust_charuco_fallback",
+      "marker_diagnostics": {
+        "marker_ids": [
+          97,
+          96,
+          95,
+          94,
+          93,
+          91,
+          90,
+          88,
+          89,
+          87,
+          86,
+          85,
+          84,
+          83,
+          82,
+          81,
+          80,
+          79,
+          78,
+          75,
+          74,
+          68,
+          73,
+          69,
+          72,
+          70,
+          67,
+          63,
+          66,
+          62,
+          61,
+          60,
+          55,
+          57,
+          51,
+          54,
+          58,
+          56,
+          50
+        ],
+        "marker_count": 39,
+        "pose_support": "decoded_marker_centers_with_outer_corner_check",
+        "layout_inlier_count": 35,
+        "layout_inlier_ratio": 0.8974358974358975,
+        "layout_hull_area_cm2": 149.29918954925478,
+        "rejected_marker_ids": [
+          84,
+          72,
+          55,
+          58
+        ],
+        "layout_acceptance": "large_board_wide_inlier_support",
+        "candidate_errors": [
+          {
+            "center_rmse_px": 0.680760700853634,
+            "outer_corner_max_px": 2.252592027812656
+          },
+          {
+            "center_rmse_px": 0.6807607007846241,
+            "outer_corner_max_px": 2.252594315391188
+          }
+        ]
+      },
+      "corner_diagnostics": {
+        "raw_corner_count": 69,
+        "pose_inlier_count": 67,
+        "rejected_corner_ids": [
+          10,
+          26
+        ],
+        "inlier_ratio": 0.9710144927536232,
+        "ransac_threshold_px": 1.5,
+        "pose_rmse_limit_px": 0.6,
+        "raw_evidence_retained": true,
+        "pose_inlier_hull_fraction": 0.9916666544146006
+      }
+    },
+    "board_profile": {
+      "board_id": "charuco_12x8_14p4mm_v1",
+      "units": "cm",
+      "dictionary": "DICT_4X4_100",
+      "squares_x": 12,
+      "squares_y": 8,
+      "square_length": 1.44,
+      "marker_length": 0.96,
+      "marker_ids": [
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "legacy_pattern": false,
+      "border_bits": 1,
+      "pattern_size_cm": [
+        17.28,
+        11.52
+      ],
+      "expected_charuco_corners": 77,
+      "physical_scale_independently_validated": false,
+      "robot_transform_calibrated": false
+    },
+    "physical_accuracy_verified": false,
+    "nominal_scene_geometry": {
+      "box_top_center_base_cm": [
+        24.71517449173642,
+        -1.6339607779500611,
+        -1.6681914152001966
+      ],
+      "support_at_box_center_base_cm": [
+        24.680442512582115,
+        -1.7167245767979957,
+        -4.166579664296859
+      ],
+      "support_down_normal_base": [
+        -0.013892791661721377,
+        -0.03310551953917383,
+        -0.9993552996386649
+      ]
+    }
+  },
+  "grasp_scope": {
+    "profile": "same_box_radial_trial_v1",
+    "long_axis_to_radial_deg": 5.808327747507351,
+    "maximum_supported_orientation_assumption_deg": 25,
+    "arbitrary_wrist_alignment_supported": false
+  }
+}

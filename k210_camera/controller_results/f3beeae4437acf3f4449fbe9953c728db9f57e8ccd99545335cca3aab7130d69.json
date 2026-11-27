@@ -1,0 +1,17 @@
+{
+  "type": "autonomous_grasp_result",
+  "version": 1,
+  "request_id": "wrist_probe_15063_26198",
+  "run_id": "32e440cb113b4691a339c20c11b05fe7",
+  "target_id": "med_003",
+  "started_at": "2026-11-24T08:24:25.793889+00:00",
+  "status": "failed",
+  "grasp_confirmed": false,
+  "grasp_quality_validated": false,
+  "motion_profile": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\grasp_motion_fixed_placement_trial.json",
+  "deduplicated": false,
+  "gpt_runtime_required": false,
+  "error": "抓取流程失败：RuntimeError: 本轮结束于register_current_scene.py；原因：ValueError: 真实编码标记和角点均未提供可靠板位姿：{\"marker_ids\": [97, 94, 95, 96, 93, 88, 91, 90, 89, 87, 86, 82, 84, 81, 85, 80, 78, 79, 75, 74, 73, 69, 70, 68, 66, 63, 62, 61, 60, 58, 57, 50], \"marker_count\": 32, \"pose_support\": \"decoded_marker_centers_with_outer_corner_check\", \"layout_inlier_count\": 27, \"layout_inlier_ratio\": 0.84375, \"layout_hull_area_cm2\": 118.19519566039997, \"rejected_marker_ids\": [91, 85, 79, 73, 61], \"layout_acceptance\": \"large_board_subset_requires_holdout\", \"candidate_errors\": [{\"center_rmse_px\": 0.6945509372437696, \"outer_corner_max_px\": 2.383939258404685}, {\"center_rmse_px\": 0.6945509372026978, \"outer_corner_max_px\": 2.383938568494393}], \"rejection\": \"large_board_subset_pose_not_verified\"}；保留现场状态，不自动恢复；日志：C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\controller_results\\32e440cb113b4691a339c20c11b05fe7.log",
+  "recovery": "No automatic reset, open, reconnect, release, or retry.",
+  "completed_at": "2026-11-24T08:24:50.823763+00:00"
+}

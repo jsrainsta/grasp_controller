@@ -51,6 +51,7 @@ def main():
     p.add_argument('--close-only',action='store_true',help='闭爪反馈稳定后等待现场收臂')
     p.add_argument('--result',type=Path)
     p.add_argument('--motion-profile',type=Path)
+    p.add_argument('--board-profile',type=Path,help='指定板配置，默认按初图自动识别')
     p.add_argument('--fallback-motion-profile',type=Path)
     resume=p.add_mutually_exclusive_group()
     resume.add_argument('--resume-hover',type=Path,help='只接续同场景已完成的预接近，不重发旧动作')
@@ -69,7 +70,7 @@ def main():
 def run_trial(a,camera):
     from grasp_motion_profile import load_motion_profile
     from observe_grasp_target import main as observe
-    from register_current_scene import BoardPoseAmbiguous,LowerBoxEdgeUnclear,register
+    from register_current_scene import BoardPoseAmbiguous,ObservationBoxEdgeUnclear,register
     from approach_grasp_candidate import main as approach,retract_for_observation
     from guarded_visual_approach import main as correct
     from verify_same_box_grasp import main as verify
@@ -85,9 +86,9 @@ def run_trial(a,camera):
     motion=load_motion_profile(a.motion_profile)
     hover_only=getattr(a,'hover_only',False)
     motion_args=[] if a.motion_profile is None else ['--motion-profile',str(a.motion_profile.resolve())]
-    tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py',
-                     'board_marker_pose.py','box_segmentation.py','track_box_reference.py','detect_box_outline.py','fit_known_box_outline.py','fit_grasp_handeye.py',
-                     'grasp_visual_observer.py','tcp_pose_planner.py','grasp_approach_policy.py')
+    tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py','box_segmentation.py',
+                     'check_grasp_board.py','board_marker_pose.py','detect_box_outline.py','fit_grasp_handeye.py',
+                     'grasp_visual_observer.py','box_rim_geometry.py','tcp_pose_planner.py','grasp_approach_policy.py')
     report={'stages':stages,'grasp_confirmed':False,
         'trial_conditions':{'mode':'hover_only' if hover_only else ('execute' if a.execute else 'preview'),
             'camera_port':a.port,'camera_baudrate':a.camera_baudrate,
@@ -114,7 +115,7 @@ def run_trial(a,camera):
             outcome=None
             if script=='register_current_scene.py':
                 registered=register(Path(args[0]),motion=motion,saved_plane=getattr(a,"saved_plane",False),
-                                    previous_registration=previous_registration)
+                                    previous_registration=previous_registration,board_profile=a.board_profile)
                 scene=json.loads(registered.read_text(encoding='utf-8'))
                 report.update(registered_scene=str(registered),
                     nominal_scene_geometry=scene['scene_registration']['nominal_scene_geometry'],
@@ -182,26 +183,35 @@ def run_trial(a,camera):
                 if isinstance(cause,BoardPoseAmbiguous) and 'registration_retry_observation' not in report:
                     print('初图板位姿有歧义，原地补拍一次。',flush=True)
                     record_key='registration_retry_observation'
-                elif (isinstance(cause,LowerBoxEdgeUnclear) and (a.execute or hover_only)
+                elif (isinstance(cause,ObservationBoxEdgeUnclear) and (a.execute or hover_only)
                       and 'observation_retract' not in report):
                     tcp_profile=ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json'
                     recovery={'source_observation':str(observation),'reason':str(cause)}
                     report['observation_retract']=recovery
                     save()
-                    print('药盒下边缘证据不足，检查观察位回收路径。',flush=True)
+                    edge='上沿疑似出框' if cause.upper_edge_pixels is not None else '下沿证据不足'
+                    print(f'药盒{edge}，检查观察位调整路径。',flush=True)
                     try:
                         retract_for_observation(a.arm_url,json.loads(observation.read_text(encoding='utf-8')),
-                            cause.board_pose,json.loads(tcp_profile.read_text(encoding='utf-8')),motion,recovery,save)
+                            cause.board_pose,json.loads(tcp_profile.read_text(encoding='utf-8')),motion,recovery,save,
+                            upper_edge_pixels=cause.upper_edge_pixels)
                     except Exception as retract_error:
                         recovery['error']=str(retract_error)
                         raise
                     finally:
                         save()
                     record_key='observation_after_retract'
+                elif (isinstance(cause,ValueError) and str(cause).startswith('新场景中药盒边界拟合失败')
+                      and 'registration_exposure_retry' not in report):
+                    report['registration_exposure_retry']={'reason':str(cause),'requested_scale':.5}
+                    save()
+                    print('盒边拟合失败，保持机械臂静止，尝试半曝光补拍一次。',flush=True)
+                    record_key='observation_after_exposure_retry'
                 else:
                     raise
                 retry_start=time.time()
-                run('observe_grasp_target.py',*common,'--calibration',a.calibration)
+                exposure_args=['--exposure-scale','0.5'] if record_key=='observation_after_exposure_retry' else []
+                run('observe_grasp_target.py',*common,'--calibration',a.calibration,*exposure_args)
                 observation=newest('*_commissioning.json',retry_start,
                     lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
                 report[record_key]=str(observation)

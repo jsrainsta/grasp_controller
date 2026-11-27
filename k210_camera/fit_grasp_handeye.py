@@ -70,8 +70,9 @@ def preview_wrist_alignment(tool_rotation, box_width_axis, support_normal):
 
 def camera_candidates(board, K, D):
     profile = board['profile']
-    obj = np.array([[(int(i)%6+1)*profile['square_length'],
-                     (int(i)//6+1)*profile['square_length'],0] for i in board['corner_ids']],np.float64)
+    columns = profile['squares_x'] - 1
+    obj = np.array([[(int(i)%columns+1)*profile['square_length'],
+                     (int(i)//columns+1)*profile['square_length'],0] for i in board['corner_ids']],np.float64)
     img = np.array(board['corners_px'],np.float64)
     solved = cv2.solvePnPGeneric(obj,img,K,D,flags=cv2.SOLVEPNP_IPPE)
     if not solved[0]:
