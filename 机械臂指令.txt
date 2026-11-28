@@ -15,12 +15,25 @@ cd /home/pi/competition/mechanical-arm
 默认：
 .\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --execute
 
-.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once high_1116_%RANDOM%_%RANDOM% --execute
+启用yolo_detect：
+set "GRASP_YOLO_PYTHON=D:\anaconda3\envs\py39\python.exe"   （同一窗口里设一次即可）
 
+直接抓取：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once grasp_%RANDOM%_%RANDOM% --execute --yolo "阿昔洛韦乳膏"
+
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once grasp_%RANDOM%_%RANDOM% --execute --yolo "红霉素软膏"
+
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once grasp_%RANDOM%_%RANDOM% --execute --yolo "丁酸氢化可的松乳膏"
+
+预览：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --preview --yolo "阿昔洛韦乳膏"
+
+
+更多：
+.\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once high_1116_%RANDOM%_%RANDOM% --execute
 
 .\.venv\Scripts\python.exe -X utf8 "k210_camera\grasp_controller.py" --config "k210_camera\controller_pc_fixed_placement_trial.json" --once high_1116_%RANDOM%_%RANDOM% --execute
 
-更多：
 .\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_fixed_placement_trial.json --once wrist_probe_%RANDOM%_%RANDOM% --wrist-probe --confirm-empty --execute
 
 .\.venv\Scripts\python.exe -X utf8 .\k210_camera\grasp_controller.py --config .\k210_camera\controller_pc_far_placement_trial.json --once far_1112_%RANDOM%_%RANDOM% --execute

@@ -3,15 +3,15 @@
   "image_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\vision_grasp_images\\20261124\\photo_20261124_081627_984965_seq75_28844829.jpg",
   "image_width": 640,
   "image_height": 480,
-  "created_at": "2026-11-24T08:16:34.242863+00:00",
+  "created_at": "2026-11-28T09:35:33.538191+00:00",
   "engine": "RapidOCR / ONNX Runtime CPU",
   "versions": {
     "rapidocr": "3.10.0",
     "onnxruntime": "1.31.0"
   },
   "status": "text_found",
-  "elapsed_s": 3.892366599990055,
-  "model_prepare_s": 0.8295409999991534,
+  "elapsed_s": 3.593105599982664,
+  "model_prepare_s": 1.200009137392044e-06,
   "lines": [
     {
       "text": "a",
@@ -944,14 +944,14 @@
     {
       "rotation_ccw_deg": 270,
       "line_count": 9,
-      "match_status": "unknown",
-      "medicine_id": null
+      "match_status": "matched",
+      "medicine_id": "med_003"
     },
     {
       "rotation_ccw_deg": 90,
       "line_count": 10,
-      "match_status": "unknown",
-      "medicine_id": null
+      "match_status": "matched",
+      "medicine_id": "med_003"
     },
     {
       "rotation_ccw_deg": 180,
@@ -966,23 +966,51 @@
   "catalog_path": "C:\\Users\\10766\\Desktop\\grasp_controller_handoff_20261109\\k210_camera\\medicines.json",
   "min_name_score": 0.8,
   "medicine_match": {
-    "status": "unknown",
-    "medicine_id": null,
-    "name": null,
-    "ocr_confidence": null,
-    "source_line_index": null,
-    "source_line_indices": [],
+    "status": "matched",
+    "medicine_id": "med_003",
+    "name": "阿昔洛韦乳膏",
+    "ocr_confidence": 0.99779,
+    "source_line_index": 11,
+    "source_line_indices": [
+      11,
+      22
+    ],
     "min_score": 0.8,
-    "candidates": [],
-    "reason": "识别出了文字，但没有与目录完整药名一致且达到阈值的结果。"
+    "candidates": [
+      {
+        "medicine_id": "med_003",
+        "name": "阿昔洛韦乳膏",
+        "ocr_confidence": 0.99779,
+        "source_line_indices": [
+          11,
+          22
+        ],
+        "evidence": [
+          {
+            "line_index": 11,
+            "text": "阿昔洛韦乳",
+            "ocr_confidence": 0.99779,
+            "meets_threshold": true
+          },
+          {
+            "line_index": 22,
+            "text": "阿昔洛韦乳",
+            "ocr_confidence": 0.99503,
+            "meets_threshold": true
+          }
+        ],
+        "meets_threshold": true
+      }
+    ],
+    "reason": "药名完整或容错匹配目录，OCR 置信度达到阈值。"
   },
   "target_selection": {
-    "status": "unconfirmed",
+    "status": "target_found",
     "target_id": "med_003",
     "target_name": "阿昔洛韦乳膏",
-    "recognized_id": null,
-    "recognized_name": null,
-    "name_match_status": "unknown",
-    "reason": "本张照片尚无唯一且达到阈值的完整药名匹配，暂未确认目标。"
+    "recognized_id": "med_003",
+    "recognized_name": "阿昔洛韦乳膏",
+    "name_match_status": "matched",
+    "reason": "本张照片唯一完整匹配且达到阈值的药名与指定目标一致。"
   }
 }
