@@ -73,8 +73,7 @@ def check_environment(config):
            ROOT.parent/'arm_service_review/received_20261105/arm_service/kinematics.py',
            ROOT.parent/'arm_service_review/received_20261105/config.serial.integration.json']
     inference_python=os.environ.get('GRASP_YOLO_PYTHON')
-    if inference_python:
-        files.extend([Path(inference_python),ROOT/'box_segmentation.py',ROOT.parent/'yolo/expv4s.pt'])
+    files.append(ROOT/'box_segmentation.py')
     absent=[str(p) for p in files if not p.is_file()]
     missing_features=[]
     if 'cv2' not in missing:
@@ -84,18 +83,23 @@ def check_environment(config):
         for attr in ('CharucoBoard','CharucoDetector','ArucoDetector'):
             if not hasattr(getattr(cv2,'aruco',None),attr):missing_features.append('cv2.aruco.'+attr)
     inference_error=None
-    if inference_python and not absent:
-        try:
-            probe=subprocess.run([inference_python,'-B','-X','utf8',str(ROOT/'box_segmentation.py'),'--self-check'],
-                                 capture_output=True,encoding='utf-8',errors='replace',timeout=45)
-            if probe.returncode:
-                inference_error=(probe.stderr.strip().splitlines() or ['YOLO 自检失败'])[-1]
-        except (OSError,subprocess.TimeoutExpired) as error:
-            inference_error=str(error)
+    if inference_python:
+        optional_files=(Path(inference_python),ROOT.parent/'yolo/expv4s.pt')
+        optional_missing=[str(path) for path in optional_files if not path.is_file()]
+        if optional_missing:
+            inference_error='缺少 YOLO 文件：'+', '.join(optional_missing)
+        else:
+            try:
+                probe=subprocess.run([inference_python,'-B','-X','utf8',str(ROOT/'box_segmentation.py'),'--self-check'],
+                                     capture_output=True,encoding='utf-8',errors='replace',timeout=45)
+                if probe.returncode:
+                    inference_error=(probe.stderr.strip().splitlines() or ['YOLO 自检失败'])[-1]
+            except (OSError,subprocess.TimeoutExpired) as error:
+                inference_error=str(error)
     return {'type':'controller_environment_check','missing_modules':missing,'missing_files':absent,
             'missing_opencv_features':missing_features,'box_segmentation':'expv4s' if inference_python else 'legacy',
             'yolo_inference_error':inference_error,
-            'ready_for_connection_check':not missing and not absent and not missing_features and inference_error is None,'hardware_commands_sent':False,
+            'ready_for_connection_check':not missing and not absent and not missing_features,'hardware_commands_sent':False,
             'independent_full_run_validated':False,'pi_hardware_validated':False}
 
 class Coordinator:

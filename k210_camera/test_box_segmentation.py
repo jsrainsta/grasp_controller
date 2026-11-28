@@ -4,7 +4,8 @@ from unittest.mock import patch
 
 import numpy as np
 
-from box_segmentation import overview_mask, polygon_mask
+from box_segmentation import optional_image_masks, overview_mask, polygon_mask
+from observe_grasp_target import locate
 from track_box_reference import track
 
 
@@ -25,6 +26,28 @@ class SegmentationTests(unittest.TestCase):
     def test_name_normalization_matches_overview_ocr(self):
         self.ocr["lines"][0]["text"]="阿昔洛 韦乳膏"
         self.assertIs(overview_mask([self.mask],self.mask.shape,self.ocr),self.mask)
+
+    @patch("observe_grasp_target.optional_image_masks")
+    @patch("observe_grasp_target._locate")
+    def test_valid_overview_skips_segmentation(self, locate_geometry, infer):
+        original = {"selected": {"center": [1, 2, 3]}, "outline": {}}
+        locate_geometry.return_value = original
+        self.assertIs(locate(self.image, self.ocr, {}, {}, image_path="photo.jpg"), original)
+        infer.assert_not_called()
+
+    @patch("observe_grasp_target.optional_image_masks")
+    @patch("observe_grasp_target._locate")
+    def test_unresolved_overview_can_use_segmentation(self, locate_geometry, infer):
+        original = {"selected": None, "outline": {}}
+        recovered = {"selected": {"center": [1, 2, 3]}, "outline": {}}
+        locate_geometry.side_effect = [original, recovered]
+        infer.return_value = [self.mask]
+        self.assertIs(locate(self.image, self.ocr, {}, {}, image_path="photo.jpg"), recovered)
+        self.assertEqual(recovered["outline"]["segmentation"]["role"], "geometry_fallback")
+
+    @patch("box_segmentation.image_masks", side_effect=RuntimeError("worker stopped"))
+    def test_optional_worker_failure_returns_no_mask(self, infer):
+        self.assertIsNone(optional_image_masks("photo.jpg"))
 
     @patch("track_box_reference._track")
     def test_near_rejects_wrong_or_ambiguous_instances(self, run):

@@ -10,7 +10,6 @@ import cv2
 from check_grasp_board import LARGE_GRASP_BOARD_PROFILE,ROOT,inspect,make_board
 from fit_grasp_handeye import camera_candidates, discrepancy
 from observe_grasp_target import clipped_box_top,locate
-from box_segmentation import coverage, image_masks, overview_mask, polygon_mask
 from box_rim_geometry import RimEvidence,face_corners,refine_grounded_rim
 from board_marker_pose import marker_plane_candidates_with_contrast
 from grasp_motion_profile import DEFAULT_FIXED_WRIST_ALIGNMENT_DEG,load_motion_profile
@@ -66,7 +65,7 @@ class ObservationBoxEdgeUnclear(ValueError):
         self.upper_edge_pixels=upper_edge_pixels
 
 
-def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, instance_mask=None):
+def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
     old_cal=json.loads(Path(previous['calibration']).read_text(encoding='utf-8'))
     old_board=np.asarray(next(c for c in old_cal['candidates']
                               if c['mount_hypothesis']=='pitch_tool')['T_base_board_cm'])
@@ -87,8 +86,6 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D, *, 
     if fit is None:
         raise ValueError('抬高后可见盒边不足，无法确认药盒仍在原位')
     pose,rim=fit
-    if instance_mask is not None and coverage(instance_mask, polygon_mask(current_image.shape, rim['corners_pixel'])) < .85:
-        raise ValueError('抬高后复核的盒面超出药名对应的 YOLO 区域')
     shift,yaw=discrepancy(nominal,pose)
     if shift>.3 or yaw>3:
         raise ValueError(f'抬高后药盒轮廓位置改变（{shift:.2f} cm，{yaw:.2f}°）')
@@ -169,12 +166,8 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
                     best['T_base_board_cm'],frame_points)
         if previous is not None:
             try:
-                masks=image_masks(o['image'])
-                box=None if masks is None else overview_mask(masks,image.shape[:2],o['ocr'])
-                if masks is not None and box is None:
-                    raise ValueError('抬高后未确认药名对应的唯一药盒')
                 evidence=verify_stationary_box(previous,cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),
-                                               np.asarray(best['T_base_board_cm']),camera,K,D,instance_mask=box)
+                                               np.asarray(best['T_base_board_cm']),camera,K,D)
             except ValueError as error:
                 raise ValueError(f'{message}。{error}') from error
             # Preserve the proven image and its matching pixel coordinates.

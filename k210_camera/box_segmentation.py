@@ -38,6 +38,16 @@ def image_masks(path):
     return _predict(interpreter, str(path), path.stat().st_mtime_ns)
 
 
+def optional_image_masks(path):
+    if path is None:
+        return None
+    try:
+        return image_masks(path)
+    except (OSError, RuntimeError, ValueError) as error:
+        print(f'YOLO 辅助识别不可用：{error}', file=sys.stderr)
+        return None
+
+
 @lru_cache(maxsize=8)
 def _predict(interpreter, path, modified):
     global _executor, _worker

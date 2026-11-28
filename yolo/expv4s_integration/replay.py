@@ -152,6 +152,7 @@ def main():
     p.add_argument("--interpreter",required=True)
     p.add_argument("--day",default="20261112")
     p.add_argument("--journals",action="store_true",help="Replay each recorded run using its exact overview and saved OCR")
+    p.add_argument("--output",type=Path,help="Write results separately from the historical reports")
     p.add_argument("--seq",nargs="+",type=int,default=[2,4,9,17,21,33,45,51,62,79,94,104,39,76])
     args = p.parse_args()
     cv2.setNumThreads(2)
@@ -183,7 +184,7 @@ def main():
                     case[variant]=replay(raw,by_source.get(path.name),folder,check_commands=args.journals)
             result.append(case)
             name = "replay_results.json" if args.day == "20261112" else f"replay_{args.day}.json"
-            save(HERE/name,result)
+            save(args.output or HERE/name,result)
             print(seq,[(k,v.get("plan"),v.get("first_guard"),str(v.get("stop",""))[:90]) for k,v in case.items()],flush=True)
 
 

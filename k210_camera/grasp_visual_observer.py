@@ -12,7 +12,7 @@ from fit_grasp_handeye import transform,discrepancy,robot_frame
 from jpeg_integrity import check_jpeg
 from sample_grasp_handeye import nominal_model
 from box_rim_geometry import RimEvidence,face_corners,lift_rim_pose,refine_grounded_rim
-from box_segmentation import image_masks, match_region, polygon_mask
+from box_segmentation import match_region, optional_image_masks, polygon_mask
 from board_marker_pose import marker_plane_candidates_with_contrast
 
 # Frozen commissioning image-consistency policy. These pixel residuals are not
@@ -260,17 +260,15 @@ class GraspVisualObserver:
             nominal=inverse(camera)@self.template
             prior=inverse(camera)@prior_world
             fit=refine_grounded_rim(evidence,nominal,allow_cropped=True,prior_pose=prior)
-            masks=image_masks(path)
-            def confirmed(corners):
-                return match_region(masks,polygon_mask(gray.shape,corners),.85) is not None
             retried=False
-            if masks is not None and (fit is None or not confirmed(fit[1]['corners_pixel'])):
-                # Retry only the near-best geometric candidates against the visible instance.
-                retried=True
-                fit=(refine_grounded_rim(evidence,nominal,allow_cropped=True,prior_pose=prior,
-                                         accept_face=confirmed) if masks else None)
-                if fit is None:
-                    raise ValueError(f'近图没有同时通过盒边与 YOLO 区域复核的唯一位姿（检测到 {len(masks)} 个药盒）')
+            if fit is None:
+                masks=optional_image_masks(path)
+                if masks:
+                    def confirmed(corners):
+                        return match_region(masks,polygon_mask(gray.shape,corners),.85) is not None
+                    fit=refine_grounded_rim(evidence,nominal,allow_cropped=True,prior_pose=prior,
+                                            accept_face=confirmed)
+                    retried=fit is not None
             if fit is None:
                 raise ValueError('近图可见盒边证据不足或存在多个相近候选，无法可靠定位药盒')
             C,rim=fit
@@ -281,9 +279,9 @@ class GraspVisualObserver:
                      'prior_translation_delta_cm':rim.get('prior_translation_delta_cm'),
                      'near_tied_candidate_count':rim.get('near_tied_candidate_count',0)}
             pose_estimator='independent_camera_and_visible_box_rim'
-            if masks is not None:
-                tracked['segmentation']='expv4s_confirmed_rim'
-                tracked['segmentation_candidate_retry']=retried
+            if retried:
+                tracked['segmentation']='expv4s_assisted_rim'
+                tracked['segmentation_candidate_retry']=True
         world=camera@C;obj_board=inverse(self.Y)@world
         tcp_camera=np.array(self.tcp['center_camera_cm']);tcp_base=camera[:3,:3]@tcp_camera+camera[:3,3]
         tcp_board=inverse(self.Y)@np.r_[tcp_base,1]

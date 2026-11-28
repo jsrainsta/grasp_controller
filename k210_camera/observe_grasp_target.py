@@ -13,7 +13,7 @@ import numpy as np
 
 from check_grasp_board import ROOT
 from box_rim_geometry import overview_rim
-from box_segmentation import coverage, image_masks, overview_mask, polygon_mask
+from box_segmentation import coverage, optional_image_masks, overview_mask, polygon_mask
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
 from fit_grasp_handeye import robot_frame
@@ -50,6 +50,24 @@ def clipped_box_top(image, ocr):
 
 
 def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
+    result = _locate(im, ocr, joints, handeye, camera_override)
+    if result['selected'] is not None or result['outline'].get('frame_edge'):
+        return result
+    masks = optional_image_masks(image_path)
+    if masks:
+        box = overview_mask(masks, im.shape[:2], ocr)
+        if box is not None:
+            assisted = _locate(im, ocr, joints, handeye, camera_override, box=box)
+            if assisted['selected'] is not None:
+                assisted['outline']['segmentation'] = {
+                    'model':'expv4s', 'instances':len(masks), 'associated':True,
+                    'role':'geometry_fallback',
+                }
+                return assisted
+    return result
+
+
+def _locate(im, ocr, joints, handeye, camera_override, *, box=None):
     intrinsic = json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
     K,D = np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients'])
     camera = robot_frame(joints,nominal_model(),'pitch_tool') @ np.array(handeye['T_mount_camera_cm'])
@@ -59,16 +77,11 @@ def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
     normal = board[:3,2]
     surface = board[:3,3]-normal*2.5
     outline = detect(im,ocr,'阿昔洛韦乳膏')
-    masks = image_masks(image_path)
-    box = None if masks is None else overview_mask(masks, im.shape[:2], ocr)
     def inside_target(corners):
-        return masks is None or (box is not None and coverage(box, polygon_mask(box.shape, corners)) >= .85)
-    if masks is not None:
-        outline['segmentation'] = {'model':'expv4s','instances':len(masks),'associated':box is not None}
+        return coverage(box, polygon_mask(box.shape, corners)) >= .85
+    if box is not None:
         outline['candidates'] = [c for c in outline['candidates'] if inside_target(c['corners_pixel'])]
-        if box is None:
-            outline['reason'] = '药名未对应到唯一的 YOLO 药盒区域'
-    if not outline['candidates'] and (masks is None or box is not None):
+    if not outline['candidates']:
         identity=[row['polygon'] for row in ocr.get('lines',[])
                   if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence',0)>=.8]
         fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
