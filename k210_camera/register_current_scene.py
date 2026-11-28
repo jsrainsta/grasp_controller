@@ -96,6 +96,9 @@ def verify_stationary_box(previous, current_image, board_pose, camera, K, D):
 def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_registration=None,
              board_profile=None):
     o=json.loads(path.read_text(encoding='utf-8'))
+    detection=o.get('detection')
+    if detection is not None and detection['selected'] is None:
+        raise ValueError('首图未找到唯一指定药盒')
     previous=None
     if saved_plane:
         cal=copy.deepcopy(json.loads(Path(o['calibration']).read_text(encoding='utf-8')))
@@ -110,6 +113,8 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
         b=inspect(Path(o['image']),board_profile)
         if previous_registration is not None:
             previous=json.loads(Path(previous_registration).read_text(encoding='utf-8'))
+            if (previous.get('detection') or {}).get('target') != (detection or {}).get('target'):
+                raise ValueError('重拍前后的目标配置不同')
             previous_profile=previous['scene_registration'].get('board_profile')
             if previous_profile is not None and previous_profile != b['profile']:
                 raise ValueError('同一次抓取的标定板发生变化，请从观察位重新开始')
@@ -149,7 +154,8 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
     calpath.write_text(json.dumps(cal,ensure_ascii=False,indent=2),encoding='utf-8')
     image=cv2.imdecode(np.frombuffer(Path(o['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
     o['calibration']=str(calpath.resolve())
-    o['geometry']=locate(image,o['ocr'],o['before']['joint_median'],best,camera_override=camera,image_path=o['image'])
+    o['geometry']=locate(image,o['ocr'],o['before']['joint_median'],best,camera_override=camera,
+                         image_path=o['image'],detection=detection)
     o['scene_registration']=cal['scene_registration']
     if o['geometry']['selected'] is None:
         outline=o['geometry']['outline']
@@ -159,10 +165,16 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             detail=f"可见边覆盖 {fit['edge_coverage']}，边缘平均偏差 {fit['mean_edge_distance_px']:.2f}px"
         message='新场景中药盒边界拟合失败，'+detail
         if not saved_plane:
-            frame_points=clipped_box_top(image,o['ocr'])
+            if detection is None:
+                frame_points=clipped_box_top(image,o['ocr'])
+            else:
+                x1,y1,x2,y2=detection['selected']['xyxy']
+                frame_points=[[x1,y1],[x2,y1]] if y1<=6 else None
+                if frame_points is None and y2>=image.shape[0]-8:
+                    raise ObservationBoxEdgeUnclear(f'{message}；检测框接触画面下沿',best['T_base_board_cm'])
             if frame_points is not None:
                 raise ObservationBoxEdgeUnclear(
-                    f'{message}；已确认药名对应盒面接触画面顶部，先抬头补拍',
+                    f'{message}；目标疑似接触画面顶部，先抬头补拍',
                     best['T_base_board_cm'],frame_points)
         if previous is not None:
             try:
@@ -182,7 +194,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
             out.write_text(json.dumps(o,ensure_ascii=False,indent=2),encoding='utf-8')
             print('抬高后已核对板和盒面，沿用抬高前定位：',out,flush=True)
             return out
-        if not saved_plane and outline.get('frame_edge')=='upper':
+        if not saved_plane and fit and outline.get('frame_edge')=='upper':
             corners=np.asarray(fit['corners_pixel'])
             edge=int(np.argmin((corners[:,1]+np.roll(corners[:,1],-1))/2))
             pixels=corners[[edge,(edge+1)%4]].tolist()
@@ -198,7 +210,7 @@ def register(path,output_dir=None,*,motion=None,saved_plane=False,previous_regis
     down=np.array(o['geometry']['table_down_normal_base'])
     o['scene_registration']['nominal_scene_geometry']={
         'box_top_center_base_cm':center.tolist(),
-        'support_at_box_center_base_cm':(center+2.5*down).tolist(),
+        'support_at_box_center_base_cm':(center+o['geometry']['assumed_box_dimensions_cm'][2]*down).tolist(),
         'support_down_normal_base':down.tolist(),
     }
     corners=np.array(target['corners_pixel'])

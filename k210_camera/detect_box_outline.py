@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 
 
-def detect(image, ocr, name):
+def detect(image, ocr, name, *, accept_face=None):
     h, w = image.shape[:2]
     seeds = [np.array(row['polygon'], np.float32) for row in ocr.get('lines', [])
              if name_matches(row.get('text',''), name) and row.get('confidence', 0) >= .8]
@@ -22,10 +22,10 @@ def detect(image, ocr, name):
               'candidates': [], 'for_motion': False, 'robot_target': None,
               'method': 'ocr_seeded_edge_hull_prototype',
               'image_size': [w, h]}
-    if not seeds:
+    if not seeds and accept_face is None:
         return result
-    seed = max(seeds, key=cv2.contourArea)
-    if seed.shape != (4, 2) or not np.isfinite(seed).all():
+    seed = max(seeds, key=cv2.contourArea) if seeds else None
+    if seed is not None and (seed.shape != (4, 2) or not np.isfinite(seed).all()):
         raise ValueError('Invalid OCR polygon')
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     candidates = []
@@ -47,7 +47,9 @@ def detect(image, ocr, name):
             area = abs(cv2.contourArea(quad))
             if not 2000 <= area <= h*w*.4:
                 continue
-            if any(cv2.pointPolygonTest(quad, tuple(map(float, p)), False) < 0 for p in seed):
+            if seed is not None and any(cv2.pointPolygonTest(quad, tuple(map(float, p)), False) < 0 for p in seed):
+                continue
+            if accept_face is not None and not accept_face(quad):
                 continue
             edges_xy = np.roll(quad, -1, axis=0)-quad
             lengths = np.linalg.norm(edges_xy, axis=1)
@@ -55,7 +57,7 @@ def detect(image, ocr, name):
             ratio = max(ratio, 1/ratio)
             if not 2 <= ratio <= 5:
                 continue
-            if area < 2*abs(cv2.contourArea(seed)):
+            if seed is not None and area < 2*abs(cv2.contourArea(seed)):
                 continue
             if any(np.linalg.norm(quad.mean(0)-np.array(c['center_pixel'])) < 8
                    and abs(area/c['area_px2']-1) < .15 for c in candidates):
@@ -72,7 +74,7 @@ def detect(image, ocr, name):
     result['candidates'] = candidates
     if candidates:
         result.update(status='outline_candidates_for_review',
-                      reason='complete_quad_with_full_name_inside')
+                      reason='complete_quad_matches_target' if accept_face is not None else 'complete_quad_with_full_name_inside')
     else:
         result['reason'] = 'no_complete_supported_quad'
     return result

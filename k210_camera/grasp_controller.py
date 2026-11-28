@@ -10,6 +10,7 @@ from pathlib import Path
 from datetime import datetime,timezone
 from grasp_start_state import start_state_error,OPEN_JAW_POSITION,WRIST_POSITION,WRIST_TOLERANCE
 from grasp_motion_profile import load_motion_profile
+from grasp_medicine import medicine
 
 ROOT=Path(__file__).resolve().parent
 
@@ -72,7 +73,8 @@ def check_environment(config):
            ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json',
            ROOT.parent/'arm_service_review/received_20261105/arm_service/kinematics.py',
            ROOT.parent/'arm_service_review/received_20261105/config.serial.integration.json']
-    inference_python=os.environ.get('GRASP_YOLO_PYTHON')
+    detecting=bool(config.get('yolo'))
+    inference_python=os.environ.get('GRASP_YOLO_PYTHON',sys.executable if detecting else None)
     files.append(ROOT/'box_segmentation.py')
     absent=[str(p) for p in files if not p.is_file()]
     missing_features=[]
@@ -84,22 +86,24 @@ def check_environment(config):
             if not hasattr(getattr(cv2,'aruco',None),attr):missing_features.append('cv2.aruco.'+attr)
     inference_error=None
     if inference_python:
-        optional_files=(Path(inference_python),ROOT.parent/'yolo/expv4s.pt')
+        optional_files=(Path(inference_python),ROOT.parent/('yolo/exp_v5_detect.pt' if detecting else 'yolo/expv4s.pt'))
         optional_missing=[str(path) for path in optional_files if not path.is_file()]
         if optional_missing:
             inference_error='缺少 YOLO 文件：'+', '.join(optional_missing)
         else:
             try:
-                probe=subprocess.run([inference_python,'-B','-X','utf8',str(ROOT/'box_segmentation.py'),'--self-check'],
+                probe=subprocess.run([inference_python,'-B','-X','utf8',str(ROOT/'box_segmentation.py'),'--self-check',
+                                      'detect' if detecting else 'segment'],
                                      capture_output=True,encoding='utf-8',errors='replace',timeout=45)
                 if probe.returncode:
                     inference_error=(probe.stderr.strip().splitlines() or ['YOLO 自检失败'])[-1]
             except (OSError,subprocess.TimeoutExpired) as error:
                 inference_error=str(error)
     return {'type':'controller_environment_check','missing_modules':missing,'missing_files':absent,
-            'missing_opencv_features':missing_features,'box_segmentation':'expv4s' if inference_python else 'legacy',
+            'missing_opencv_features':missing_features,'box_segmentation':'exp_v5_detect' if detecting else ('expv4s' if inference_python else 'legacy'),
             'yolo_inference_error':inference_error,
-            'ready_for_connection_check':not missing and not absent and not missing_features,'hardware_commands_sent':False,
+            'ready_for_connection_check':not missing and not absent and not missing_features and (not detecting or inference_error is None),
+            'hardware_commands_sent':False,
             'independent_full_run_validated':False,'pi_hardware_validated':False}
 
 class Coordinator:
@@ -107,6 +111,7 @@ class Coordinator:
         self.config=config;self.directory=Path(config['results_dir']);self.directory.mkdir(parents=True,exist_ok=True)
         self.runner=runner or self.run_pipeline
     def run_pipeline(self,event,record,*,preview=False):
+        target=self.event_target(event)
         port=resolve_port(self.config['camera_port'])
         # Fresh status before opening serial or dispatching motion. A held box
         # must never be silently opened for the next arrival.
@@ -121,6 +126,8 @@ class Coordinator:
                  '--arm-url',self.config['arm_url'],'--calibration',self.config['calibration'],
                  '--result',str(self.directory/(record['run_id']+'_pipeline.json')),
                  '--preview' if preview else '--execute']
+        if target:
+            command.extend(['--yolo',target['name']])
         if self.config.get('resume_hover'):
             command.extend(['--resume-hover',self.config['resume_hover']])
         if self.config.get('resume_approach'):
@@ -162,21 +169,35 @@ class Coordinator:
             return result
         if result.get('grasp_confirmed') is not True:raise RuntimeError('流程未提供持物验收通过证据')
         return result
+    def event_target(self,event):
+        if self.config.get('yolo'):
+            target=medicine(event.get('medicine_name',self.config['yolo']))
+            if event.get('target_id',target['id'])!=target['id']:
+                raise ValueError('target_id 与药名不一致')
+            return target
+        if 'medicine_name' in event or event.get('target_id','med_003')!='med_003':
+            raise ValueError('按药名指定目标需要 --yolo')
+        return None
+
     def handle(self,event):
         if not isinstance(event,dict) or event.get('type')!='arrival' or event.get('status')!='OK':
             raise ValueError('事件须为arrival且status=OK')
         key=event.get('request_id')
         if not isinstance(key,str) or not 1<=len(key)<=128:raise ValueError('必须提供1..128字符的唯一到站request_id')
-        if event.get('target_id','med_003')!='med_003':raise ValueError('本版目标只支持med_003')
+        target=self.event_target(event)
         with ControllerLock(self.directory/'controller.lock'):
             path=self.directory/(hashlib.sha256(key.encode()).hexdigest()+'.json')
             if path.exists():
-                old=json.loads(path.read_text(encoding='utf-8'));return {**old,'deduplicated':True}
+                old=json.loads(path.read_text(encoding='utf-8'))
+                if old.get('target_id','med_003') != (target['id'] if target else 'med_003'):
+                    raise ValueError('request_id 已用于另一种药盒')
+                return {**old,'deduplicated':True}
             r={'type':'autonomous_grasp_result','version':1,'request_id':key,'run_id':uuid.uuid4().hex,
-               'target_id':'med_003','started_at':now(),'status':'running','grasp_confirmed':False,
+               'target_id':target['id'] if target else 'med_003','started_at':now(),'status':'running','grasp_confirmed':False,
                'grasp_quality_validated':False,
                'motion_profile':self.config.get('motion_profile'),
                'deduplicated':False,'gpt_runtime_required':False}
+            if target:r['medicine_name']=target['name']
             def save():
                 tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(r,ensure_ascii=False,indent=2),encoding='utf-8');os.replace(tmp,path)
             save()
@@ -257,7 +278,10 @@ def main():
     resume.add_argument('--resume-hover',type=Path,help='接续已完成的悬停，不重复先前预接近动作')
     resume.add_argument('--resume-approach',type=Path,help='接续已确认运动的视觉阶段，不重复先前动作')
     p.add_argument('--execute',action='store_true')
+    p.add_argument('--yolo',metavar='药名',help='首图使用三类药盒检测模型')
     a=p.parse_args();c=load_config(a.config)
+    if a.yolo is not None:
+        c['yolo']=medicine(a.yolo)['name']
     if a.check:print(json.dumps(check_environment(c),ensure_ascii=False,indent=2));return
     if a.preview:
         if a.execute or a.resume_hover or a.resume_approach:

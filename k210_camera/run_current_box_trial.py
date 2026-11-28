@@ -41,6 +41,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--port',required=True)
     p.add_argument('--camera-baudrate',type=int,default=115200)
+    p.add_argument('--yolo',metavar='药名')
     p.add_argument('--arm-url',default='http://127.0.0.1:18000/v1/arm')
     p.add_argument('--calibration',type=Path,required=True)
     mode=p.add_mutually_exclusive_group(required=True)
@@ -63,11 +64,17 @@ def main():
         p.error('路径预览需要从观察位拍摄新场景')
     from vision_task import VisionTaskSession
     images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d')
-    with VisionTaskSession(a.port,'med_003',images=images,baudrate=a.camera_baudrate) as camera:
+    from grasp_medicine import medicine
+    from types import SimpleNamespace
+    target=medicine(a.yolo) if a.yolo else None
+    runner=SimpleNamespace(target=target) if target else None
+    with VisionTaskSession(a.port,target['id'] if target else 'med_003',images=images,
+                           baudrate=a.camera_baudrate,runner=runner) as camera:
         run_trial(a,camera)
 
 
 def run_trial(a,camera):
+    from grasp_medicine import confirmed_target, medicine
     from grasp_motion_profile import load_motion_profile
     from observe_grasp_target import main as observe
     from register_current_scene import BoardPoseAmbiguous,ObservationBoxEdgeUnclear,register
@@ -84,15 +91,19 @@ def run_trial(a,camera):
     out=a.result or ROOT/'vision_grasp_results'/('single_entry_trial_'+datetime.now().strftime('%Y%m%d_%H%M%S')+'.json')
     out.parent.mkdir(parents=True,exist_ok=True)
     motion=load_motion_profile(a.motion_profile)
+    target=medicine(a.yolo) if getattr(a,'yolo',None) else None
+    identity_args=('--yolo',target['name']) if target else ()
     hover_only=getattr(a,'hover_only',False)
     motion_args=[] if a.motion_profile is None else ['--motion-profile',str(a.motion_profile.resolve())]
     tracked_sources=(*camera_stages,'run_current_box_trial.py','grasp_controller.py','register_current_scene.py','box_segmentation.py',
                      'check_grasp_board.py','board_marker_pose.py','detect_box_outline.py','fit_grasp_handeye.py',
-                     'grasp_visual_observer.py','box_rim_geometry.py','tcp_pose_planner.py','grasp_approach_policy.py')
+                     'grasp_visual_observer.py','box_rim_geometry.py','tcp_pose_planner.py','grasp_approach_policy.py',
+                     'grasp_medicine.py')
     report={'stages':stages,'grasp_confirmed':False,
         'trial_conditions':{'mode':'hover_only' if hover_only else ('execute' if a.execute else 'preview'),
             'camera_port':a.port,'camera_baudrate':a.camera_baudrate,
             'box_segmentation':'expv4s' if os.environ.get('GRASP_YOLO_PYTHON') else 'legacy',
+            'first_frame_detector':'exp_v5_detect' if target else None,'target':target,
             'motion_profile':motion,'calibration_sha256':hashlib.sha256(a.calibration.read_bytes()).hexdigest(),
             'core_source_sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in tracked_sources}}}
     def save():
@@ -135,6 +146,11 @@ def run_trial(a,camera):
             row['completed_at']=time.time()
             save()
     common=('--port',a.port,'--arm-url',a.arm_url)
+    def check_resume_target(registered):
+        detected=json.loads(registered.read_text(encoding='utf-8')).get('detection')
+        saved_target=detected['target'] if detected else None
+        if (saved_target and saved_target['id']) != (target and target['id']):
+            raise ValueError('接续参数与原场景目标不一致')
     seed_args=[]
     if a.resume_approach:
         from collect_grasp_reference import read_arm
@@ -143,6 +159,7 @@ def run_trial(a,camera):
         if time.time()-seed.stat().st_mtime>3600:raise ValueError('视觉接续记录已过期')
         expected,reference_kind=approach_resume_reference(saved)
         registered=Path(saved['source']);hover=Path(saved['hover_handoff']['report'])
+        check_resume_target(registered)
         hover_profile=json.loads(hover.read_text(encoding='utf-8')).get('motion_profile')
         saved_profile=saved.get('motion_profile')
         if saved_profile and hover_profile and Path(saved_profile).resolve()!=Path(hover_profile).resolve():
@@ -162,6 +179,7 @@ def run_trial(a,camera):
         if not saved.get('hover_motion_completed'):raise ValueError('不能从未完成的预接近接续')
         if time.time()-hover.stat().st_mtime>3600:raise ValueError('悬停记录已超过本次现场接续时限，需要新场景准备')
         registered=Path(saved['source'])
+        check_resume_target(registered)
         if saved.get('motion_profile'):
             path=str(Path(saved['motion_profile']).resolve())
             select_motion(path,load_motion_profile(path),{'mode':'resume'})
@@ -170,9 +188,9 @@ def run_trial(a,camera):
         if any(abs(actual['joint_median'][j]-expected[j])>5 for j in ('2','3','4','5','6')):
             raise ValueError('现场姿态已离开悬停点，不执行接续动作')
     else:
-        run('observe_grasp_target.py',*common,'--calibration',a.calibration)
+        run('observe_grasp_target.py',*common,'--calibration',a.calibration,*identity_args)
         # Register today's board before requiring a world-space box fit.
-        observation=newest('*_commissioning.json',start,lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
+        observation=newest('*_commissioning.json',start,confirmed_target)
         report['initial_observation']=str(observation)
         while True:
             try:
@@ -211,9 +229,8 @@ def run_trial(a,camera):
                     raise
                 retry_start=time.time()
                 exposure_args=['--exposure-scale','0.5'] if record_key=='observation_after_exposure_retry' else []
-                run('observe_grasp_target.py',*common,'--calibration',a.calibration,*exposure_args)
-                observation=newest('*_commissioning.json',retry_start,
-                    lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
+                run('observe_grasp_target.py',*common,'--calibration',a.calibration,*identity_args,*exposure_args)
+                observation=newest('*_commissioning.json',retry_start,confirmed_target)
                 report[record_key]=str(observation)
                 save()
         registered=observation.with_name(observation.stem+'_registered.json')
@@ -232,8 +249,8 @@ def run_trial(a,camera):
                 print('高台面起步预检通过。记录：',out,flush=True)
                 return
             reread_start=time.time()
-            run('observe_grasp_target.py',*common,'--calibration',a.calibration)
-            observation=newest('*_commissioning.json',reread_start,lambda d:d.get('ocr',{}).get('target_selection',{}).get('status')=='target_found')
+            run('observe_grasp_target.py',*common,'--calibration',a.calibration,*identity_args)
+            observation=newest('*_commissioning.json',reread_start,confirmed_target)
             report['high_start']['observation_after_lift']=str(observation)
             run('register_current_scene.py',observation,previous_registration=registered)
             registered=observation.with_name(observation.stem+'_registered.json')

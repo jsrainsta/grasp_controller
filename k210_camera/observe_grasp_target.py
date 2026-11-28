@@ -13,7 +13,8 @@ import numpy as np
 
 from check_grasp_board import ROOT
 from box_rim_geometry import overview_rim
-from box_segmentation import coverage, optional_image_masks, overview_mask, polygon_mask
+from box_segmentation import coverage, image_detections, optional_image_masks, overview_mask, polygon_mask
+from grasp_medicine import confirmed_target, medicine
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
 from fit_grasp_handeye import robot_frame
@@ -49,7 +50,39 @@ def clipped_box_top(image, ocr):
     return None
 
 
-def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
+def select_detection(path, target):
+    detections = image_detections(path)
+    matches = [box for box in detections if box['class_id'] == target['class_id']]
+    return {'target':target, 'boxes':detections, 'selected':matches[0] if len(matches)==1 else None,
+            'status':'target_found' if len(matches)==1 else ('ambiguous' if matches else 'target_missing')}
+
+
+def detection_face_filter(detection):
+    bounds=np.asarray(detection['selected']['xyxy'],dtype=np.float32)
+    lo,hi=bounds[:2],bounds[2:]
+    rectangle=np.array([lo,[hi[0],lo[1]],hi,[lo[0],hi[1]]],dtype=np.float32)
+    others=[row['xyxy'] for row in detection['boxes'] if row != detection['selected']]
+    def accepts(corners):
+        face=np.asarray(corners,dtype=np.float32)
+        area=abs(cv2.contourArea(face))
+        center=face.mean(0)
+        if area<=0 or not np.all((center>=lo)&(center<=hi)):
+            return False
+        intersection,_=cv2.intersectConvexConvex(face,rectangle)
+        if intersection<.65*area:
+            return False
+        for x1,y1,x2,y2 in others:
+            other=np.array([[x1,y1],[x2,y1],[x2,y2],[x1,y2]],dtype=np.float32)
+            overlap,_=cv2.intersectConvexConvex(face,other)
+            if overlap>=intersection:
+                return False
+        return True
+    return accepts
+
+
+def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None, detection=None):
+    if detection is not None:
+        return _locate(im, ocr, joints, handeye, camera_override, detection=detection)
     result = _locate(im, ocr, joints, handeye, camera_override)
     if result['selected'] is not None or result['outline'].get('frame_edge'):
         return result
@@ -67,7 +100,7 @@ def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None):
     return result
 
 
-def _locate(im, ocr, joints, handeye, camera_override, *, box=None):
+def _locate(im, ocr, joints, handeye, camera_override, *, box=None, detection=None, prefer_rim=False):
     intrinsic = json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
     K,D = np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients'])
     camera = robot_frame(joints,nominal_model(),'pitch_tool') @ np.array(handeye['T_mount_camera_cm'])
@@ -75,18 +108,22 @@ def _locate(im, ocr, joints, handeye, camera_override, *, box=None):
         camera=np.array(camera_override,dtype=np.float64)
     board = np.array(handeye['T_base_board_cm'])
     normal = board[:3,2]
-    surface = board[:3,3]-normal*2.5
-    outline = detect(im,ocr,'阿昔洛韦乳膏')
+    dimensions = (10.5,3.4,2.5) if detection is None else detection['target']['dimensions_cm']
+    length,width,height = dimensions
+    surface = board[:3,3]-normal*height
+    face_filter = None if detection is None else detection_face_filter(detection)
+    name = '阿昔洛韦乳膏' if detection is None else detection['target']['name']
+    outline = detect(im,ocr,name,accept_face=face_filter)
     def inside_target(corners):
         return coverage(box, polygon_mask(box.shape, corners)) >= .85
     if box is not None:
         outline['candidates'] = [c for c in outline['candidates'] if inside_target(c['corners_pixel'])]
-    if not outline['candidates']:
+    if not outline['candidates'] or prefer_rim:
         identity=[row['polygon'] for row in ocr.get('lines',[])
                   if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence',0)>=.8]
         fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
-                            np.linalg.solve(camera,board),(10.5,3.4,2.5),identity,
-                            accept_face=inside_target if box is not None else None)
+                            np.linalg.solve(camera,board),dimensions,identity,
+                            accept_face=inside_target if box is not None else face_filter)
         if fitted is not None:
             _,rim=fitted
             pixels=rim['corners_pixel']
@@ -125,22 +162,24 @@ def _locate(im, ocr, joints, handeye, camera_override, *, box=None):
         axis_short = edges[1]-edges[3]
         axis_short /= np.linalg.norm(axis_short)
         orthogonality = abs(float(axis_long@axis_short))
-        dimensional_error = abs(long/10.5-1)+abs(short/3.4-1)
+        dimensional_error = abs(long/length-1)+abs(short/width-1)
         row = {**candidate, 'top_corners_base_cm':points.tolist(),
             'top_center_base_cm':points.mean(0).tolist(),
-            'geometric_center_base_cm':(points.mean(0)+normal*1.25).tolist(),
+            'geometric_center_base_cm':(points.mean(0)+normal*height/2).tolist(),
             'length_axis_base':axis_long.tolist(),'width_axis_base':axis_short.tolist(),
             'measured_length_cm':long,'measured_width_cm':short,
             'dimensional_error':dimensional_error,'orthogonality_error':orthogonality,
             'dimensions_independently_measured':candidate.get('method')!='metric_visible_rim_fit',
             'dimension_note':'Metric edge fit imposes the known size; its dimensional residual is not independent validation.' if candidate.get('method')=='metric_visible_rim_fit' else 'Ray-plane estimate; depends on plane and assumed height.',
-            'geometry_supported':bool(abs(long/10.5-1)<=.18 and abs(short/3.4-1)<=.18 and orthogonality<.18)}
+            'geometry_supported':bool(abs(long/length-1)<=.18 and abs(short/width-1)<=.18 and orthogonality<.18)}
         supported.append(row)
     supported.sort(key=lambda row:row['dimensional_error']+row['orthogonality_error'])
     accepted = [r for r in supported if r['geometry_supported']]
+    if detection is not None and not accepted and outline['candidates'] and not prefer_rim and 'metric_edge_fit' not in outline:
+        return _locate(im,ocr,joints,handeye,camera_override,detection=detection,prefer_rim=True)
     return {'outline':outline,'metric_candidates':supported,'selected':accepted[0] if accepted else None,
             'T_base_camera_cm':camera.tolist(),'table_down_normal_base':normal.tolist(),
-            'assumed_box_dimensions_cm':[10.5,3.4,2.5],
+            'assumed_box_dimensions_cm':list(dimensions),
             'for_motion':False,'grasp_tcp_validated':False}
 
 
@@ -150,13 +189,18 @@ def main(argv=None, camera=None):
     parser.add_argument('--port',default='COM5')
     parser.add_argument('--calibration',type=Path,required=True)
     parser.add_argument('--exposure-scale',type=float,choices=(.5,.75))
+    parser.add_argument('--yolo',metavar='药名')
     args = parser.parse_args(argv)
+    target=medicine(args.yolo) if args.yolo else None
     cal = json.loads(args.calibration.read_text(encoding='utf-8'))
     best = next(r for r in cal['candidates'] if r['mount_hypothesis']=='pitch_tool')
     if best['max_validation_position_cm']>.3 or best['max_validation_orientation_deg']>1:
         raise RuntimeError('相机候选的保留验证未通过本阶段门槛')
+    from types import SimpleNamespace
     session_context = nullcontext(camera) if camera is not None else VisionTaskSession(
-        args.port,'med_003',images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'))
+        args.port,target['id'] if target else 'med_003',
+        images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'),
+        runner=SimpleNamespace(target=target) if target else None)
     with session_context as session:
         for attempt in range(2):
             before = read_arm(args.arm_url)
@@ -178,14 +222,17 @@ def main(argv=None, camera=None):
                   and all(v<=2 for r in (before,after) for v in r['joint_mad'].values()))
         if not stable:
             raise RuntimeError('本次图像前后关节反馈不稳定，未用于定位')
-        ocr = session.runner.run(path,ROOT/'ocr_results',known_box_focus=True)
+        ocr = {} if args.yolo else session.runner.run(path,ROOT/'ocr_results',known_box_focus=True)
     raw = path.read_bytes()
     im = cv2.imdecode(np.frombuffer(raw,np.uint8),cv2.IMREAD_COLOR)
     report = {'type':'commissioning_box_observation','image':str(path),'sha256':hashlib.sha256(raw).hexdigest(),
               'before':before,'after':after,'ocr':ocr,'calibration':str(args.calibration.resolve()),
               'jpeg_integrity':integrity,'arm_motion_commands_sent':False}
-    if ocr.get('target_selection',{}).get('status')=='target_found':
-        report['geometry'] = locate(im,ocr,before['joint_median'],best,image_path=path)
+    if args.yolo:
+        report['detection'] = select_detection(path,target)
+    if confirmed_target(report):
+        report['geometry'] = locate(im,ocr,before['joint_median'],best,image_path=path,
+                                    detection=report.get('detection'))
     else:
         report['geometry'] = None
     directory=ROOT/'vision_grasp_results'
@@ -202,6 +249,8 @@ def main(argv=None, camera=None):
         (directory/(stem+'.png')).write_bytes(encoded.tobytes())
     print('观察记录：',out)
     print('定位候选：',json.dumps(report.get('geometry',{}).get('selected') if report['geometry'] else None,ensure_ascii=False))
+    if args.yolo and not confirmed_target(report):
+        raise ValueError('首图未找到唯一指定药盒：'+report['detection']['status'])
 
 
 if __name__=='__main__':

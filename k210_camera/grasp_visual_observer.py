@@ -261,7 +261,7 @@ class GraspVisualObserver:
             prior=inverse(camera)@prior_world
             fit=refine_grounded_rim(evidence,nominal,allow_cropped=True,prior_pose=prior)
             retried=False
-            if fit is None:
+            if fit is None and 'detection' not in self.observation:
                 masks=optional_image_masks(path)
                 if masks:
                     def confirmed(corners):

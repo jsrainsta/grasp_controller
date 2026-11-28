@@ -56,6 +56,8 @@ def main(argv=None, camera_session=None):
     source=a.observation or ROOT/'vision_grasp_results/photo_20261105_120734_974932_seq1_396c5888_d558ca46_commissioning_boardanchor.json'
     profile=ROOT/'calibration_boards/grasp_tcp_hover_candidate_20261105.json'
     observer=GraspVisualObserver(source,profile)
+    from grasp_medicine import motion_for_box
+    motion=motion_for_box(motion,observer.observation)
     initial_center=(np.linalg.inv(observer.Y)@np.r_[
         observer.observation['geometry']['selected']['top_center_base_cm'],1.])[:2]
     output=ROOT/'vision_grasp_results'/('visual_approach_'+datetime.now().strftime('%Y%m%d_%H%M%S')+'_'+uuid.uuid4().hex[:6]+'.json')
@@ -74,6 +76,8 @@ def main(argv=None, camera_session=None):
         if any(v>6 for v in r['joint_span'].values()) or any(v>2 for v in r['joint_mad'].values()):
             raise RuntimeError('当前反馈不稳定')
     runner=SimpleNamespace(target={'id':'med_003','name':'阿昔洛韦乳膏'})
+    if 'detection' in observer.observation:
+        runner.target=observer.observation['detection']['target']
     try:
         if a.hover_report:
             hover=json.loads(a.hover_report.read_text(encoding='utf-8'))
@@ -108,7 +112,7 @@ def main(argv=None, camera_session=None):
                 resumed_last_move=seed['commands'][-1]
             report['seed_approach']=str(a.seed_approach.resolve());save()
         session_context = nullcontext(camera_session) if camera_session is not None else VisionTaskSession(
-            a.port,'med_003',images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'),runner=runner)
+            a.port,runner.target['id'],images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'),runner=runner)
         with session_context as camera:
             def observe():
                 errors=[]

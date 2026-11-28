@@ -88,12 +88,15 @@ def main(argv=None, camera_session=None):
     if a.recheck_held:
         reference,baseline=held_recheck_reference(prior)
     observer=GraspVisualObserver(Path(journal['source']),Path(journal['tcp_profile']))
+    from grasp_medicine import motion_for_box
+    motion=motion_for_box(motion,observer.observation)
     observer.restore_grounded_journal(journal)
+    capture_target=observer.observation.get('detection',{}).get('target',{'id':'med_003','name':'阿昔洛韦乳膏'})
     output=ROOT/'vision_grasp_results'/('grasp_trial_'+datetime.now().strftime('%Y%m%d_%H%M%S')+'_'+uuid.uuid4().hex[:6]+'.json')
     result={'type':'same_box_commissioning_grasp_trial','source':str(a.approach.resolve()),
         'production_ready':False,'grasp_confirmed':False,'force_measured':False,
         'grasp_quality_validated':False,
-        'jaw_target':520,'coarse_position_tolerance':40,'loaded_observation_band':[480,505],
+        'target_id':capture_target['id'],'jaw_target':520,'coarse_position_tolerance':40,'loaded_observation_band':[480,505],
         'commands':[],'observations':[],'phase':'starting'}
     if prior is not None:
         result.update(prior)
@@ -117,9 +120,9 @@ def main(argv=None, camera_session=None):
                 stack.enter_context(ControllerLock(ROOT/'controller_results/controller.lock'))
                 a.port=resolve_port(a.port)
             session_context = nullcontext(camera_session) if camera_session is not None else VisionTaskSession(
-                a.port,'med_003',images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'),
+                a.port,capture_target['id'],images=ROOT/'vision_grasp_images'/datetime.now().strftime('%Y%m%d'),
                 baudrate=a.camera_baudrate,
-                runner=SimpleNamespace(target={'id':'med_003','name':'阿昔洛韦乳膏'}))
+                runner=SimpleNamespace(target=capture_target))
             camera=stack.enter_context(session_context)
             def observe(held,stationary_reference=None):
                 last_error=None

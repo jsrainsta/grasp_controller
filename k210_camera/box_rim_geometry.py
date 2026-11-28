@@ -63,7 +63,7 @@ def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *, acc
     evidence=RimEvidence(gray,K,D,corners)
     enhanced=cv2.createCLAHE(clipLimit=2.,tileGridSize=(8,8)).apply(gray)
     lines=cv2.createLineSegmentDetector().detect(enhanced)[0]
-    if lines is None or not identity_polygons:
+    if lines is None or (not identity_polygons and accept_face is None):
         return None
     plane=camera_board.copy()
     plane[:3,3]-=dimensions[2]*plane[:3,2]
@@ -95,7 +95,9 @@ def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *, acc
                and abs(pose[:3,0]@prior[:3,0])>.999 for _,prior in seeds):
             return
         rim=evidence.measure(pose)
-        if rim is None or not associated(rim['corners_pixel'],identity_polygons):
+        if rim is None or (identity_polygons and not associated(rim['corners_pixel'],identity_polygons)):
+            return
+        if not identity_polygons and not accept_face(rim['corners_pixel']):
             return
         score=np.mean([4 if d is None else d for d in rim['distances']])
         seeds.append((score,pose))
@@ -145,7 +147,7 @@ def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *, acc
     candidates=[]
     for _,pose in sorted(seeds,key=lambda item:item[0])[:12]:
         fitted=refine_grounded_rim(evidence,pose,allow_cropped=True)
-        if (fitted and associated(fitted[1]['corners_pixel'],identity_polygons)
+        if (fitted and (not identity_polygons or associated(fitted[1]['corners_pixel'],identity_polygons))
                 and (accept_face is None or accept_face(fitted[1]['corners_pixel']))):
             candidates.append(fitted)
     if not candidates:

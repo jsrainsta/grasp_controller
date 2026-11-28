@@ -59,7 +59,8 @@ def path_margin(start,end,model,center,up,limits,tcp_offset=None,minimum_top_cle
     return min(gaps)
 
 def pregrasp_candidates(model,start,center,up,limits,tcp_offset,motion,height,rejections,*,split_descent=False):
-    point=center+up*(height-2.5 if tcp_offset is not None else 5)
+    box_height=motion.get('box_height_cm',2.5)
+    point=center+up*(height-box_height if tcp_offset is not None else 5)
     candidates=[]
     pitches = (-90,-85,-80,-75,-70,-65,motion['preferred_nominal_pitch_deg'])
     if motion.get('adaptive_pitch_search'):
@@ -87,9 +88,9 @@ def pregrasp_candidates(model,start,center,up,limits,tcp_offset,motion,height,re
             final_plan=None
             if motion.get('whole_path_precheck') and tcp_offset is not None:
                 M=robot_frame(end,model,'pitch_tool');pre_tcp=M[:3,:3]@tcp_offset+M[:3,3]
-                final=center+up*(motion['grasp_region']['tcp_height_target_cm']-2.5)
+                final=center+up*(motion['grasp_region']['tcp_height_target_cm']-box_height)
                 try:
-                    height_from_joints=float((pre_tcp-center)@up)+2.5
+                    height_from_joints=float((pre_tcp-center)@up)+box_height
                     if split_descent:
                         # Check two shorter nominal steps, as the vision-guided
                         # approach can move in increments instead of one jump.
@@ -98,7 +99,7 @@ def pregrasp_candidates(model,start,center,up,limits,tcp_offset,motion,height,re
                         mid={**end,**first['expected_joint_positions']}
                         mid_tcp=pre_tcp+np.array(first['predicted_delta_cm'])
                         final_plan=plan_step(model,mid,final-mid_tcp,pitch,tcp_offset,limits,
-                            float((mid_tcp-center)@up)+2.5,up,motion['minimum_nominal_pad_height_cm'])
+                            float((mid_tcp-center)@up)+box_height,up,motion['minimum_nominal_pad_height_cm'])
                         joint_margin=min(joint_margin,first['joint_limit_margin'])
                     else:
                         final_plan=plan_step(model,end,final-pre_tcp,pitch,tcp_offset,limits,
@@ -120,15 +121,16 @@ PREFERRED_CLEARANCE_RESERVE_CM = .5
 
 
 def build_pregrasp_plan(model,start,center,up,limits,tcp_offset,motion):
+    box_height=motion.get('box_height_cm',2.5)
     preferred=motion['pregrasp_height_cm']
     heights=[preferred]
     adaptive=tcp_offset is not None and motion.get('adaptive_pitch_search')
     if adaptive:
         heights.extend(h for h in (preferred-.5,preferred+.5,preferred+1.)
-                       if 4.2<=h<=8.5 and h-2.5>=motion['pregrasp_min_top_clearance_cm'])
+                       if 4.2<=h<=8.5 and h-box_height>=motion['pregrasp_min_top_clearance_cm'])
         # Search the whole observation-to-hover band, including heights well
         # above the old 7 cm ceiling. IK and full-path checks decide feasibility.
-        minimum_height=max(4.2,2.5+motion['pregrasp_min_top_clearance_cm'])
+        minimum_height=max(4.2,box_height+motion['pregrasp_min_top_clearance_cm'])
         heights.extend(step/4 for step in range(math.ceil(minimum_height*4),49))
         heights=list(dict.fromkeys(heights))
     rejections={}
@@ -256,7 +258,7 @@ def retract_for_observation(arm_url,observation,board_pose,tcp_profile,motion,re
     model=nominal_model()
     board=np.asarray(board_pose)
     up=-board[:3,2]
-    top=board[:3,3]+2.5*up
+    top=board[:3,3]+observation['geometry'].get('assumed_box_dimensions_cm',[10.5,3.4,2.5])[2]*up
     offset=np.asarray(tcp_profile['offset_tool_cm'])
     clearance=motion['pregrasp_min_top_clearance_cm']
     observation_floor=max(1.9,clearance-.6)
@@ -370,8 +372,10 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
     args=parser.parse_args(argv)
     motion=load_motion_profile(args.motion_profile)
     obs=json.loads(args.observation.read_text(encoding='utf-8'))
+    from grasp_medicine import confirmed_target, motion_for_box
+    motion=motion_for_box(motion,obs)
     geometry=obs['geometry'];target=geometry['selected']
-    if target is None or not target['geometry_supported'] or obs['ocr']['target_selection']['status']!='target_found':
+    if target is None or not target['geometry_supported'] or not confirmed_target(obs):
         raise ValueError('目标身份或几何不足')
     current=read_arm(args.arm_url);start=current['joint_median']
     if any(abs(start[j]-obs['after']['joint_median'][j])>8 for j in start):
@@ -403,7 +407,7 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
             pitch=model.forward({int(j):v for j,v in start.items()})['pitch_deg']
             profiles={'primary':motion}
             if args.fallback_motion_profile is not None:
-                profiles['fallback']=load_motion_profile(args.fallback_motion_profile)
+                profiles['fallback']=motion_for_box(load_motion_profile(args.fallback_motion_profile),obs)
             rejected=[]
             selected_lift=None
             for pitch_change in (0,1,2,3,4):
@@ -466,7 +470,7 @@ def main(argv=None, camera=None, *, on_plan=None, on_high_start=None):
     except PregraspPathUnavailable as primary_error:
         if args.fallback_motion_profile is None:
             raise
-        fallback=load_motion_profile(args.fallback_motion_profile)
+        fallback=motion_for_box(load_motion_profile(args.fallback_motion_profile),obs)
         if args.tcp_profile:
             require_start_state(start,profile['jaw_position'],profile['roll_position'],motion=fallback)
         try:

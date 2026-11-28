@@ -17,6 +17,7 @@ from medicine_match import name_matches
 WORKSPACE = Path(__file__).resolve().parents[1]
 _executor = None
 _worker = None
+_worker_key = None
 
 
 def close_worker():
@@ -35,7 +36,15 @@ def image_masks(path):
     if not interpreter:
         return None
     path = Path(path).resolve()
-    return _predict(interpreter, str(path), path.stat().st_mtime_ns)
+    packet = _predict(interpreter, str(path), path.stat().st_mtime_ns, "segment")
+    return [cv2.imdecode(np.frombuffer(base64.b64decode(encoded), np.uint8), 0)
+            for encoded in packet["masks"]]
+
+
+def image_detections(path):
+    interpreter = os.environ.get("GRASP_YOLO_PYTHON", sys.executable)
+    path = Path(path).resolve()
+    return _predict(interpreter, str(path), path.stat().st_mtime_ns, "detect")["detections"]
 
 
 def optional_image_masks(path):
@@ -49,12 +58,15 @@ def optional_image_masks(path):
 
 
 @lru_cache(maxsize=8)
-def _predict(interpreter, path, modified):
-    global _executor, _worker
+def _predict(interpreter, path, modified, task):
+    global _executor, _worker, _worker_key
+    if _worker_key != (interpreter, task):
+        close_worker()
     if _worker is None:
-        _worker = subprocess.Popen([interpreter, "-u", "-X", "utf8", __file__, "--worker"],
+        _worker = subprocess.Popen([interpreter, "-u", "-X", "utf8", __file__, "--worker", task],
                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                    text=True, encoding="utf-8")
+        _worker_key = (interpreter, task)
     if _executor is None:
         _executor = ThreadPoolExecutor(max_workers=1)
     try:
@@ -66,8 +78,7 @@ def _predict(interpreter, path, modified):
         raise RuntimeError("YOLO worker unavailable: " + str(error)) from error
     if "error" in packet:
         raise RuntimeError(packet["error"])
-    return [cv2.imdecode(np.frombuffer(base64.b64decode(encoded), np.uint8), 0)
-            for encoded in packet["masks"]]
+    return packet
 
 
 def polygon_mask(shape, polygon):
@@ -94,7 +105,7 @@ def overview_mask(masks, shape, ocr):
     return masks[matched.pop()] if len(matched) == 1 else None
 
 
-def serve(*, self_check=False):
+def serve(*, self_check=False, task="segment"):
     # Keep the protocol stream separate from Ultralytics startup messages.
     protocol = sys.stdout
     sys.stdout = sys.stderr
@@ -108,23 +119,32 @@ def serve(*, self_check=False):
     import torch
     from ultralytics import YOLO
     torch.set_num_threads(min(6, torch.get_num_threads()))
-    model = YOLO(str(WORKSPACE / "yolo/expv4s.pt"))
+    detecting = task == "detect"
+    model = YOLO(str(WORKSPACE / ("yolo/exp_v5_detect.pt" if detecting else "yolo/expv4s.pt")))
+    if detecting:
+        from grasp_medicine import MEDICINES
+        if any(model.names.get(i) != row[1] for i, row in enumerate(MEDICINES)):
+            raise ValueError("检测权重类别与药盒配置不一致")
+    options = (dict(imgsz=416, conf=.25) if detecting
+               else dict(imgsz=640, conf=.65, retina_masks=True))
     if self_check:
-        model.predict(np.zeros((480, 640, 3), np.uint8), imgsz=640, conf=.65,
-                      retina_masks=True, device="cpu", verbose=False)
+        model.predict(np.zeros((480, 640, 3), np.uint8), **options, device="cpu", verbose=False)
         return
     for line in sys.stdin:
         try:
             image = cv2.imdecode(np.fromfile(json.loads(line), dtype=np.uint8), cv2.IMREAD_COLOR)
-            result = model.predict(image, imgsz=640, conf=.65, retina_masks=True,
-                                   device="cpu", verbose=False)[0]
-            masks = [] if result.masks is None else result.masks.data.cpu().numpy()
-            packet = {"masks": [base64.b64encode(cv2.imencode(".png", (mask > .5).astype(np.uint8)*255)[1]).decode("ascii")
-                                for mask in masks]}
+            result = model.predict(image, **options, device="cpu", verbose=False)[0]
+            if detecting:
+                packet = {"detections":[{"class_id":int(box.cls.item()), "confidence":box.conf.item(),
+                                          "xyxy":box.xyxy[0].tolist()} for box in result.boxes]}
+            else:
+                masks = [] if result.masks is None else result.masks.data.cpu().numpy()
+                packet = {"masks": [base64.b64encode(cv2.imencode(".png", (mask > .5).astype(np.uint8)*255)[1]).decode("ascii")
+                                    for mask in masks]}
         except Exception as error:
             packet = {"error": str(error)}
         print(json.dumps(packet), file=protocol, flush=True)
 
 
 if __name__ == "__main__":
-    serve(self_check="--self-check" in sys.argv)
+    serve(self_check="--self-check" in sys.argv, task="detect" if "detect" in sys.argv else "segment")
