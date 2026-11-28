@@ -15,6 +15,22 @@ from check_grasp_board import ROOT
 from box_rim_geometry import overview_rim
 from box_segmentation import coverage, image_detections, optional_image_masks, overview_mask, polygon_mask
 from grasp_medicine import confirmed_target, medicine
+from box_rim_geometry import associated
+from functools import lru_cache
+
+
+@lru_cache(maxsize=3)
+def tie_ocr_runner(target_id):
+    from ocr_photo import OCRRunner
+    return OCRRunner(target_id=target_id)
+
+
+def choose_rim_by_text(candidates, lines, name):
+    polygons=[row['polygon'] for row in lines
+              if row.get('confidence',0)>=.8 and name_matches(row.get('text',''),name)]
+    matched=[candidate for candidate in candidates
+             if associated(candidate[1]['corners_pixel'],polygons)]
+    return matched[0] if len(matched)==1 else None, len(polygons), len(matched)
 from collect_grasp_reference import read_arm
 from detect_box_outline import detect
 from fit_grasp_handeye import robot_frame
@@ -82,7 +98,11 @@ def detection_face_filter(detection):
 
 def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None, detection=None):
     if detection is not None:
-        return _locate(im, ocr, joints, handeye, camera_override, detection=detection)
+        def read_text():
+            return tie_ocr_runner(detection['target']['id']).run(
+                Path(image_path),ROOT/'ocr_results')['lines']
+        return _locate(im, ocr, joints, handeye, camera_override, detection=detection,
+                       read_tie_text=read_text if image_path else None)
     result = _locate(im, ocr, joints, handeye, camera_override)
     if result['selected'] is not None or result['outline'].get('frame_edge'):
         return result
@@ -100,7 +120,8 @@ def locate(im, ocr, joints, handeye, camera_override=None, *, image_path=None, d
     return result
 
 
-def _locate(im, ocr, joints, handeye, camera_override, *, box=None, detection=None, prefer_rim=False):
+def _locate(im, ocr, joints, handeye, camera_override, *, box=None, detection=None,
+            prefer_rim=False, read_tie_text=None):
     intrinsic = json.loads((ROOT/'camera_calibration_results'/'diagnostic_20261026_58dc9618'/'intrinsics_candidate.json').read_text(encoding='utf-8'))
     K,D = np.array(intrinsic['camera_matrix_px']),np.array(intrinsic['distortion_coefficients'])
     camera = robot_frame(joints,nominal_model(),'pitch_tool') @ np.array(handeye['T_mount_camera_cm'])
@@ -119,11 +140,35 @@ def _locate(im, ocr, joints, handeye, camera_override, *, box=None, detection=No
     if box is not None:
         outline['candidates'] = [c for c in outline['candidates'] if inside_target(c['corners_pixel'])]
     if not outline['candidates'] or prefer_rim:
+        diagnostics={}
+        def resolve_tie(candidates):
+            try:
+                selected, lines, matches=choose_rim_by_text(candidates,read_tie_text(),name)
+            except (ValueError,RuntimeError,OSError,ImportError) as error:
+                diagnostics['ocr_error']=str(error)
+                return None
+            diagnostics.update(ocr_name_lines=lines,ocr_matching_candidates=matches)
+            if selected is not None:
+                diagnostics['resolved_by']='ocr_name_position'
+            return selected
         identity=[row['polygon'] for row in ocr.get('lines',[])
                   if name_matches(row.get('text',''), '阿昔洛韦乳膏') and row.get('confidence',0)>=.8]
         fitted=overview_rim(cv2.cvtColor(im,cv2.COLOR_BGR2GRAY),K,D,
                             np.linalg.solve(camera,board),dimensions,identity,
-                            accept_face=inside_target if box is not None else face_filter)
+                            accept_face=inside_target if box is not None else face_filter,
+                            resolve_tie=resolve_tie if read_tie_text else None,diagnostics=diagnostics)
+        if diagnostics:
+            outline['rim_diagnostics']=diagnostics
+        if fitted is None and diagnostics.get('reason')=='ambiguous_rim_candidates':
+            count=len(diagnostics['candidates'])
+            word='两个' if count==2 else f'{count} 个'
+            outline['reason']=f'没能从{word}盒面候选里选定一个'
+            scores='、'.join(f"{item['mean_edge_distance_px']:.3f}" for item in diagnostics['candidates'])
+            outline['reason']+=f'，候选盒边平均误差为 {scores} 像素'
+            if 'ocr_error' in diagnostics:
+                outline['reason']+='，OCR 复核失败：'+diagnostics['ocr_error']
+            elif 'ocr_matching_candidates' in diagnostics:
+                outline['reason']+=f"，OCR 找到 {diagnostics['ocr_name_lines']} 条目标药名，完整落入 {diagnostics['ocr_matching_candidates']} 个候选"
         if fitted is not None:
             _,rim=fitted
             pixels=rim['corners_pixel']
@@ -176,7 +221,13 @@ def _locate(im, ocr, joints, handeye, camera_override, *, box=None, detection=No
     supported.sort(key=lambda row:row['dimensional_error']+row['orthogonality_error'])
     accepted = [r for r in supported if r['geometry_supported']]
     if detection is not None and not accepted and outline['candidates'] and not prefer_rim and 'metric_edge_fit' not in outline:
-        return _locate(im,ocr,joints,handeye,camera_override,detection=detection,prefer_rim=True)
+        return _locate(im,ocr,joints,handeye,camera_override,detection=detection,prefer_rim=True,
+                       read_tie_text=read_tie_text)
+    if detection is not None and not accepted and 'rim_diagnostics' not in outline:
+        if supported:
+            outline['reason']=f'有 {len(supported)} 个候选，但尺寸或直角检查未通过'
+        elif not outline.get('frame_edge'):
+            outline['reason']='检测到目标药盒，但未拟合出有足够盒边支持的完整上表面'
     return {'outline':outline,'metric_candidates':supported,'selected':accepted[0] if accepted else None,
             'T_base_camera_cm':camera.tolist(),'table_down_normal_base':normal.tolist(),
             'assumed_box_dimensions_cm':list(dimensions),
@@ -231,7 +282,7 @@ def main(argv=None, camera=None):
     if args.yolo:
         report['detection'] = select_detection(path,target)
     if confirmed_target(report):
-        report['geometry'] = locate(im,ocr,before['joint_median'],best,image_path=path,
+        report['geometry'] = locate(im,ocr,before['joint_median'],best,image_path=None if args.yolo else path,
                                     detection=report.get('detection'))
     else:
         report['geometry'] = None

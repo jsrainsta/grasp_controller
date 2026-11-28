@@ -47,7 +47,10 @@ def replay(raw, target, folder):
     source.write_text(json.dumps(raw,ensure_ascii=False),encoding='utf8')
     try:
         registered = register(source,motion=hover.load_motion_profile(MOTION))
-        report['dimensions'] = load(registered)['geometry']['assumed_box_dimensions_cm']
+        geometry = load(registered)['geometry']
+        report['dimensions'] = geometry['assumed_box_dimensions_cm']
+        if geometry['outline'].get('rim_diagnostics'):
+            report['rim_diagnostics'] = geometry['outline']['rim_diagnostics']
         args = [registered,'--motion-profile',MOTION,'--fallback-motion-profile',FAR,
                 '--tcp-profile',TCP,'--high-start']
         with patch.object(hover,'read_arm',return_value=raw['after']), patch.object(
@@ -63,6 +66,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('records',nargs='+',type=Path)
     parser.add_argument('--output',type=Path,default=RUN/'grasp_replay.json')
+    parser.add_argument('--medicine',choices=[entry[1] for entry in MEDICINES])
     args = parser.parse_args()
     cv2.setNumThreads(2)
     reports = []
@@ -76,6 +80,8 @@ def main():
                 if not Path(raw['image']).is_file():
                     continue
                 for _,name,_ in MEDICINES:
+                    if args.medicine and args.medicine!=name:
+                        continue
                     with redirect_stdout(io.StringIO()):
                         report = replay(raw,medicine(name),folder)
                     reports.append(report)

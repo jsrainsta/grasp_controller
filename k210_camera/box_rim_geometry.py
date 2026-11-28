@@ -57,7 +57,8 @@ class RimEvidence:
                 'distances':distances,'edge_points':measured}
 
 
-def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *, accept_face=None):
+def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *,
+                 accept_face=None, resolve_tie=None, diagnostics=None):
     """Propose boxes from measured line pairs and associate identity afterwards."""
     corners=face_corners(dimensions)
     evidence=RimEvidence(gray,K,D,corners)
@@ -154,9 +155,22 @@ def overview_rim(gray, K, D, camera_board, dimensions, identity_polygons, *, acc
         return None
     candidates.sort(key=lambda item:item[1]['mean_edge_distance_px'])
     pose,rim=candidates[0]
-    if any(other_rim['mean_edge_distance_px']<=rim['mean_edge_distance_px']+.12
-           and (np.linalg.norm(other[:3,3]-pose[:3,3])>.4 or abs(other[:3,0]@pose[:3,0])<.995)
-           for other,other_rim in candidates[1:]):
+    def distinct(a,b):
+        return np.linalg.norm(a[:3,3]-b[:3,3])>.4 or abs(a[:3,0]@b[:3,0])<.995
+    close=[]
+    for candidate in candidates:
+        if candidate[1]['mean_edge_distance_px']>rim['mean_edge_distance_px']+.12:
+            break
+        if all(distinct(candidate[0],other[0]) for other in close):
+            close.append(candidate)
+    if len(close)>1:
+        if diagnostics is not None:
+            diagnostics.update(reason='ambiguous_rim_candidates', candidates=[
+                {'corners_pixel':item['corners_pixel'].tolist(),
+                 'mean_edge_distance_px':item['mean_edge_distance_px']}
+                for _,item in close])
+        if resolve_tie is not None:
+            return resolve_tie(close)
         return None
     return pose,rim
 
